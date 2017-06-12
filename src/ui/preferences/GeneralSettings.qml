@@ -385,6 +385,11 @@ QGCView {
                                 }
                             }
                         }
+
+                        // FIXME: Hack
+                        FactTextField {
+                            fact: QGroundControl.settingsManager.appSettings.airMapKey
+                        }
                     }
                 }
 
