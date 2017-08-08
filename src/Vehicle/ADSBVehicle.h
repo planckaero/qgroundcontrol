@@ -21,6 +21,8 @@ class ADSBVehicle : public QObject
 public:
     ADSBVehicle(mavlink_adsb_vehicle_t& adsbVehicle, QObject* parent = NULL);
 
+    ADSBVehicle(const QGeoCoordinate& location, float heading, QObject* parent = NULL);
+
     Q_PROPERTY(int              icaoAddress READ icaoAddress    CONSTANT)
     Q_PROPERTY(QGeoCoordinate   coordinate  READ coordinate     NOTIFY coordinateChanged)
     Q_PROPERTY(double           altitude    READ altitude       NOTIFY altitudeChanged)     // NaN for not available
@@ -34,6 +36,7 @@ public:
     /// Update the vehicle with new information
     void update(mavlink_adsb_vehicle_t& adsbVehicle);
 
+    void update(const QGeoCoordinate& location, float heading);
 signals:
     void coordinateChanged(QGeoCoordinate coordinate);
     void altitudeChanged(double altitude);
