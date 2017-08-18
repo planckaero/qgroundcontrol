@@ -14,6 +14,7 @@
 
 SettingsManager::SettingsManager(QGCApplication* app, QGCToolbox* toolbox)
     : QGCTool(app, toolbox)
+    , _airMapSettings       (NULL)
     , _appSettings          (NULL)
     , _unitsSettings        (NULL)
     , _autoConnectSettings  (NULL)
@@ -38,4 +39,5 @@ void SettingsManager::setToolbox(QGCToolbox *toolbox)
     _flightMapSettings =    new FlightMapSettings(this);
     _rtkSettings =          new RTKSettings(this);
     _guidedSettings =       new GuidedSettings(this);
+    _airMapSettings =       new AirMapSettings(this);
 }

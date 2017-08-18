@@ -162,10 +162,5 @@
     "shortDescription": "Default firmware type for flashing",
     "type":             "uint32",
     "defaultValue":     12
-},
-{
-    "name":             "AirMapKey",
-    "type":             "string",
-    "defaultValue":     ""
 }
 ]

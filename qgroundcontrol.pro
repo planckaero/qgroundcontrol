@@ -551,6 +551,7 @@ HEADERS += \
     src/QmlControls/RCChannelMonitorController.h \
     src/QmlControls/ScreenToolsController.h \
     src/QtLocationPlugin/QMLControl/QGCMapEngineManager.h \
+    src/Settings/AirMapSettings.h \
     src/Settings/AppSettings.h \
     src/Settings/AutoConnectSettings.h \
     src/Settings/FlightMapSettings.h \
@@ -577,7 +578,15 @@ HEADERS += \
     src/AnalyzeView/LogDownloadController.h \
     libs/thirdParty/tiny-AES128-C/aes.h \
 
-# Protobuf
+# Protobuf (AirMap)
+# This should be optional. As is, QGC now requires protobuf to be installed.
+MacBuild {
+    INCLUDEPATH += \
+        /usr/local/opt/protobuf/include
+    LIBS += \
+        -L/usr/local/opt/protobuf/lib
+}
+
 LIBS += -lprotobuf
 PROTOS = src/protobuf/airmap_telemetry.proto
 include(src/protobuf/proto_compile.pri)
@@ -739,6 +748,7 @@ SOURCES += \
     src/QmlControls/RCChannelMonitorController.cc \
     src/QmlControls/ScreenToolsController.cc \
     src/QtLocationPlugin/QMLControl/QGCMapEngineManager.cc \
+    src/Settings/AirMapSettings.cc \
     src/Settings/AppSettings.cc \
     src/Settings/AutoConnectSettings.cc \
     src/Settings/FlightMapSettings.cc \
