@@ -18,9 +18,19 @@ import QGroundControl.MultiVehicleManager   1.0
 import QGroundControl.ScreenTools           1.0
 import QGroundControl.Palette               1.0
 
+import QGroundControl.Controllers   1.0
+
 Item {
+
+	// TODO: we should move the permit status somewhere else to avoid having to
+	// instantiate another airmap controller here
+    AirMapController {
+        id: airMapController
+    }
+
     property var  _activeVehicle:       QGroundControl.multiVehicleManager.activeVehicle
     property bool _communicationLost:   _activeVehicle ? _activeVehicle.connectionLost : false
+    property var  _flightPermit:     airMapController.flightPermitStatus
 
     QGCPalette { id: qgcPal }
 
@@ -85,19 +95,19 @@ Item {
         }
     }
 
-    Image {
-        anchors.right:          parent.right
-        anchors.top:            parent.top
-        anchors.bottom:         parent.bottom
-        visible:                x > indicatorRow.width && !_communicationLost
-        fillMode:               Image.PreserveAspectFit
-        source:                 _outdoorPalette ? _brandImageOutdoor : _brandImageIndoor
-
-        property bool   _outdoorPalette:        qgcPal.globalTheme === QGCPalette.Light
-        property bool   _corePluginBranding:    QGroundControl.corePlugin.brandImageIndoor.length != 0
-        property string _brandImageIndoor:      _corePluginBranding ? QGroundControl.corePlugin.brandImageIndoor : (_activeVehicle ? _activeVehicle.brandImageIndoor : "")
-        property string _brandImageOutdoor:     _corePluginBranding ? QGroundControl.corePlugin.brandImageOutdoor : (_activeVehicle ? _activeVehicle.brandImageOutdoor : "")
-    }
+//    Image {
+//        anchors.right:          parent.right
+//        anchors.top:            parent.top
+//        anchors.bottom:         parent.bottom
+//        visible:                x > indicatorRow.width && !_communicationLost
+//        fillMode:               Image.PreserveAspectFit
+//        source:                 _outdoorPalette ? _brandImageOutdoor : _brandImageIndoor
+//
+//        property bool   _outdoorPalette:        qgcPal.globalTheme === QGCPalette.Light
+//        property bool   _corePluginBranding:    QGroundControl.corePlugin.brandImageIndoor.length != 0
+//        property string _brandImageIndoor:      _corePluginBranding ? QGroundControl.corePlugin.brandImageIndoor : (_activeVehicle ? _activeVehicle.brandImageIndoor : "")
+//        property string _brandImageOutdoor:     _corePluginBranding ? QGroundControl.corePlugin.brandImageOutdoor : (_activeVehicle ? _activeVehicle.brandImageOutdoor : "")
+//    }
 
     Row {
         anchors.fill:       parent
@@ -122,4 +132,20 @@ Item {
             color:                  qgcPal.colorRed
         }
     }
+
+    Row {
+        anchors.fill:       parent
+        layoutDirection:    Qt.RightToLeft
+        spacing:            ScreenTools.defaultFontPixelWidth
+        visible:            !_communicationLost
+		QGCLabel {
+			id:                     flightPermit
+			anchors.verticalCenter: parent.verticalCenter
+			text:                   _flightPermit == AirspaceAuthorization.PermitPending ? qsTr("Approval Pending") : (_flightPermit == AirspaceAuthorization.PermitAccepted ?  qsTr("Flight Approved") : (_flightPermit == AirspaceAuthorization.PermitRejected ? "Flight Denied" : ""))
+			font.pointSize:         ScreenTools.mediumFontPointSize
+			font.family:            ScreenTools.demiboldFontFamily
+			color:                  _flightPermit == AirspaceAuthorization.PermitPending ? qgcPal.colorOrange : (_flightPermit == AirspaceAuthorization.PermitAccepted ?  qgcPal.colorGreen : qgcPal.colorRed)
+			visible:                true
+		}
+	}
 }
