@@ -34,6 +34,7 @@ class JoystickManager;
 class UASMessage;
 class SettingsManager;
 class ADSBVehicle;
+class AirMapController;
 
 Q_DECLARE_LOGGING_CATEGORY(VehicleLog)
 
@@ -308,6 +309,7 @@ public:
     Q_PROPERTY(QVariantList         toolBarIndicators       READ toolBarIndicators                                      CONSTANT)
     Q_PROPERTY(QVariantList         cameraList              READ cameraList                                             CONSTANT)
     Q_PROPERTY(QmlObjectListModel*  adsbVehicles            READ adsbVehicles                                           CONSTANT)
+    Q_PROPERTY(AirMapController*    airMapController        READ airMapController                                       CONSTANT)
 
     /// true: Vehicle is flying, false: Vehicle is on ground
     Q_PROPERTY(bool flying READ flying NOTIFY flyingChanged)
@@ -525,6 +527,8 @@ public:
     QmlObjectListModel* trajectoryPoints(void) { return &_mapTrajectoryList; }
     QmlObjectListModel* cameraTriggerPoints(void) { return &_cameraTriggerPoints; }
     QmlObjectListModel* adsbVehicles(void) { return &_adsbVehicles; }
+
+    AirMapController* airMapController() { return _airMapController; }
 
     int  flowImageIndex() { return _flowImageIndex; }
 
@@ -947,7 +951,9 @@ private:
     RallyPointManager*  _rallyPointManager;
     bool                _rallyPointManagerInitialRequestSent;
 
-    ParameterManager*    _parameterManager;
+    ParameterManager*   _parameterManager;
+
+    AirMapController*   _airMapController;
 
     bool    _armed;         ///< true: vehicle is armed
     uint8_t _base_mode;     ///< base_mode from HEARTBEAT
