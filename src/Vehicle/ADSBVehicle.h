@@ -11,6 +11,7 @@
 
 #include <QObject>
 #include <QGeoCoordinate>
+#include <QElapsedTimer>
 
 #include "QGCMAVLink.h"
 
@@ -37,14 +38,23 @@ public:
     void update(mavlink_adsb_vehicle_t& adsbVehicle);
 
     void update(const QGeoCoordinate& location, float heading);
+
+    /// check if the vehicle is expired and should be removed
+    bool expired();
+
 signals:
     void coordinateChanged(QGeoCoordinate coordinate);
     void altitudeChanged(double altitude);
     void headingChanged(double heading);
 
 private:
+    static constexpr qint64 expirationTimeoutMs = 5000; ///< timeout with no update in ms after which the vehicle is removed.
+                                                        ///< AirMap sends updates for each vehicle every second.
+
     uint32_t        _icaoAddress;
     QGeoCoordinate  _coordinate;
     double          _altitude;
     double          _heading;
+
+    QElapsedTimer   _lastUpdateTimer;
 };

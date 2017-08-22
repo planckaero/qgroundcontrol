@@ -40,6 +40,7 @@ void ADSBVehicle::update(const QGeoCoordinate& location, float heading)
     emit coordinateChanged(_coordinate);
     emit altitudeChanged(_altitude);
     emit headingChanged(_heading);
+    _lastUpdateTimer.restart();
 }
 
 void ADSBVehicle::update(mavlink_adsb_vehicle_t& adsbVehicle)
@@ -76,4 +77,10 @@ void ADSBVehicle::update(mavlink_adsb_vehicle_t& adsbVehicle)
         _heading = newHeading;
         emit headingChanged(_heading);
     }
+    _lastUpdateTimer.restart();
+}
+
+bool ADSBVehicle::expired()
+{
+    return _lastUpdateTimer.hasExpired(expirationTimeoutMs);
 }
