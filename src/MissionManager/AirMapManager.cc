@@ -525,9 +525,7 @@ void AirMapFlightManager::createFlight(const QList<MissionItem*>& missionItems)
 
     if (_pilotID == "") {
         // need to get the pilot id before uploading the flight
-        QUrl url(QString("https://api.airmap.com/pilot/v2/profile"));
-        _networking.get(url, true);
-        _state = State::GetPilotID;
+        _getPilotID();
     } else {
         _uploadFlight();
     }
@@ -536,9 +534,45 @@ void AirMapFlightManager::createFlight(const QList<MissionItem*>& missionItems)
     emit flightPermitStatusChanged();
 }
 
+void AirMapFlightManager::_getPilotID()
+{
+    QUrl url(QString("https://api.airmap.com/pilot/v2/profile"));
+    _networking.get(url, true);
+    _state = State::GetPilotID;
+}
+
+void AirMapFlightManager::endExistingFlight()
+{
+    if (!_networking.hasAPIKey() || !_networking.getLogin().hasCredentials()) {
+        return;
+    }
+    if (_pilotID == "") {
+        _getPilotID();
+        _pendingState = State::EndFirstFlight;
+        return;
+    }
+
+    // it could be that AirMap still has an open pending flight, but we don't know the flight ID.
+    // As there can only be one, we query the flights that end in the future, and close it if there's one.
+    QUrlQuery flightsQuery;
+    flightsQuery.addQueryItem(QStringLiteral("pilot_id"), _pilotID);
+    QDateTime end_time = QDateTime::currentDateTime().toUTC().addSecs(-60*60);
+    flightsQuery.addQueryItem(QStringLiteral("end_after"), end_time.toString(Qt::ISODate));
+
+    QUrl flightsQueryUrl(QStringLiteral("https://api.airmap.com/flight/v2/"));
+    flightsQueryUrl.setQuery(flightsQuery);
+
+    _networking.get(flightsQueryUrl, true);
+    _state = State::EndFirstFlight;
+
+}
 
 void AirMapFlightManager::_uploadFlight()
 {
+    if (_flight.coords.size() == 0) {
+        return; // no flight to upload
+    }
+
     if (_pendingFlightId != "") {
         // we need to end an existing flight first
         _endFlight(_pendingFlightId);
@@ -546,18 +580,7 @@ void AirMapFlightManager::_uploadFlight()
     }
 
     if (_noFlightCreatedYet) {
-        // it could be that AirMap still has an open pending flight, but we don't know the flight ID.
-        // As there can only be one, we query the flights that end in the future, and close it if there's one.
-        QUrlQuery flightsQuery;
-        flightsQuery.addQueryItem(QStringLiteral("pilot_id"), _pilotID);
-        QDateTime end_time = QDateTime::currentDateTime().toUTC().addSecs(-60*60);
-        flightsQuery.addQueryItem(QStringLiteral("end_after"), end_time.toString(Qt::ISODate));
-
-        QUrl flightsQueryUrl(QStringLiteral("https://api.airmap.com/flight/v2/"));
-        flightsQueryUrl.setQuery(flightsQuery);
-
-        _networking.get(flightsQueryUrl, true);
-        _state = State::EndFirstFlight;
+        endExistingFlight();
         _noFlightCreatedYet = false;
         return;
     }
@@ -594,20 +617,18 @@ void AirMapFlightManager::_uploadFlight()
     root.insert("takeoff_longitude", _flight.takeoffCoord.longitude());
 
     QJsonArray rulesets;
-    rulesets.push_back("city_d3qzey_drone_rules");
-    rulesets.push_back("che_drone_rules");
-    rulesets.push_back("custom_kz6e55_drone_rules");
-    rulesets.push_back("che_notam");
+    //rulesets.push_back("city_d3qzey_drone_rules"); // TODO: ask the rules for hobby/professional (user choice)
     rulesets.push_back("che_airmap_rules");
     rulesets.push_back("che_nature_preserve");
+    rulesets.push_back("che_drone_rules");
+    rulesets.push_back("city_bowp0n_drone_rules");
     root.insert("rulesets", rulesets);
 
     root.insert("pilot_id", _pilotID);
 
     QDateTime now = QDateTime::currentDateTime().toUTC();
-    QDateTime startTime = now.addSecs(5 * 60); // TODO: user configurable?
     QDateTime endTime = now.addSecs(2 * 60 * 60);
-    root.insert("start_time", startTime.toString(Qt::ISODate));
+    root.insert("start_time", "now"); // TODO: user configurable?
     root.insert("end_time", endTime.toString(Qt::ISODate));
 
     _flight.coords.clear();
@@ -638,6 +659,7 @@ void AirMapFlightManager::endFlight()
 void AirMapFlightManager::abort()
 {
     _state = State::Idle;
+    _pendingState = State::Idle;
     _networking.abort();
     _flightPermitStatus = AirspaceAuthorization::PermitUnknown;
     emit flightPermitStatusChanged();
@@ -674,6 +696,7 @@ void AirMapFlightManager::_parseJson(QJsonParseError parseError, QJsonDocument d
                 const QJsonObject& dataObject = rootObject["data"].toObject();
                 _pilotID = dataObject["id"].toString();
                 qCDebug(AirMapManagerLog) << "Pilot ID:" << _pilotID;
+                _state = State::Idle;
                 _uploadFlight();
             } else {
                 QNetworkReply::NetworkError networkError = QNetworkReply::NetworkError::UnknownContentError;
@@ -765,7 +788,7 @@ void AirMapFlightManager::_parseJson(QJsonParseError parseError, QJsonDocument d
             for (int i = 0; i < authorizationsArray.count(); i++) {
                 const QJsonObject& authorizationObject = authorizationsArray[i].toObject();
                 QString status = authorizationObject["status"].toString();
-                if (status == "accepted") {
+                if (status == "authorized") {
                     accepted = true;
                 } else if (status == "rejected") {
                     rejected = true;
@@ -822,6 +845,7 @@ void AirMapFlightManager::_parseJson(QJsonParseError parseError, QJsonDocument d
                 QString flightID = flight["id"].toString();
                 _endFlight(flightID);
             } else {
+                _state = State::Idle;
                 _uploadFlight();
             }
         }
@@ -830,6 +854,18 @@ void AirMapFlightManager::_parseJson(QJsonParseError parseError, QJsonDocument d
         default:
             qCDebug(AirMapManagerLog) << "Error: wrong state";
             break;
+    }
+
+    if (_state == State::Idle) {
+        State pendingState = _pendingState;
+        _pendingState = State::Idle;
+        switch (pendingState) {
+            case State::EndFirstFlight:
+                endExistingFlight();
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -841,6 +877,7 @@ void AirMapFlightManager::_error(QNetworkReply::NetworkError code, const QString
         emit flightPermitStatusChanged();
     }
     _state = State::Idle;
+    _pendingState = State::Idle;
     emit networkError(code, errorString, serverErrorMessage);
 }
 
@@ -914,7 +951,7 @@ void AirMapTelemetry::_handleGlobalPositionInt(const mavlink_message_t& message)
     mavlink_global_position_int_t globalPosition;
     mavlink_msg_global_position_int_decode(&message, &globalPosition);
 
-    qDebug() << "Got position from vehicle:" << globalPosition.lat << "," << globalPosition.lon;
+    //qDebug() << "Got position from vehicle:" << globalPosition.lat << "," << globalPosition.lon;
 
     // documentation: https://developers.airmap.com/docs/telemetry-2
 
@@ -985,8 +1022,6 @@ void AirMapTelemetry::_handleGlobalPositionInt(const mavlink_message_t& message)
     }
 
     AES_CBC_encrypt_buffer(output + packetHeaderLength, payload, payloadLength, key, iv);
-
-    qDebug() << "Telemetry Position: payload len=" << payloadLength << "header len=" << packetHeaderLength << "msglen=" << msgLength;
 
     _socket->writeDatagram((char*)output, packetHeaderLength+payloadLength, _udpHost, _udpPort);
 }

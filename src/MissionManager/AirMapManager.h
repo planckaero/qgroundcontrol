@@ -165,6 +165,8 @@ public:
      */
     void abort();
 
+    bool hasAPIKey() const { return _networkingData.airmapAPIKey != ""; }
+
 signals:
     /// signal when the request finished (get or post). All requests are assumed to return JSON.
     void finished(QJsonParseError parseError, QJsonDocument document);
@@ -269,6 +271,11 @@ public:
      */
     void abort();
 
+    /**
+     * check on the server if an open flight exists and end it
+     */
+    void endExistingFlight();
+
 public slots:
     void endFlight();
 
@@ -293,6 +300,8 @@ private:
      */
     void _endFlight(const QString& flightID);
 
+    void _getPilotID();
+
     enum class State {
         Idle,
         GetPilotID,
@@ -316,6 +325,7 @@ private:
     Flight                              _flight; ///< flight pending to be uploaded
 
     State                               _state = State::Idle;
+    State                               _pendingState = State::Idle;
     AirMapNetworking                    _networking;
     QString                             _currentFlightId; ///< Flight ID, empty if there is none
     QString                             _pendingFlightId; ///< current flight ID, not necessarily accepted yet (once accepted, it's equal to _currentFlightId)

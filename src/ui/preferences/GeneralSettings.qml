@@ -530,12 +530,12 @@ QGCView {
                         }
                         Row {
                             spacing:    ScreenTools.defaultFontPixelWidth
-                            QGCLabel        {text: qsTr("SITA UAV Reg:");  width: _labelWidth; anchors.verticalCenter: parent.verticalCenter }
+                            QGCLabel        {text: qsTr("SITA Drone ID:");  width: _labelWidth; anchors.verticalCenter: parent.verticalCenter }
                             FactTextField   {fact: QGroundControl.settingsManager.airMapSettings.sitaUavReg; width: _editFieldWidth; anchors.verticalCenter: parent.verticalCenter }
                         }
                         Row {
                             spacing:    ScreenTools.defaultFontPixelWidth
-                            QGCLabel        {text: qsTr("SITA User Reg:");  width: _labelWidth; anchors.verticalCenter: parent.verticalCenter }
+                            QGCLabel        {text: qsTr("SITA Pilot ID:");  width: _labelWidth; anchors.verticalCenter: parent.verticalCenter }
                             FactTextField   {fact: QGroundControl.settingsManager.airMapSettings.sitaUserReg; width: _editFieldWidth; anchors.verticalCenter: parent.verticalCenter }
                         }
                     }

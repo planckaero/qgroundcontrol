@@ -627,16 +627,20 @@ QGCView {
             id: airMapRow
             spacing: ScreenTools.defaultFontPixelWidth
             anchors.centerIn: parent
-            QGCLabel { text: qsTr("AirMap:"); anchors.verticalCenter: parent.verticalCenter; }
+            QGCLabel {
+				text: qsTr("AirMap:")
+				anchors.verticalCenter: parent.verticalCenter
+				font.pointSize: ScreenTools.largeFontPointSize
+			}
             QGCLabel {
                 text: {
                     if(airMapIndicator.flightPermit) {
                         if(airMapIndicator.flightPermit === AirspaceAuthorization.PermitPending)
-                            return qsTr("Approval Pending")
+                            return qsTr("Authorization Pending")
                         if(airMapIndicator.flightPermit === AirspaceAuthorization.PermitAccepted)
                             return qsTr("Flight Approved")
                         if(airMapIndicator.flightPermit === AirspaceAuthorization.PermitRejected)
-                            return qsTr("Flight Denied")
+                            return qsTr("Flight Rejected")
                     }
                     return ""
                 }
@@ -649,7 +653,8 @@ QGCView {
                     }
                     return qgcPal.colorRed
                 }
-                anchors.verticalCenter: parent.verticalCenter;
+				font.pointSize: ScreenTools.largeFontPointSize
+                anchors.verticalCenter: parent.verticalCenter
             }
         }
         property var  flightPermit: _activeVehicle ? _activeVehicle.airMapController.flightPermitStatus : null
