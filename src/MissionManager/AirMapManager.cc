@@ -504,9 +504,11 @@ void AirMapFlightManager::createFlight(const QList<MissionItem*>& missionItems)
                 double lon = item->param6();
                 double alt = item->param7();
                 _flight.coords.append(QGeoCoordinate(lat, lon, alt));
-                if (alt > _flight.maxAltitude) {
-                    _flight.maxAltitude = alt;
-                }
+                if (item->relativeAltitude()) {
+                    if (alt > _flight.maxAltitude) {
+                        _flight.maxAltitude = alt;
+                    }
+                } // TODO: else: convert global to relative altitude
                 if (item->command() == MAV_CMD_NAV_TAKEOFF) {
                     _flight.takeoffCoord = _flight.coords.last();
                 }
