@@ -23,6 +23,10 @@
 #include <QTimer>
 #include <QQmlApplicationEngine>
 
+#if defined(QGC_QUICKVIEW)
+#include <QQuickView>
+#endif
+
 #include "LinkConfiguration.h"
 #include "LinkManager.h"
 #include "MAVLinkProtocol.h"
@@ -50,15 +54,18 @@ class QGCToolbox;
  * the central management unit of the groundstation application.
  *
  **/
+#if defined(QGC_QUICKVIEW)
+class QGCApplication : public QApplication
+#else
 class QGCApplication : public
 #ifdef __mobile__
     QGuiApplication // Native Qml based application
 #else
     QApplication    // QtWidget based application
 #endif
+#endif
 {
     Q_OBJECT
-
 public:
     QGCApplication(int &argc, char* argv[], bool unitTesting);
     ~QGCApplication();
@@ -153,7 +160,9 @@ private slots:
 private:
     QObject* _rootQmlObject(void);
 
-#ifdef __mobile__
+#if defined(QGC_QUICKVIEW)
+    QQuickView _qmlQuickView;
+#else
     QQmlApplicationEngine* _qmlAppEngine;
 #endif
 

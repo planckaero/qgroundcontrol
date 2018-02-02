@@ -13,6 +13,7 @@
 #include "QGCPalette.h"
 #include "QGCMAVLink.h"
 #include "QmlObjectListModel.h"
+#include <QQuickView>
 
 #include <QObject>
 #include <QVariantList>
@@ -96,8 +97,11 @@ public:
     virtual void valuesWidgetDefaultSettings(QStringList& largeValues, QStringList& smallValues);
 
     /// Allows the plugin to override the creation of the root (native) window.
+#if defined(QGC_QUICKVIEW)
+    virtual bool createRootWindow(QQuickView& qView);
+#else
     virtual QQmlApplicationEngine* createRootWindow(QObject* parent);
-
+#endif
     /// Allows the plugin to see all mavlink traffic to a vehicle
     /// @return true: Allow vehicle to continue processing, false: Vehicle should not process message
     virtual bool mavlinkMessage(Vehicle* vehicle, LinkInterface* link, mavlink_message_t message);

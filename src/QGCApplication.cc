@@ -155,12 +155,16 @@ static QObject* qgroundcontrolQmlGlobalSingletonFactory(QQmlEngine*, QJSEngine*)
  **/
 
 QGCApplication::QGCApplication(int &argc, char* argv[], bool unitTesting)
+#if defined(QGC_QUICKVIEW)
+    : QApplication(argc, argv)
+#else
 #ifdef __mobile__
     : QGuiApplication(argc, argv)
     , _qmlAppEngine(NULL)
-    #else
+#else
     : QApplication(argc, argv)
-    #endif
+#endif
+#endif
     , _runningUnitTests(unitTesting)
     , _fakeMobile(false)
     , _settingsUpgraded(false)
@@ -416,12 +420,20 @@ bool QGCApplication::_initForNormalAppBoot(void)
     // Exit main application when last window is closed
     connect(this, &QGCApplication::lastWindowClosed, this, QGCApplication::quit);
 
+#if defined(QGC_QUICKVIEW)
+    if(!toolbox()->corePlugin()->createRootWindow(_qmlQuickView)) {
+        return false;
+    }
+    QObject::connect(_qmlQuickView.engine(), &QQmlEngine::quit, &_qmlQuickView, &QWindow::close);
+    _qmlQuickView.show();
+#else
 #ifdef __mobile__
     _qmlAppEngine = toolbox()->corePlugin()->createRootWindow(this);
 #else
     // Start the user interface
     MainWindow* mainWindow = MainWindow::_create();
     Q_CHECK_PTR(mainWindow);
+#endif
 #endif
 
     // Now that main window is up check for lost log files
@@ -639,6 +651,9 @@ void QGCApplication::_missingParamsDisplay(void)
 
 QObject* QGCApplication::_rootQmlObject()
 {
+#if defined(QGC_QUICKVIEW)
+    return _qmlQuickView.rootObject();
+#else
 #ifdef __mobile__
     return _qmlAppEngine->rootObjects()[0];
 #else
@@ -652,6 +667,7 @@ QObject* QGCApplication::_rootQmlObject()
         qWarning() << "Why is MainWindow missing?";
         return NULL;
     }
+#endif
 #endif
 }
 

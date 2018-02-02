@@ -258,14 +258,29 @@ void QGCCorePlugin::valuesWidgetDefaultSettings(QStringList& largeValues, QStrin
     largeValues << "Vehicle.altitudeRelative" << "Vehicle.groundSpeed" << "Vehicle.flightTime";
 }
 
+#if defined(QGC_QUICKVIEW)
+bool QGCCorePlugin::createRootWindow(QQuickView &qView)
+#else
 QQmlApplicationEngine* QGCCorePlugin::createRootWindow(QObject *parent)
+#endif
 {
+#if defined(QGC_QUICKVIEW)
+    qView.engine()->addImportPath("qrc:/qml");
+    qView.engine()->rootContext()->setContextProperty("joystickManager", qgcApp()->toolbox()->joystickManager());
+    qView.engine()->rootContext()->setContextProperty("debugMessageModel", AppMessages::getModel());
+    qView.setSource(QUrl(QStringLiteral("qrc:/qml/MainWindowHybrid.qml")));
+    qView.setResizeMode(QQuickView::SizeRootObjectToView);
+    qView.setMinimumWidth(1024);
+    qView.setMinimumHeight(540);
+    return true;
+#else
     QQmlApplicationEngine* pEngine = new QQmlApplicationEngine(parent);
     pEngine->addImportPath("qrc:/qml");
     pEngine->rootContext()->setContextProperty("joystickManager", qgcApp()->toolbox()->joystickManager());
     pEngine->rootContext()->setContextProperty("debugMessageModel", AppMessages::getModel());
     pEngine->load(QUrl(QStringLiteral("qrc:/qml/MainWindowNative.qml")));
     return pEngine;
+#endif
 }
 
 bool QGCCorePlugin::mavlinkMessage(Vehicle* vehicle, LinkInterface* link, mavlink_message_t message)
