@@ -90,7 +90,7 @@ AirMapVehicleManager::vehicleMavlinkMessageReceived(const mavlink_message_t& mes
 void
 AirMapVehicleManager::_flightIDChanged(QString flightID)
 {
-    qCDebug(AirMapManagerLog) << "Flight ID Changed:" << flightID;
+    qCDebug(AirMapManagerLog) << "Flight ID Changed:" << flightID << this;
     //-- Handle traffic monitor
     if(flightID.isEmpty()) {
         _trafficMonitor.stop();

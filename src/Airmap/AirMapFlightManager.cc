@@ -31,60 +31,6 @@ AirMapFlightManager::AirMapFlightManager(AirMapSharedState& shared)
 
 //-----------------------------------------------------------------------------
 void
-AirMapFlightManager::findFlight(const QGCGeoBoundingCube& bc)
-{
-    _state = State::FetchFlights;
-    _searchArea = bc;
-    std::weak_ptr<LifetimeChecker> isAlive(_instance);
-    _shared.doRequestWithLogin([this, isAlive](const QString& login_token) {
-        if (!isAlive.lock()) return;
-        if (_state != State::FetchFlights) return;
-        QList<QGeoCoordinate> coords = _searchArea.polygon2D();
-        Geometry::LineString lineString;
-        for (const auto& qcoord : coords) {
-            Geometry::Coordinate coord;
-            coord.latitude  = qcoord.latitude();
-            coord.longitude = qcoord.longitude();
-            lineString.coordinates.push_back(coord);
-        }
-        _flightID.clear();
-        Flights::Search::Parameters params;
-        params.authorization = login_token.toStdString();
-        params.geometry      = Geometry(lineString);
-        _shared.client()->flights().search(params, [this, isAlive](const Flights::Search::Result& result) {
-            if (!isAlive.lock()) return;
-            if (_state != State::FetchFlights) return;
-            if (result && result.value().flights.size() > 0) {
-                const Flights::Search::Response& response = result.value();
-                qCDebug(AirMapManagerLog) << "Find flights response";
-                for (const auto& flight : response.flights) {
-                    QString fid = QString::fromStdString(flight.id);
-                    qCDebug(AirMapManagerLog) << "Checking flight:" << fid;
-                    if(flight.geometry.type() == Geometry::Type::line_string) {
-                        const Geometry::LineString& lineString = flight.geometry.details_for_line_string();
-                        QList<QGeoCoordinate> rcoords;
-                        for (const auto& vertex : lineString.coordinates) {
-                            rcoords.append(QGeoCoordinate(vertex.latitude, vertex.longitude));
-                        }
-                        if(_searchArea == rcoords) {
-                            qCDebug(AirMapManagerLog) << "Found match:" << fid;
-                            _flightID = fid;
-                            _state = State::Idle;
-                            emit flightIDChanged();
-                            return;
-                        }
-                    }
-                }
-            }
-            qCDebug(AirMapManagerLog) << "No flights found";
-            emit flightIDChanged();
-        });
-        _state = State::Idle;
-    });
-}
-
-//-----------------------------------------------------------------------------
-void
 AirMapFlightManager::endFlight(const QString& flightID)
 {
     if (_state != State::Idle) {

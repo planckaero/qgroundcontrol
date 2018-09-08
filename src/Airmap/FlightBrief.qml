@@ -211,7 +211,7 @@ Item {
                 backRadius:     4
                 heightFactor:   0.3333
                 showBorder:     true
-                enabled:        _flightPermit === AirspaceFlightPlanProvider.PermitAccepted || _flightPermit === AirspaceFlightPlanProvider.PermitNotRequired
+                enabled:        _flightPermit === AirspaceFlightPlanProvider.PermitAccepted || _flightPermit === AirspaceFlightPlanProvider.PermitNotRequired && !_dirty
                 width:          ScreenTools.defaultFontPixelWidth * 12
                 visible:        planView
                 onClicked: {

@@ -220,6 +220,7 @@ AirMapFlightPlanManager::submitFlightPlan()
         qCWarning(AirMapManagerLog) << "Submit flight with no flight plan.";
         return;
     }
+    qCWarning(AirMapManagerLog) << "Submit new flight plan.";
     _flightId.clear();
     emit flightIDChanged(_flightId);
     _state = State::FlightSubmit;

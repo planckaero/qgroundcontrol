@@ -18,36 +18,33 @@
 #include <QList>
 #include <QGeoCoordinate>
 
-//-- TODO: This is not even WIP yet. Just a skeleton of what's to come.
-
 //-----------------------------------------------------------------------------
-/// class to upload a flight
+/// WIP: This is a "per vehicle" instance with the idea that you can have
+/// multiple vehicles and each maintain its own flights. That's not the
+/// case yet. Flight plan/submission is still done by AirMapFlightPlanManager,
+/// which is a singleton.
+///
 class AirMapFlightManager : public QObject, public LifetimeChecker
 {
     Q_OBJECT
 public:
     AirMapFlightManager             (AirMapSharedState& shared);
 
-    void    findFlight              (const QGCGeoBoundingCube& bc);
     void    endFlight               (const QString& id);
-    QString flightID                () { return _flightID; }
 
 signals:
     void    error                   (const QString& what, const QString& airmapdMessage, const QString& airmapdDetails);
-    void    flightIDChanged         ();
 
 private:
 
     enum class State {
         Idle,
-        GetPilotID,
-        FetchFlights,
         FlightEnd,
     };
 
-    State                               _state = State::Idle;
-    AirMapSharedState&                  _shared;
-    QString                             _flightID;
-    QGCGeoBoundingCube                  _searchArea;
+    State                           _state = State::Idle;
+    AirMapSharedState&              _shared;
+    QString                         _flightID;
+    QGCGeoBoundingCube              _searchArea;
 };
 
