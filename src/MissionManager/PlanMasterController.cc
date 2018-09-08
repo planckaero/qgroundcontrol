@@ -78,13 +78,6 @@ void PlanMasterController::start(bool flyView)
 
     connect(_multiVehicleMgr, &MultiVehicleManager::activeVehicleChanged, this, &PlanMasterController::_activeVehicleChanged);
     _activeVehicleChanged(_multiVehicleMgr->activeVehicle());
-
-#if defined(QGC_AIRMAP_ENABLED)
-    //-- This assumes there is one single instance of PlanMasterController in edit mode.
-    if(!flyView && _controllerVehicle) {
-        _controllerVehicle->airspaceVehicleManager()->flightPlan()->startFlightPlanning(this);
-    }
-#endif
 }
 
 void PlanMasterController::startStaticActiveVehicle(Vehicle* vehicle)
@@ -98,6 +91,17 @@ void PlanMasterController::startStaticActiveVehicle(Vehicle* vehicle)
 
 void PlanMasterController::_activeVehicleChanged(Vehicle* activeVehicle)
 {
+
+#if defined(QGC_AIRMAP_ENABLED)
+    //-- This assumes there is one single instance of PlanMasterController in edit mode.
+    if(_managerVehicle) {
+        _managerVehicle->airspaceVehicleManager()->flightPlan()->stopFlightPlanning();
+    }
+    if(!_flyView && activeVehicle) {
+        activeVehicle->airspaceVehicleManager()->flightPlan()->startFlightPlanning(this);
+    }
+#endif
+
     if (_managerVehicle == activeVehicle) {
         // We are already setup for this vehicle
         return;
@@ -120,6 +124,11 @@ void PlanMasterController::_activeVehicleChanged(Vehicle* activeVehicle)
         // Since there is no longer an active vehicle we use the offline controller vehicle as the manager vehicle
         _managerVehicle = _controllerVehicle;
         newOffline = true;
+#if defined(QGC_AIRMAP_ENABLED)
+        if(!_flyView) {
+            _managerVehicle->airspaceVehicleManager()->flightPlan()->startFlightPlanning(this);
+        }
+#endif
     } else {
         newOffline = false;
         _managerVehicle = activeVehicle;
@@ -148,6 +157,7 @@ void PlanMasterController::_activeVehicleChanged(Vehicle* activeVehicle)
     emit syncInProgressChanged();
     emit dirtyChanged(dirty());
     emit offlineChanged(offline());
+    emit managerVehicleChanged();
 
     if (!_flyView) {
         if (!offline()) {

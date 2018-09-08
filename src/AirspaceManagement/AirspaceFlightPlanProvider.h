@@ -116,6 +116,7 @@ public:
     virtual void                setFlightDuration   (int seconds) = 0;
     virtual void                setFlightStartsNow  (bool now) = 0;
     virtual void                startFlightPlanning (PlanMasterController* planController) = 0;
+    virtual void                stopFlightPlanning  () = 0;
 
 signals:
     void flightPermitStatusChanged                  ();

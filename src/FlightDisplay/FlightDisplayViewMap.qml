@@ -61,7 +61,7 @@ FlightMap {
             var coordinateNW = flightMap.toCoordinate(Qt.point(0,0), false /* clipToViewPort */)
             var coordinateSE = flightMap.toCoordinate(Qt.point(width,height), false /* clipToViewPort */)
             if(coordinateNW.isValid && coordinateSE.isValid) {
-                _planMasterController.controllerVehicle.airspaceVehicleManager.setROI(coordinateNW, coordinateSE, false /*planView*/, reset)
+                _planMasterController.managerVehicle.airspaceVehicleManager.setROI(coordinateNW, coordinateSE, false /*planView*/, reset)
             }
         }
     }

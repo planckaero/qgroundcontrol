@@ -3634,7 +3634,13 @@ void Vehicle::_trafficUpdate(bool alert, QString traffic_id, QString vehicle_id,
     if (_trafficVehicleMap.contains(traffic_id)) {
         _trafficVehicleMap[traffic_id]->update(alert, location, heading);
     } else {
-        ADSBVehicle* vehicle = new ADSBVehicle(location, heading, traffic_id, alert, this);
+        //-- Remove after dash
+        QString id = traffic_id;
+        int idx = id.indexOf("-");
+        if(idx > 0) {
+            id = id.mid(0, idx);
+        }
+        ADSBVehicle* vehicle = new ADSBVehicle(location, heading, id, alert, this);
         _trafficVehicleMap[traffic_id] = vehicle;
         _adsbVehicles.append(vehicle);
     }

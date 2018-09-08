@@ -148,6 +148,17 @@ AirMapFlightPlanManager::startFlightPlanning(PlanMasterController *planControlle
 
 //-----------------------------------------------------------------------------
 void
+AirMapFlightPlanManager::stopFlightPlanning()
+{
+    if(_planController) {
+        //-- Stop getting notified of mission changes
+        disconnect(_planController->missionController(), &MissionController::missionBoundingCubeChanged, this, &AirMapFlightPlanManager::_missionChanged);
+        _planController = nullptr;
+    }
+}
+
+//-----------------------------------------------------------------------------
+void
 AirMapFlightPlanManager::submitFlightPlan()
 {
     if(flightPlanID().isEmpty()) {

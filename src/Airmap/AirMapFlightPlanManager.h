@@ -74,6 +74,7 @@ public:
     void                updateFlightPlan    () override;
     void                submitFlightPlan    () override;
     void                startFlightPlanning (PlanMasterController* planController) override;
+    void                stopFlightPlanning  () override;
     void                setFlightStartTime  (QDateTime start) override;
     void                setFlightDuration   (int seconds) override;
     void                setFlightStartsNow  (bool now) override;
