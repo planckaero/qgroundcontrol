@@ -153,6 +153,7 @@ Item {
             width:              getPreferredInstrumentWidth()
             planView:           false
             visible:            _airspaceEnabled
+            activeVehicle:      _activeVehicle
             anchors.margins:    ScreenTools.defaultFontPixelHeight * 0.5
         }
         //-------------------------------------------------------

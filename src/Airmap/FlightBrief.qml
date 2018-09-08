@@ -16,8 +16,9 @@ Item {
     id:                 _root
     implicitHeight:     briefRootCol.height
     implicitWidth:      briefRootCol.width
-    property real baseHeight:  ScreenTools.defaultFontPixelHeight * 22
-    property real baseWidth:   ScreenTools.defaultFontPixelWidth  * 40
+    property real baseHeight:       ScreenTools.defaultFontPixelHeight * 22
+    property real baseWidth:        ScreenTools.defaultFontPixelWidth  * 40
+    property var  activeVehicle:    null
     Column {
         id:             briefRootCol
         spacing:        ScreenTools.defaultFontPixelHeight * 0.25
@@ -63,8 +64,8 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         //-- Actual Authorization from some jurisdiction
                         Repeater {
-                            visible:        QGroundControl.airspaceManager.flightPlan.authorizations.count > 0
-                            model:          QGroundControl.airspaceManager.flightPlan.authorizations
+                            visible:        activeVehicle && activeVehicle.airspaceVehicleManager.flightPlan.authorizations.count > 0
+                            model:          activeVehicle ? activeVehicle.airspaceVehicleManager.flightPlan.authorizations : []
                             Column {
                                 spacing:            ScreenTools.defaultFontPixelHeight * 0.5
                                 anchors.right:      parent.right
@@ -109,7 +110,7 @@ Item {
                             anchors.right:      parent.right
                             anchors.left:       parent.left
                             height:             noAuthLabel.height + (ScreenTools.defaultFontPixelHeight * 0.5)
-                            visible:            QGroundControl.airspaceManager.flightPlan.authorizations.count < 1
+                            visible:            activeVehicle && activeVehicle.airspaceVehicleManager.flightPlan.authorizations.count < 1
                             color: {
                                 if(_flightPermit === AirspaceFlightPlanProvider.PermitPending)
                                     return _colorOrange
@@ -152,7 +153,7 @@ Item {
                     exclusiveGroup: ruleGroup
                     anchors.right:  parent.right
                     anchors.left:   parent.left
-                    property var violationRules: QGroundControl.airspaceManager.flightPlan.rulesViolation
+                    property var violationRules: activeVehicle ? activeVehicle.airspaceVehicleManager.flightPlan.rulesViolation : null
                 }
                 ComplianceRules {
                     text:           qsTr("Rules needing more information")
@@ -162,7 +163,7 @@ Item {
                     exclusiveGroup: ruleGroup
                     anchors.right:  parent.right
                     anchors.left:   parent.left
-                    property var infoRules: QGroundControl.airspaceManager.flightPlan.rulesInfo
+                    property var infoRules: activeVehicle ? activeVehicle.airspaceVehicleManager.flightPlan.rulesInfo : null
                 }
                 ComplianceRules {
                     text:           qsTr("Rules you should review")
@@ -172,7 +173,7 @@ Item {
                     exclusiveGroup: ruleGroup
                     anchors.right:  parent.right
                     anchors.left:   parent.left
-                    property var reviewRules: QGroundControl.airspaceManager.flightPlan.rulesReview
+                    property var reviewRules: activeVehicle ? activeVehicle.airspaceVehicleManager.flightPlan.rulesReview : null
                 }
                 ComplianceRules {
                     text:           qsTr("Rules you are following")
@@ -182,7 +183,7 @@ Item {
                     exclusiveGroup: ruleGroup
                     anchors.right:  parent.right
                     anchors.left:   parent.left
-                    property var followRules: QGroundControl.airspaceManager.flightPlan.rulesFollowing
+                    property var followRules: activeVehicle ? activeVehicle.airspaceVehicleManager.flightPlan.rulesFollowing : null
                 }
             }
         }
@@ -202,8 +203,10 @@ Item {
                 visible:        planView
                 width:          ScreenTools.defaultFontPixelWidth * 12
                 onClicked: {
-                    _dirty = false
-                    QGroundControl.airspaceManager.flightPlan.updateFlightPlan()
+                    if(activeVehicle) {
+                        _dirty = false
+                        activeVehicle.airspaceVehicleManager.flightPlan.updateFlightPlan()
+                    }
                 }
             }
             QGCButton {
@@ -215,7 +218,9 @@ Item {
                 width:          ScreenTools.defaultFontPixelWidth * 12
                 visible:        planView
                 onClicked: {
-                    QGroundControl.airspaceManager.flightPlan.submitFlightPlan()
+                    if(activeVehicle) {
+                        activeVehicle.airspaceVehicleManager.flightPlan.submitFlightPlan()
+                    }
                     mainWindow.enableToolbar()
                     rootLoader.sourceComponent = null
                 }

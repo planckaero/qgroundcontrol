@@ -246,12 +246,3 @@ AirMapManager::_instantiateAirspaceRestrictionProvider()
     connect(airspaces, &AirMapRestrictionManager::error, this, &AirMapManager::_error);
     return airspaces;
 }
-
-//-----------------------------------------------------------------------------
-AirspaceFlightPlanProvider*
-AirMapManager::_instantiateAirspaceFlightPlanProvider()
-{
-    AirMapFlightPlanManager* flightPlan = new AirMapFlightPlanManager(_shared);
-    connect(flightPlan, &AirMapFlightPlanManager::error, this, &AirMapManager::_error);
-    return flightPlan;
-}

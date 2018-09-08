@@ -43,6 +43,7 @@ AirspaceManager::AirspaceManager(QGCApplication* app, QGCToolbox* toolbox)
     qmlRegisterUncreatableType<AirspaceWeatherInfoProvider> ("QGroundControl.Airspace",      1, 0, "AirspaceWeatherInfoProvider",    "Reference only");
     qmlRegisterUncreatableType<AirspaceFlightAuthorization> ("QGroundControl.Airspace",      1, 0, "AirspaceFlightAuthorization",    "Reference only");
     qmlRegisterUncreatableType<AirspaceFlightInfo>          ("QGroundControl.Airspace",      1, 0, "AirspaceFlightInfo",             "Reference only");
+    qmlRegisterUncreatableType<AirspaceVehicleManager>      ("QGroundControl.Airspace",      1, 0, "AirspaceVehicleManager",         "Reference only");
 }
 
 //-----------------------------------------------------------------------------
@@ -60,9 +61,6 @@ AirspaceManager::~AirspaceManager()
     if(_airspaces) {
         delete _airspaces;
     }
-    if(_flightPlan) {
-        delete _flightPlan;
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +73,6 @@ AirspaceManager::setToolbox(QGCToolbox* toolbox)
     _weatherProvider    = _instatiateAirspaceWeatherInfoProvider();
     _advisories         = _instatiateAirspaceAdvisoryProvider();
     _airspaces          = _instantiateAirspaceRestrictionProvider();
-    _flightPlan         = _instantiateAirspaceFlightPlanProvider();
     //-- Keep track of rule changes
     if(_ruleSetsProvider) {
         connect(_ruleSetsProvider, &AirspaceRulesetsProvider::selectedRuleSetsChanged, this, &AirspaceManager::_rulesChanged);
@@ -84,29 +81,13 @@ AirspaceManager::setToolbox(QGCToolbox* toolbox)
 
 //-----------------------------------------------------------------------------
 void
-AirspaceManager::setROI(const QGeoCoordinate& pointNW, const QGeoCoordinate& pointSE, bool planView, bool reset)
+AirspaceManager::setROI(const QGCGeoBoundingCube& roi, bool reset)
 {
-    if(planView) {
-        //-- Is there a mission?
-        if(_flightPlan->flightPermitStatus() != AirspaceFlightPlanProvider::PermitNone) {
-            //-- Is there a polygon to work with?
-            if(_flightPlan->missionArea()->isValid() && _flightPlan->missionArea()->area() > 0.0) {
-                if(reset) {
-                    _roi = *_flightPlan->missionArea();
-                    _updateToROI(true);
-                } else {
-                    _setROI(*_flightPlan->missionArea());
-                }
-                return;
-            }
-        }
-    }
-    //-- Use screen coordinates (what you see is what you get)
     if(reset) {
-        _roi = QGCGeoBoundingCube(pointNW, pointSE);
+        _roi = roi;
         _updateToROI(true);
     } else {
-        _setROI(QGCGeoBoundingCube(pointNW, pointSE));
+        _setROI(roi);
     }
 }
 

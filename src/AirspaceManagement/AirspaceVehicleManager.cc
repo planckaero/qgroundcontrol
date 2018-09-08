@@ -10,9 +10,11 @@
 
 #include "AirspaceManager.h"
 #include "AirspaceVehicleManager.h"
+#include "QGCApplication.h"
 #include "Vehicle.h"
 #include "MissionItem.h"
 
+//-----------------------------------------------------------------------------
 AirspaceVehicleManager::AirspaceVehicleManager(const Vehicle& vehicle)
     : _vehicle(vehicle)
 {
@@ -21,7 +23,43 @@ AirspaceVehicleManager::AirspaceVehicleManager(const Vehicle& vehicle)
     connect(&_vehicle, &Vehicle::mavlinkMessageReceived, this, &AirspaceVehicleManager::vehicleMavlinkMessageReceived);
 }
 
-void AirspaceVehicleManager::_vehicleArmedChanged(bool armed)
+//-----------------------------------------------------------------------------
+AirspaceVehicleManager::~AirspaceVehicleManager()
+{
+    if(_flightPlan) {
+        delete _flightPlan;
+    }
+}
+
+//-----------------------------------------------------------------------------
+void
+AirspaceVehicleManager::init()
+{
+    //-- Flight planner for this vehicle
+    _flightPlan = _instantiateAirspaceFlightPlanProvider();
+}
+
+//-----------------------------------------------------------------------------
+void
+AirspaceVehicleManager::setROI(const QGeoCoordinate& pointNW, const QGeoCoordinate& pointSE, bool planView, bool reset)
+{
+    if(planView) {
+        //-- Is there a mission?
+        if(_flightPlan->flightPermitStatus() != AirspaceFlightPlanProvider::PermitNone) {
+            //-- Is there a polygon to work with?
+            if(_flightPlan->missionArea()->isValid() && _flightPlan->missionArea()->area() > 0.0) {
+                qgcApp()->toolbox()->airspaceManager()->setROI(*_flightPlan->missionArea(), reset);
+                return;
+            }
+        }
+    }
+    //-- Use screen coordinates (what you see is what you get)
+    qgcApp()->toolbox()->airspaceManager()->setROI(QGCGeoBoundingCube(pointNW, pointSE));
+}
+
+//-----------------------------------------------------------------------------
+void
+AirspaceVehicleManager::_vehicleArmedChanged(bool armed)
 {
     if (armed) {
         qCDebug(AirspaceManagementLog) << "Starting telemetry";

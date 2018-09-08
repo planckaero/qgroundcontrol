@@ -209,7 +209,7 @@ AirMapFlightPlanManager::startFlightPlanning(PlanMasterController *planControlle
         connect(planController->missionController(), &MissionController::missionBoundingCubeChanged, this, &AirMapFlightPlanManager::_missionChanged);
     }
     //-- Set initial flight start time
-    setFlightStartTime(QDateTime::currentDateTime().addSecs(5 * 60));
+    setFlightStartTime(QDateTime::currentDateTime().addSecs(1));
 }
 
 //-----------------------------------------------------------------------------

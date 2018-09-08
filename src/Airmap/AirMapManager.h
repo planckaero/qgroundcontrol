@@ -50,7 +50,6 @@ protected:
     AirspaceWeatherInfoProvider*    _instatiateAirspaceWeatherInfoProvider  () override;
     AirspaceAdvisoryProvider*       _instatiateAirspaceAdvisoryProvider     () override;
     AirspaceRestrictionProvider*    _instantiateAirspaceRestrictionProvider () override;
-    AirspaceFlightPlanProvider*     _instantiateAirspaceFlightPlanProvider  () override;
 
 private slots:
     void _error             (const QString& what, const QString& airmapdMessage, const QString& airmapdDetails);

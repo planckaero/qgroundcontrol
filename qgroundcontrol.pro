@@ -1134,7 +1134,6 @@ contains (DEFINES, QGC_AIRMAP_ENABLED) {
 
     HEADERS += \
         src/Airmap/AirMapAdvisoryManager.h \
-        src/Airmap/AirMapFlightManager.h \
         src/Airmap/AirMapFlightPlanManager.h \
         src/Airmap/AirMapManager.h \
         src/Airmap/AirMapRestrictionManager.h \
@@ -1149,7 +1148,6 @@ contains (DEFINES, QGC_AIRMAP_ENABLED) {
 
     SOURCES += \
         src/Airmap/AirMapAdvisoryManager.cc \
-        src/Airmap/AirMapFlightManager.cc \
         src/Airmap/AirMapFlightPlanManager.cc \
         src/Airmap/AirMapManager.cc \
         src/Airmap/AirMapRestrictionManager.cc \

@@ -27,8 +27,17 @@ class Vehicle;
 class AirspaceVehicleManager : public QObject {
     Q_OBJECT
 public:
-    AirspaceVehicleManager           (const Vehicle& vehicle);
-    virtual ~AirspaceVehicleManager  () = default;
+    AirspaceVehicleManager              (const Vehicle& vehicle);
+    virtual ~AirspaceVehicleManager     ();
+
+    Q_PROPERTY(AirspaceFlightPlanProvider*  flightPlan          READ flightPlan         CONSTANT)
+
+    Q_INVOKABLE void setROI             (const QGeoCoordinate& pointNW, const QGeoCoordinate& pointSE, bool planView, bool reset = false);
+
+
+    AirspaceFlightPlanProvider*  flightPlan() { return _flightPlan; }
+
+    virtual void init                   ();
 
     /**
      * Setup the connection and start sending telemetry
@@ -48,7 +57,11 @@ protected slots:
     virtual void vehicleMavlinkMessageReceived(const mavlink_message_t& message) = 0;
 
 protected:
-    const Vehicle& _vehicle;
+    virtual AirspaceFlightPlanProvider* _instantiateAirspaceFlightPlanProvider() = 0;
+
+protected:
+    const Vehicle&                      _vehicle;
+    AirspaceFlightPlanProvider*         _flightPlan = nullptr;  ///< Flight plan management
 
 private slots:
     void _vehicleArmedChanged           (bool armed);

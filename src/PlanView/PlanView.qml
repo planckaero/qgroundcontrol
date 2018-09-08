@@ -94,7 +94,7 @@ QGCView {
             var coordinateNW = editorMap.toCoordinate(Qt.point(0,0), false /* clipToViewPort */)
             var coordinateSE = editorMap.toCoordinate(Qt.point(width,height), false /* clipToViewPort */)
             if(coordinateNW.isValid && coordinateSE.isValid) {
-                QGroundControl.airspaceManager.setROI(coordinateNW, coordinateSE, true /*planView*/, reset)
+                _planMasterController.controllerVehicle.airspaceVehicleManager.setROI(coordinateNW, coordinateSE, true /*planView*/, reset)
             }
         }
     }
@@ -682,6 +682,7 @@ QGCView {
                     visible:        _airspaceEnabled
                     planView:       true
                     showColapse:    true
+                    activeVehicle:  _planMasterController.controllerVehicle
                 }
                 //-------------------------------------------------------
                 // Mission Controls (Colapsed)

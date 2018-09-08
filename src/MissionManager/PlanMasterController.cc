@@ -17,6 +17,7 @@
 #include "MissionManager.h"
 #include "KML.h"
 #if defined(QGC_AIRMAP_ENABLED)
+#include "AirspaceVehicleManager.h"
 #include "AirspaceFlightPlanProvider.h"
 #endif
 
@@ -80,8 +81,8 @@ void PlanMasterController::start(bool flyView)
 
 #if defined(QGC_AIRMAP_ENABLED)
     //-- This assumes there is one single instance of PlanMasterController in edit mode.
-    if(!flyView) {
-        qgcApp()->toolbox()->airspaceManager()->flightPlan()->startFlightPlanning(this);
+    if(!flyView && _controllerVehicle) {
+        _controllerVehicle->airspaceVehicleManager()->flightPlan()->startFlightPlanning(this);
     }
 #endif
 }

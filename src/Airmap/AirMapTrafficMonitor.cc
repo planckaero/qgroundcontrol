@@ -30,10 +30,14 @@ AirMapTrafficMonitor::~AirMapTrafficMonitor()
 void
 AirMapTrafficMonitor::startConnection(const QString& flightID)
 {
-    if(flightID.isEmpty() || _flightID == flightID) {
+    if(flightID.isEmpty()) {
+        qCDebug(AirMapManagerLog) << "No flight ID for traffic updates";
         return;
     }
-    qCDebug(AirMapManagerLog) << QDateTime::currentDateTimeUtc() << "Traffic update started for" << flightID << _flightID;
+    if(_flightID == flightID) {
+        qCDebug(AirMapManagerLog) << "Traffic updates already set for" << flightID;
+        return;
+    }
     _flightID = flightID;
     std::weak_ptr<LifetimeChecker> isAlive(_instance);
     auto handler = [this, isAlive](const Traffic::Monitor::Result& result) {

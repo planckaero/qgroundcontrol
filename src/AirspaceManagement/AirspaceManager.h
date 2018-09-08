@@ -70,19 +70,17 @@ public:
     Q_PROPERTY(AirspaceAdvisoryProvider*    advisories          READ advisories         CONSTANT)
     Q_PROPERTY(AirspaceRulesetsProvider*    ruleSets            READ ruleSets           CONSTANT)
     Q_PROPERTY(AirspaceRestrictionProvider* airspaces           READ airspaces          CONSTANT)
-    Q_PROPERTY(AirspaceFlightPlanProvider*  flightPlan          READ flightPlan         CONSTANT)
     Q_PROPERTY(bool                         connected           READ connected          NOTIFY connectedChanged)
     Q_PROPERTY(QString                      connectStatus       READ connectStatus      NOTIFY connectStatusChanged)
     Q_PROPERTY(AirspaceManager::AuthStatus  authStatus          READ authStatus         NOTIFY authStatusChanged)
     Q_PROPERTY(bool                         airspaceVisible     READ airspaceVisible    WRITE  setAirspaceVisible    NOTIFY airspaceVisibleChanged)
 
-    Q_INVOKABLE void setROI                     (const QGeoCoordinate& pointNW, const QGeoCoordinate& pointSE, bool planView, bool reset = false);
+    virtual void                 setROI         (const QGCGeoBoundingCube& roi, bool reset = false);
 
     AirspaceWeatherInfoProvider* weatherInfo    () { return _weatherProvider; }
     AirspaceAdvisoryProvider*    advisories     () { return _advisories; }
     AirspaceRulesetsProvider*    ruleSets       () { return _ruleSetsProvider; }
     AirspaceRestrictionProvider* airspaces      () { return _airspaces; }
-    AirspaceFlightPlanProvider*  flightPlan     () { return _flightPlan; }
 
     void setToolbox(QGCToolbox* toolbox) override;
 
@@ -122,7 +120,6 @@ protected:
     virtual AirspaceWeatherInfoProvider*    _instatiateAirspaceWeatherInfoProvider  () = 0;
     virtual AirspaceAdvisoryProvider*       _instatiateAirspaceAdvisoryProvider     () = 0;
     virtual AirspaceRestrictionProvider*    _instantiateAirspaceRestrictionProvider () = 0;
-    virtual AirspaceFlightPlanProvider*     _instantiateAirspaceFlightPlanProvider  () = 0;
 
 protected:
     bool                            _airspaceVisible        = false;
@@ -130,7 +127,6 @@ protected:
     AirspaceWeatherInfoProvider*    _weatherProvider        = nullptr;  ///< Weather info
     AirspaceAdvisoryProvider*       _advisories             = nullptr;  ///< Advisory info
     AirspaceRestrictionProvider*    _airspaces              = nullptr;  ///< Airspace info
-    AirspaceFlightPlanProvider*     _flightPlan             = nullptr;  ///< Flight plan management
     double                          _maxAreaOfInterest      = 500.0;    ///< Ignore area larger than 500km^2
     QTimer                          _ruleUpdateTimer;
     QTimer                          _updateTimer;

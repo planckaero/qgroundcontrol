@@ -95,7 +95,7 @@ public:
         ObjectRole = Qt::UserRole + 1
     };
 
-    AirspaceFlightModel         (QObject *parent = 0);
+    AirspaceFlightModel         (QObject *parent = nullptr);
 
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 

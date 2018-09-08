@@ -20,15 +20,16 @@ Item {
     width:  parent.width
     height: _colapsed ? colapsedRect.height : expandedRect.height
 
-    property bool   showColapse:        true
-    property bool   planView:           true
+    property bool   showColapse:            true
+    property bool   planView:               true
+    property var    activeVehicle:          null
 
     property color  _airspaceColor:     _validAdvisories ? getAispaceColor(QGroundControl.airspaceManager.advisories.airspaceColor) : _colorGray
     property bool   _validRules:        QGroundControl.airspaceManager.connected && QGroundControl.airspaceManager.ruleSets.valid
     property bool   _validAdvisories:   QGroundControl.airspaceManager.connected && QGroundControl.airspaceManager.advisories.valid
     property color  _textColor:         qgcPal.text
     property bool   _colapsed:          !QGroundControl.airspaceManager.airspaceVisible || !QGroundControl.airspaceManager.connected
-    property int    _flightPermit:      QGroundControl.airspaceManager.flightPlan.flightPermitStatus
+    property int    _flightPermit:      activeVehicle ? activeVehicle.airspaceVehicleManager.flightPlan.flightPermitStatus : AirspaceFlightPlanProvider.PermitNone
     property bool   _dirty:             false
 
     readonly property real      _radius:            ScreenTools.defaultFontPixelWidth * 0.5
@@ -57,13 +58,15 @@ Item {
     }
 
     function hasBriefRules() {
-        if(QGroundControl.airspaceManager.flightPlan.rulesViolation.count > 0)
+        if(!activeVehicle)
+            return false
+        if(activeVehicle.airspaceVehicleManager.flightPlan.rulesViolation.count > 0)
             return true;
-        if(QGroundControl.airspaceManager.flightPlan.rulesInfo.count > 0)
+        if(activeVehicle.airspaceVehicleManager.flightPlan.rulesInfo.count > 0)
             return true;
-        if(QGroundControl.airspaceManager.flightPlan.rulesReview.count > 0)
+        if(activeVehicle.airspaceVehicleManager.flightPlan.rulesReview.count > 0)
             return true;
-        if(QGroundControl.airspaceManager.flightPlan.rulesFollowing.count > 0)
+        if(activeVehicle.airspaceVehicleManager.flightPlan.rulesFollowing.count > 0)
             return true;
         return false;
     }
@@ -618,8 +621,9 @@ Item {
                     //---------------------------------------------------------
                     //-- Flight Details
                     FlightDetails {
-                        baseHeight:  flightDetailsRoot.baseHeight
-                        baseWidth:   flightDetailsRoot.baseWidth
+                        baseHeight:     flightDetailsRoot.baseHeight
+                        baseWidth:      flightDetailsRoot.baseWidth
+                        activeVehicle:  _root.activeVehicle
                     }
                     //---------------------------------------------------------
                     //-- Divider
@@ -633,8 +637,9 @@ Item {
                     //---------------------------------------------------------
                     //-- Flight Brief
                     FlightBrief {
-                        baseHeight:  flightDetailsRoot.baseHeight
-                        baseWidth:   flightDetailsRoot.baseWidth
+                        baseHeight:     flightDetailsRoot.baseHeight
+                        baseWidth:      flightDetailsRoot.baseWidth
+                        activeVehicle:  _root.activeVehicle
                     }
                 }
             }

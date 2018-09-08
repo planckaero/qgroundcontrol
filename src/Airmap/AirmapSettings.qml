@@ -37,13 +37,14 @@ QGCView {
     anchors.fill:       parent
     anchors.margins:    ScreenTools.defaultFontPixelWidth
 
-    property real _labelWidth:                  ScreenTools.defaultFontPixelWidth * 20
-    property real _editFieldWidth:              ScreenTools.defaultFontPixelWidth * 20
-    property real _buttonWidth:                 ScreenTools.defaultFontPixelWidth * 18
-    property real _panelWidth:                  _qgcView.width * _internalWidthRatio
-    property Fact _enableAirMapFact:            QGroundControl.settingsManager.airMapSettings.enableAirMap
-    property bool _airMapEnabled:               _enableAirMapFact.rawValue
-    property var  _authStatus:                  QGroundControl.airspaceManager.authStatus
+    property var  _activeVehicle:       QGroundControl.multiVehicleManager.activeVehicle
+    property real _labelWidth:          ScreenTools.defaultFontPixelWidth * 20
+    property real _editFieldWidth:      ScreenTools.defaultFontPixelWidth * 20
+    property real _buttonWidth:         ScreenTools.defaultFontPixelWidth * 18
+    property real _panelWidth:          _qgcView.width * _internalWidthRatio
+    property Fact _enableAirMapFact:    QGroundControl.settingsManager.airMapSettings.enableAirMap
+    property bool _airMapEnabled:       _enableAirMapFact.rawValue
+    property var  _authStatus:          QGroundControl.airspaceManager.authStatus
 
     readonly property real _internalWidthRatio:          0.8
 
@@ -357,7 +358,7 @@ QGCView {
                     height:                     flightListLabel.height
                     anchors.margins:            ScreenTools.defaultFontPixelWidth
                     anchors.horizontalCenter:   parent.horizontalCenter
-                    visible:                    QGroundControl.settingsManager.appSettings.visible
+                    visible:                    QGroundControl.settingsManager.appSettings.visible && _authStatus === AirspaceManager.Authenticated
                     QGCLabel {
                         id:                     flightListLabel
                         text:                   qsTr("Flight List Management")
@@ -368,16 +369,18 @@ QGCView {
                     height:                     flightListButton.height + (ScreenTools.defaultFontPixelHeight * 2)
                     width:                      _panelWidth
                     color:                      qgcPal.windowShade
+                    visible:                    _authStatus === AirspaceManager.Authenticated
                     anchors.margins:            ScreenTools.defaultFontPixelWidth
                     anchors.horizontalCenter:   parent.horizontalCenter
                     QGCButton {
-                        id:             flightListButton
-                        text:           qsTr("Show Flight List")
-                        backRadius:     4
-                        heightFactor:   0.3333
-                        showBorder:     true
-                        width:          ScreenTools.defaultFontPixelWidth * 16
-                        anchors.centerIn: parent
+                        id:                     flightListButton
+                        text:                   qsTr("Show Flight List")
+                        enabled:                _activeVehicle
+                        backRadius:             4
+                        heightFactor:           0.3333
+                        showBorder:             true
+                        width:                  ScreenTools.defaultFontPixelWidth * 16
+                        anchors.centerIn:       parent
                         onClicked: {
                             panelLoader.sourceComponent = flightList
                         }
@@ -399,7 +402,7 @@ QGCView {
             width:      _qgcView.width
             height:     _qgcView.height
             color:      qgcPal.window
-            property var    _flightList: QGroundControl.airspaceManager.flightPlan.flightList
+            property var    _flightList: _activeVehicle.airspaceVehicleManager.flightPlan.flightList
             property real   _mapWidth:   ScreenTools.defaultFontPixelWidth * 40
             MouseArea {
                 anchors.fill:   parent
@@ -506,7 +509,7 @@ QGCView {
                     QGCLabel {
                         id:             loadingLabel
                         text:           qsTr("Loading Flight List")
-                        visible:        QGroundControl.airspaceManager.flightPlan.loadingFlightList
+                        visible:        _activeVehicle.airspaceVehicleManager.flightPlan.loadingFlightList
                         anchors.centerIn: parent
                     }
                     QGCColoredImage {
@@ -533,7 +536,7 @@ QGCView {
                     }
                     Column {
                         spacing:            ScreenTools.defaultFontPixelHeight * 0.75
-                        visible:            !QGroundControl.airspaceManager.flightPlan.loadingFlightList
+                        visible:            !_activeVehicle.airspaceVehicleManager.flightPlan.loadingFlightList
                         anchors.top:        parent.top
                         anchors.horizontalCenter: parent.horizontalCenter
                         QGCLabel {
@@ -611,7 +614,7 @@ QGCView {
                                 var end     = toPicker.selectedDate
                                 start.setHours(0,0,0,0)
                                 end.setHours(23,59,59,0)
-                                QGroundControl.airspaceManager.flightPlan.loadFlightList(start, end)
+                                _activeVehicle.airspaceVehicleManager.flightPlan.loadFlightList(start, end)
                             }
                         }
                         QGCButton {
@@ -638,7 +641,7 @@ QGCView {
                                 onYes: {
                                     var o = _flightList.get(tableView.currentRow)
                                     if(o) {
-                                        QGroundControl.airspaceManager.flightPlan.endFlight(o.flightID)
+                                        _activeVehicle.airspaceVehicleManager.flightPlan.endFlight(o.flightID)
                                     }
                                     endFlightDialog.visible = false
                                 }
@@ -672,7 +675,7 @@ QGCView {
                     }
                     QGCLabel {
                         text:           qsTr("Flight Area ") + (tableView.currentRow + 1)
-                        visible:        !QGroundControl.airspaceManager.flightPlan.loadingFlightList && _flightList.count > 0 && tableView.currentRow >= 0
+                        visible:        !_activeVehicle.airspaceVehicleManager.flightPlan.loadingFlightList && _flightList.count > 0 && tableView.currentRow >= 0
                         anchors.bottom: map.top
                         anchors.bottomMargin: ScreenTools.defaultFontPixelHeight * 0.25
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -687,7 +690,7 @@ QGCView {
                         center:         QGroundControl.flightMapPosition
                         gesture.acceptedGestures: MapGestureArea.PinchGesture
                         plugin:         Plugin { name: "QGroundControl" }
-                        visible:        !QGroundControl.airspaceManager.flightPlan.loadingFlightList && _flightList.count > 0 && tableView.currentRow >= 0
+                        visible:        !_activeVehicle.airspaceVehicleManager.flightPlan.loadingFlightList && _flightList.count > 0 && tableView.currentRow >= 0
                         function updateActiveMapType() {
                             var settings =  QGroundControl.settingsManager.flightMapSettings
                             var fullMapName = settings.mapProvider.enumStringValue + " " + settings.mapType.enumStringValue

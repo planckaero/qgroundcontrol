@@ -486,6 +486,8 @@ void Vehicle::_commonInit(void)
     if (airspaceManager) {
         _airspaceVehicleManager = airspaceManager->instantiateVehicle(*this);
         if (_airspaceVehicleManager) {
+            _airspaceVehicleManager->init();
+            //-- Get traffic alerts
             connect(_airspaceVehicleManager, &AirspaceVehicleManager::trafficUpdate, this, &Vehicle::_trafficUpdate);
         }
     }

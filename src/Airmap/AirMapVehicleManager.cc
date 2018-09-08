@@ -21,15 +21,20 @@
 AirMapVehicleManager::AirMapVehicleManager(AirMapSharedState& shared, const Vehicle& vehicle)
     : AirspaceVehicleManager(vehicle)
     , _shared(shared)
-    , _flightManager(shared)
     , _telemetry(shared)
     , _trafficMonitor(shared)
 {
-    connect(&_flightManager,  &AirMapFlightManager::error,                      this, &AirMapVehicleManager::error);
     connect(&_telemetry,      &AirMapTelemetry::error,                          this, &AirMapVehicleManager::error);
     connect(&_trafficMonitor, &AirMapTrafficMonitor::error,                     this, &AirMapVehicleManager::error);
     connect(&_trafficMonitor, &AirMapTrafficMonitor::trafficUpdate,             this, &AirspaceVehicleManager::trafficUpdate);
-    AirMapFlightPlanManager* planMgr = qobject_cast<AirMapFlightPlanManager*>(qgcApp()->toolbox()->airspaceManager()->flightPlan());
+}
+
+//-----------------------------------------------------------------------------
+void
+AirMapVehicleManager::init()
+{
+    AirspaceVehicleManager::init();
+    AirMapFlightPlanManager* planMgr = qobject_cast<AirMapFlightPlanManager*>(flightPlan());
     if(planMgr) {
         connect(planMgr,      &AirMapFlightPlanManager::flightIDChanged,        this, &AirMapVehicleManager::_flightIDChanged);
     }
@@ -39,7 +44,7 @@ AirMapVehicleManager::AirMapVehicleManager(AirMapSharedState& shared, const Vehi
 void
 AirMapVehicleManager::startTelemetryStream()
 {
-    AirMapFlightPlanManager* planMgr = qobject_cast<AirMapFlightPlanManager*>(qgcApp()->toolbox()->airspaceManager()->flightPlan());
+    AirMapFlightPlanManager* planMgr = qobject_cast<AirMapFlightPlanManager*>(flightPlan());
     if (!planMgr->flightID().isEmpty()) {
         //-- Is telemetry enabled?
         if(qgcApp()->toolbox()->settingsManager()->airMapSettings()->enableTelemetry()->rawValue().toBool()) {
@@ -70,9 +75,9 @@ AirMapVehicleManager::isTelemetryStreaming()
 void
 AirMapVehicleManager::endFlight()
 {
-    AirMapFlightPlanManager* planMgr = qobject_cast<AirMapFlightPlanManager*>(qgcApp()->toolbox()->airspaceManager()->flightPlan());
-    if (!planMgr->flightID().isEmpty()) {
-        _flightManager.endFlight(planMgr->flightID());
+    AirMapFlightPlanManager* pPlan = qobject_cast<AirMapFlightPlanManager*>(flightPlan());
+    if (pPlan && !pPlan->flightID().isEmpty()) {
+        pPlan->endFlight(pPlan->flightID());
     }
     _trafficMonitor.stop();
 }
@@ -88,6 +93,23 @@ AirMapVehicleManager::vehicleMavlinkMessageReceived(const mavlink_message_t& mes
 
 //-----------------------------------------------------------------------------
 void
+AirMapVehicleManager::_error(const QString& what, const QString& airmapdMessage, const QString& airmapdDetails)
+{
+    qCDebug(AirMapManagerLog) << "Error: " << what << ", msg: " << airmapdMessage << ", details: " << airmapdDetails;
+    qgcApp()->showMessage(QString("Error: %1. %2").arg(what).arg(airmapdMessage));
+}
+
+//-----------------------------------------------------------------------------
+AirspaceFlightPlanProvider*
+AirMapVehicleManager::_instantiateAirspaceFlightPlanProvider()
+{
+    AirMapFlightPlanManager* flightPlan = new AirMapFlightPlanManager(_shared);
+    connect(flightPlan, &AirMapFlightPlanManager::error, this, &AirMapVehicleManager::_error);
+    return flightPlan;
+}
+
+//-----------------------------------------------------------------------------
+void
 AirMapVehicleManager::_flightIDChanged(QString flightID)
 {
     qCDebug(AirMapManagerLog) << "Flight ID Changed:" << flightID << this;
@@ -95,6 +117,7 @@ AirMapVehicleManager::_flightIDChanged(QString flightID)
     if(flightID.isEmpty()) {
         _trafficMonitor.stop();
     } else {
+        qCDebug(AirMapManagerLog) << "Starting traffic updates for" << flightID << "at" << QDateTime::currentDateTimeUtc() << "(Flight to start at:" << flightPlan()->flightStartTime() << ")";
         _trafficMonitor.startConnection(flightID);
     }
 }

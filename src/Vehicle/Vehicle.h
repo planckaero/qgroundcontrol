@@ -629,6 +629,9 @@ public:
     Q_PROPERTY(quint64              mavlinkReceivedCount    READ mavlinkReceivedCount                                   NOTIFY mavlinkStatusChanged)
     Q_PROPERTY(quint64              mavlinkLossCount        READ mavlinkLossCount                                       NOTIFY mavlinkStatusChanged)
     Q_PROPERTY(float                mavlinkLossPercent      READ mavlinkLossPercent                                     NOTIFY mavlinkStatusChanged)
+#if defined(QGC_AIRMAP_ENABLED)
+    Q_PROPERTY(AirspaceVehicleManager* airspaceVehicleManager READ airspaceVehicleManager                               CONSTANT)
+#endif
 
     // Vehicle state used for guided control
     Q_PROPERTY(bool flying                  READ flying NOTIFY flyingChanged)                               ///< Vehicle is flying
@@ -1055,6 +1058,10 @@ public:
     quint64     mavlinkReceivedCount    () { return _mavlinkReceivedCount; }    /// Total number of sucessful messages received
     quint64     mavlinkLossCount        () { return _mavlinkLossCount; }        /// Total number of lost messages
     float       mavlinkLossPercent      () { return _mavlinkLossPercent; }      /// Running loss rate
+
+#if defined(QGC_AIRMAP_ENABLED)
+    AirspaceVehicleManager* airspaceVehicleManager () { return _airspaceVehicleManager; }
+#endif
 
 signals:
     void allLinksInactive(Vehicle* vehicle);

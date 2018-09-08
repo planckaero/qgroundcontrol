@@ -12,7 +12,6 @@
 #include "AirspaceManager.h"
 #include "AirspaceVehicleManager.h"
 #include "AirMapSharedState.h"
-#include "AirMapFlightManager.h"
 #include "AirMapTelemetry.h"
 #include "AirMapTrafficMonitor.h"
 
@@ -25,6 +24,7 @@ public:
     AirMapVehicleManager        (AirMapSharedState& shared, const Vehicle& vehicle);
     ~AirMapVehicleManager       () override = default;
 
+    void init                   () override;
     void startTelemetryStream   () override;
     void stopTelemetryStream    () override;
     bool isTelemetryStreaming   () override;
@@ -38,12 +38,15 @@ public slots:
 protected slots:
     void vehicleMavlinkMessageReceived(const mavlink_message_t& message) override;
 
+protected:
+    AirspaceFlightPlanProvider*  _instantiateAirspaceFlightPlanProvider() override;
+
 private slots:
     void _flightIDChanged       (QString flightID);
+    void _error                 (const QString& what, const QString& airmapdMessage, const QString& airmapdDetails);
 
 private:
     AirMapSharedState&           _shared;
-    AirMapFlightManager          _flightManager;
     AirMapTelemetry              _telemetry;
     AirMapTrafficMonitor         _trafficMonitor;
 };

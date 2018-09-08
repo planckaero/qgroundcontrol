@@ -708,7 +708,7 @@ QGCView {
                 anchors.verticalCenter: parent.verticalCenter;
             }
         }
-        property var  flightPermit: QGroundControl.airmapSupported ? QGroundControl.airspaceManager.flightPlan.flightPermitStatus : null
+        property var  flightPermit: QGroundControl.airmapSupported && activeVehicle ? activeVehicle.airspaceVehicleManager.flightPlan.flightPermitStatus : null
         property string  providerName: QGroundControl.airspaceManager.providerName
     }
 
