@@ -8,6 +8,7 @@
  ****************************************************************************/
 
 #include "AirMapAdvisoryManager.h"
+#include "AirMapFlightListManager.h"
 #include "AirMapFlightPlanManager.h"
 #include "AirMapManager.h"
 #include "AirMapRestrictionManager.h"
@@ -245,4 +246,13 @@ AirMapManager::_instantiateAirspaceRestrictionProvider()
     AirMapRestrictionManager* airspaces = new AirMapRestrictionManager(_shared);
     connect(airspaces, &AirMapRestrictionManager::error, this, &AirMapManager::_error);
     return airspaces;
+}
+
+//-----------------------------------------------------------------------------
+AirspaceFlightListProvider*
+AirMapManager::_instantiateAirspaceFlightListProvider()
+{
+    AirMapFlightListManager* flights = new AirMapFlightListManager(_shared);
+    connect(flights, &AirMapFlightListManager::error, this, &AirMapManager::_error);
+    return flights;
 }

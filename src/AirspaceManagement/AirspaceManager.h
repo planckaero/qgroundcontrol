@@ -35,6 +35,7 @@
 #include <QTimer>
 
 class AirspaceAdvisoryProvider;
+class AirspaceFlightListProvider;
 class AirspaceFlightPlanProvider;
 class AirspaceRestrictionProvider;
 class AirspaceRulesetsProvider;
@@ -70,6 +71,7 @@ public:
     Q_PROPERTY(AirspaceAdvisoryProvider*    advisories          READ advisories         CONSTANT)
     Q_PROPERTY(AirspaceRulesetsProvider*    ruleSets            READ ruleSets           CONSTANT)
     Q_PROPERTY(AirspaceRestrictionProvider* airspaces           READ airspaces          CONSTANT)
+    Q_PROPERTY(AirspaceFlightListProvider*  flights             READ flights            CONSTANT)
     Q_PROPERTY(bool                         connected           READ connected          NOTIFY connectedChanged)
     Q_PROPERTY(QString                      connectStatus       READ connectStatus      NOTIFY connectStatusChanged)
     Q_PROPERTY(AirspaceManager::AuthStatus  authStatus          READ authStatus         NOTIFY authStatusChanged)
@@ -81,6 +83,7 @@ public:
     AirspaceAdvisoryProvider*    advisories     () { return _advisories; }
     AirspaceRulesetsProvider*    ruleSets       () { return _ruleSetsProvider; }
     AirspaceRestrictionProvider* airspaces      () { return _airspaces; }
+    AirspaceFlightListProvider*  flights        () { return _flights; }
 
     void setToolbox(QGCToolbox* toolbox) override;
 
@@ -120,6 +123,7 @@ protected:
     virtual AirspaceWeatherInfoProvider*    _instatiateAirspaceWeatherInfoProvider  () = 0;
     virtual AirspaceAdvisoryProvider*       _instatiateAirspaceAdvisoryProvider     () = 0;
     virtual AirspaceRestrictionProvider*    _instantiateAirspaceRestrictionProvider () = 0;
+    virtual AirspaceFlightListProvider*     _instantiateAirspaceFlightListProvider  () = 0;
 
 protected:
     bool                            _airspaceVisible        = false;
@@ -127,6 +131,7 @@ protected:
     AirspaceWeatherInfoProvider*    _weatherProvider        = nullptr;  ///< Weather info
     AirspaceAdvisoryProvider*       _advisories             = nullptr;  ///< Advisory info
     AirspaceRestrictionProvider*    _airspaces              = nullptr;  ///< Airspace info
+    AirspaceFlightListProvider*     _flights                = nullptr;  ///< Filled flights
     double                          _maxAreaOfInterest      = 500.0;    ///< Ignore area larger than 500km^2
     QTimer                          _ruleUpdateTimer;
     QTimer                          _updateTimer;

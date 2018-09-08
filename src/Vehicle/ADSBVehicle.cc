@@ -27,9 +27,10 @@ ADSBVehicle::ADSBVehicle(mavlink_adsb_vehicle_t& adsbVehicle, QObject* parent)
     update(adsbVehicle);
 }
 
-ADSBVehicle::ADSBVehicle(const QGeoCoordinate& location, float heading, bool alert, QObject* parent)
+ADSBVehicle::ADSBVehicle(const QGeoCoordinate& location, float heading, const QString &id, bool alert, QObject* parent)
     : QObject(parent)
     , _icaoAddress(0)
+    , _callsign(id)
     , _alert(alert)
 {
     update(alert, location, heading);
@@ -39,7 +40,7 @@ void ADSBVehicle::update(bool alert, const QGeoCoordinate& location, float headi
 {
     _coordinate = location;
     _altitude   = location.altitude();
-    _heading    = heading;
+    _heading    = static_cast<double>(heading);
     _alert      = alert;
     emit coordinateChanged();
     emit altitudeChanged();
@@ -74,7 +75,7 @@ void ADSBVehicle::update(mavlink_adsb_vehicle_t& adsbVehicle)
 
     double newAltitude = NAN;
     if (adsbVehicle.flags | ADSB_FLAGS_VALID_ALTITUDE) {
-        newAltitude = (double)adsbVehicle.altitude / 1e3;
+        newAltitude = static_cast<double>(adsbVehicle.altitude / 1e3);
     }
     if (!(qIsNaN(newAltitude) && qIsNaN(_altitude)) && !qFuzzyCompare(newAltitude, _altitude)) {
         _altitude = newAltitude;
@@ -83,7 +84,7 @@ void ADSBVehicle::update(mavlink_adsb_vehicle_t& adsbVehicle)
 
     double newHeading = NAN;
     if (adsbVehicle.flags | ADSB_FLAGS_VALID_HEADING) {
-        newHeading = (double)adsbVehicle.heading / 100.0;
+        newHeading = static_cast<double>(adsbVehicle.heading / 100.0);
     }
     if (!(qIsNaN(newHeading) && qIsNaN(_heading)) && !qFuzzyCompare(newHeading, _heading)) {
         _heading = newHeading;

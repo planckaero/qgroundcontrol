@@ -42,27 +42,6 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-class AirMapFlightInfo : public AirspaceFlightInfo
-{
-    Q_OBJECT
-public:
-    AirMapFlightInfo                        (const airmap::Flight& flight, QObject *parent = nullptr);
-    QString             flightID            () override { return QString::fromStdString(_flight.id); }
-    QString             flightPlanID        () override { return _flight.flight_plan_id ? QString::fromStdString(_flight.flight_plan_id.get()) : QString(); }
-    QString             createdTime         () override;
-    QString             startTime           () override;
-    QString             endTime             () override;
-    QDateTime           qStartTime          () override;
-    QGeoCoordinate      takeOff             () override { return QGeoCoordinate(static_cast<double>(_flight.latitude), static_cast<double>(_flight.longitude));}
-    QVariantList        boundingBox         () override { return _boundingBox; }
-    bool                active              () override;
-    void                setEndFlight        (airmap::DateTime end);
-private:
-    airmap::Flight      _flight;
-    QVariantList        _boundingBox;
-};
-
-//-----------------------------------------------------------------------------
 /// class to upload a flight
 class AirMapFlightPlanManager : public AirspaceFlightPlanProvider, public LifetimeChecker
 {
@@ -89,8 +68,6 @@ public:
     QmlObjectListModel* rulesFollowing      () override { return &_rulesFollowing; }
     QmlObjectListModel* briefFeatures       () override { return &_briefFeatures; }
     QmlObjectListModel* authorizations      () override { return &_authorizations; }
-    AirspaceFlightModel*flightList          () override { return &_flightList; }
-    bool                loadingFlightList   () override { return _loadingFlightList; }
     QString             flightPlanID        () {return QString::fromStdString(_flightPlan.id); }
     QString             flightID            () {return _flightId; }
 
@@ -99,9 +76,7 @@ public:
     void                startFlightPlanning (PlanMasterController* planController) override;
     void                setFlightStartTime  (QDateTime start) override;
     void                setFlightDuration   (int seconds) override;
-    void                loadFlightList      (QDateTime startTime, QDateTime endTime) override;
     void                setFlightStartsNow  (bool now) override;
-    void                endFlight           (QString flightID) override;
 
 signals:
     void            error                   (const QString& what, const QString& airmapdMessage, const QString& airmapdDetails);
@@ -110,10 +85,8 @@ signals:
 private slots:
     void _pollBriefing                      ();
     void _missionChanged                    ();
-    void _endFlight                         ();
     void _uploadFlightPlan                  ();
     void _updateFlightPlanOnTimer           ();
-    void _loadFlightList                    ();
 
 private:
     void _createFlightPlan                  ();
@@ -152,10 +125,8 @@ private:
     AirMapSharedState&      _shared;
     QTimer                  _pollTimer;             ///< timer to poll for approval check
     QString                 _flightId;              ///< Current flight ID, not necessarily accepted yet
-    QString                 _flightToEnd;
     PlanMasterController*   _planController = nullptr;
     bool                    _valid = false;
-    bool                    _loadingFlightList = false;
     bool                    _flightStartsNow = false;
     QmlObjectListModel      _advisories;
     QmlObjectListModel      _rulesets;
@@ -165,9 +136,6 @@ private:
     QmlObjectListModel      _rulesFollowing;
     QmlObjectListModel      _briefFeatures;
     QmlObjectListModel      _authorizations;
-    AirspaceFlightModel     _flightList;
-    QDateTime               _rangeStart;
-    QDateTime               _rangeEnd;
     airmap::FlightPlan      _flightPlan;
     QDateTime               _flightStartTime;
     int                     _flightDuration = 15 * 60;

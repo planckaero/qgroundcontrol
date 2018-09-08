@@ -7,6 +7,7 @@
  *
  ****************************************************************************/
 
+#include "AirspaceFlightListProvider.h"
 #include "AirspaceFlightPlanProvider.h"
 #include "AirMapFlightPlanManager.h"
 #include "AirMapVehicleManager.h"
@@ -77,7 +78,7 @@ AirMapVehicleManager::endFlight()
 {
     AirMapFlightPlanManager* pPlan = qobject_cast<AirMapFlightPlanManager*>(flightPlan());
     if (pPlan && !pPlan->flightID().isEmpty()) {
-        pPlan->endFlight(pPlan->flightID());
+        qgcApp()->toolbox()->airspaceManager()->flights()->endFlight(pPlan->flightID());
     }
     _trafficMonitor.stop();
 }
@@ -117,7 +118,7 @@ AirMapVehicleManager::_flightIDChanged(QString flightID)
     if(flightID.isEmpty()) {
         _trafficMonitor.stop();
     } else {
-        qCDebug(AirMapManagerLog) << "Starting traffic updates for" << flightID << "at" << QDateTime::currentDateTimeUtc() << "(Flight to start at:" << flightPlan()->flightStartTime() << ")";
+        qCDebug(AirMapManagerLog) << "Starting traffic updates for" << flightID << "at" << QDateTime::currentDateTime() << "(Flight to start at:" << flightPlan()->flightStartTime() << ")";
         _trafficMonitor.startConnection(flightID);
     }
 }

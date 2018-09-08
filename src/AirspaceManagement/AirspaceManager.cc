@@ -9,6 +9,7 @@
 
 
 #include "AirspaceAdvisoryProvider.h"
+#include "AirspaceFlightListProvider.h"
 #include "AirspaceFlightPlanProvider.h"
 #include "AirspaceManager.h"
 #include "AirspaceRestriction.h"
@@ -44,6 +45,7 @@ AirspaceManager::AirspaceManager(QGCApplication* app, QGCToolbox* toolbox)
     qmlRegisterUncreatableType<AirspaceFlightAuthorization> ("QGroundControl.Airspace",      1, 0, "AirspaceFlightAuthorization",    "Reference only");
     qmlRegisterUncreatableType<AirspaceFlightInfo>          ("QGroundControl.Airspace",      1, 0, "AirspaceFlightInfo",             "Reference only");
     qmlRegisterUncreatableType<AirspaceVehicleManager>      ("QGroundControl.Airspace",      1, 0, "AirspaceVehicleManager",         "Reference only");
+    qmlRegisterUncreatableType<AirspaceFlightListProvider>  ("QGroundControl.Airspace",      1, 0, "AirspaceFlightListProvider",     "Reference only");
 }
 
 //-----------------------------------------------------------------------------
@@ -57,6 +59,9 @@ AirspaceManager::~AirspaceManager()
     }
     if(_ruleSetsProvider) {
         delete _ruleSetsProvider;
+    }
+    if(_flights) {
+        delete _flights;
     }
     if(_airspaces) {
         delete _airspaces;
@@ -73,6 +78,7 @@ AirspaceManager::setToolbox(QGCToolbox* toolbox)
     _weatherProvider    = _instatiateAirspaceWeatherInfoProvider();
     _advisories         = _instatiateAirspaceAdvisoryProvider();
     _airspaces          = _instantiateAirspaceRestrictionProvider();
+    _flights            = _instantiateAirspaceFlightListProvider();
     //-- Keep track of rule changes
     if(_ruleSetsProvider) {
         connect(_ruleSetsProvider, &AirspaceRulesetsProvider::selectedRuleSetsChanged, this, &AirspaceManager::_rulesChanged);

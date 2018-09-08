@@ -1107,6 +1107,7 @@ contains (DEFINES, QGC_AIRMAP_ENABLED) {
 
     HEADERS += \
         src/AirspaceManagement/AirspaceAdvisoryProvider.h \
+        src/AirspaceManagement/AirspaceFlightListProvider.h \
         src/AirspaceManagement/AirspaceFlightPlanProvider.h \
         src/AirspaceManagement/AirspaceManager.h \
         src/AirspaceManagement/AirspaceRestriction.h \
@@ -1117,6 +1118,7 @@ contains (DEFINES, QGC_AIRMAP_ENABLED) {
 
     SOURCES += \
         src/AirspaceManagement/AirspaceAdvisoryProvider.cc \
+        src/AirspaceManagement/AirspaceFlightListProvider.cc \
         src/AirspaceManagement/AirspaceFlightPlanProvider.cc \
         src/AirspaceManagement/AirspaceManager.cc \
         src/AirspaceManagement/AirspaceRestriction.cc \
@@ -1134,6 +1136,7 @@ contains (DEFINES, QGC_AIRMAP_ENABLED) {
 
     HEADERS += \
         src/Airmap/AirMapAdvisoryManager.h \
+        src/Airmap/AirMapFlightListManager.h \
         src/Airmap/AirMapFlightPlanManager.h \
         src/Airmap/AirMapManager.h \
         src/Airmap/AirMapRestrictionManager.h \
@@ -1148,6 +1151,7 @@ contains (DEFINES, QGC_AIRMAP_ENABLED) {
 
     SOURCES += \
         src/Airmap/AirMapAdvisoryManager.cc \
+        src/Airmap/AirMapFlightListManager.cc \
         src/Airmap/AirMapFlightPlanManager.cc \
         src/Airmap/AirMapManager.cc \
         src/Airmap/AirMapRestrictionManager.cc \

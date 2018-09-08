@@ -20,9 +20,9 @@ class ADSBVehicle : public QObject
     Q_OBJECT
 
 public:
-    ADSBVehicle(mavlink_adsb_vehicle_t& adsbVehicle, QObject* parent = NULL);
+    ADSBVehicle(mavlink_adsb_vehicle_t& adsbVehicle, QObject* parent = nullptr);
 
-    ADSBVehicle(const QGeoCoordinate& location, float heading, bool alert = false, QObject* parent = NULL);
+    ADSBVehicle(const QGeoCoordinate& location, float heading, const QString& id = QString(), bool alert = false, QObject* parent = nullptr);
 
     Q_PROPERTY(int              icaoAddress READ icaoAddress    CONSTANT)
     Q_PROPERTY(QString          callsign    READ callsign       NOTIFY callsignChanged)
@@ -31,7 +31,7 @@ public:
     Q_PROPERTY(double           heading     READ heading        NOTIFY headingChanged)      // NaN for not available
     Q_PROPERTY(bool             alert       READ alert          NOTIFY alertChanged)        // Collision path
 
-    int             icaoAddress (void) const { return _icaoAddress; }
+    int             icaoAddress (void) const { return static_cast<int>(_icaoAddress); }
     QString         callsign    (void) const { return _callsign; }
     QGeoCoordinate  coordinate  (void) const { return _coordinate; }
     double          altitude    (void) const { return _altitude; }
