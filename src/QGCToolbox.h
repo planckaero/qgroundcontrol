@@ -33,6 +33,7 @@ class MAVLinkLogManager;
 class QGCCorePlugin;
 class SettingsManager;
 class AirspaceManager;
+class LandingPadPosition;
 
 /// This is used to manage all of our top level services/tools
 class QGCToolbox : public QObject {
@@ -58,6 +59,7 @@ public:
     QGCCorePlugin*              corePlugin(void)                { return _corePlugin; }
     SettingsManager*            settingsManager(void)           { return _settingsManager; }
     AirspaceManager*            airspaceManager(void)           { return _airspaceManager; }
+    LandingPadPosition*         landingPadManager(void)         { return _landingPadManager; }
 #ifndef __mobile__
     GPSManager*                 gpsManager(void)                { return _gpsManager; }
 #endif
@@ -88,6 +90,7 @@ private:
     QGCCorePlugin*              _corePlugin;
     SettingsManager*            _settingsManager;
     AirspaceManager*            _airspaceManager;
+    LandingPadPosition*         _landingPadManager;
     friend class QGCApplication;
 };
 
