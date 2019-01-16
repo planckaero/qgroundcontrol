@@ -29,6 +29,7 @@
 #include "QGCCorePlugin.h"
 #include "QGCOptions.h"
 #include "SettingsManager.h"
+#include "PlanckListener.h"
 #include "QGCApplication.h"
 #if defined(QGC_AIRMAP_ENABLED)
 #include "AirMapManager.h"
@@ -62,6 +63,7 @@ QGCToolbox::QGCToolbox(QGCApplication* app)
     , _corePlugin           (NULL)
     , _settingsManager      (NULL)
     , _airspaceManager      (NULL)
+    , _planckListener       (NULL)
 {
     // SettingsManager must be first so settings are available to any subsequent tools
     _settingsManager =          new SettingsManager(app, this);
@@ -86,6 +88,7 @@ QGCToolbox::QGCToolbox(QGCApplication* app)
     _followMe =                 new FollowMe                (app, this);
     _videoManager =             new VideoManager            (app, this);
     _mavlinkLogManager =        new MAVLinkLogManager       (app, this);
+    _planckListener =           new PlanckListener          (app, this);
     _landingPadManager =        new LandingPadPosition      ();
     //-- Airmap Manager
     //-- This should be "pluggable" so an arbitrary AirSpace manager can be used
@@ -122,6 +125,7 @@ void QGCToolbox::setChildToolboxes(void)
     _videoManager->setToolbox(this);
     _mavlinkLogManager->setToolbox(this);
     _airspaceManager->setToolbox(this);
+    _planckListener->setToolbox(this);
 }
 
 void QGCToolbox::_scanAndLoadPlugins(QGCApplication* app)

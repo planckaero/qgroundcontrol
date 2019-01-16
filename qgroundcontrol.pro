@@ -406,7 +406,8 @@ HEADERS += \
     src/api/QGCSettings.h \
     src/api/QmlComponentInfo.h \
     src/comm/MavlinkMessagesTimer.h \
-    src/PositionManager/LandingPadPosition.h
+    src/PositionManager/LandingPadPosition.h \
+    src/comm/PlanckListener.h
 
 SOURCES += \
     src/api/QGCCorePlugin.cc \
@@ -414,7 +415,8 @@ SOURCES += \
     src/api/QGCSettings.cc \
     src/api/QmlComponentInfo.cc \
     src/comm/MavlinkMessagesTimer.cc \
-    src/PositionManager/LandingPadPosition.cc
+    src/PositionManager/LandingPadPosition.cc \
+    src/comm/PlanckListener.cc
 
 #
 # Unit Test specific configuration goes here (requires full debug build with all plugins)

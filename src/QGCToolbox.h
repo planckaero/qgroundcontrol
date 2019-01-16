@@ -34,6 +34,7 @@ class QGCCorePlugin;
 class SettingsManager;
 class AirspaceManager;
 class LandingPadPosition;
+class PlanckListener;
 
 /// This is used to manage all of our top level services/tools
 class QGCToolbox : public QObject {
@@ -60,6 +61,7 @@ public:
     SettingsManager*            settingsManager(void)           { return _settingsManager; }
     AirspaceManager*            airspaceManager(void)           { return _airspaceManager; }
     LandingPadPosition*         landingPadManager(void)         { return _landingPadManager; }
+    PlanckListener*             planckListener(void)            { return _planckListener; }
 #ifndef __mobile__
     GPSManager*                 gpsManager(void)                { return _gpsManager; }
 #endif
@@ -91,6 +93,7 @@ private:
     SettingsManager*            _settingsManager;
     AirspaceManager*            _airspaceManager;
     LandingPadPosition*         _landingPadManager;
+    PlanckListener*             _planckListener;
     friend class QGCApplication;
 };
 
