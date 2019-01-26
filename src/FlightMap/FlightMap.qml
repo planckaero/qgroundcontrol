@@ -36,7 +36,8 @@ Map {
     property bool   isSatelliteMap:                 activeMapType.name.indexOf("Satellite") > -1 || activeMapType.name.indexOf("Hybrid") > -1
     property var    gcsPosition:                    QGroundControl.qgcPositionManger.gcsPosition
     property bool   userPanned:                     false   ///< true: the user has manually panned the map
-    property bool   allowGCSLocationCenter:         true   ///< true: map will center/zoom to gcs location one time
+    property bool   userPanning:                    false
+    property bool   allowGCSLocationCenter:         false   ///< true: map will center/zoom to gcs location one time
     property bool   allowVehicleLocationCenter:     false   ///< true: map will center/zoom to vehicle location one time
     property bool   firstGCSPositionReceived:       false   ///< true: first gcs position update was responded to
     property bool   firstVehiclePositionReceived:   false   ///< true: first vehicle position update was responded to
@@ -83,11 +84,10 @@ Map {
 
     // Center map to gcs location
     onGcsPositionChanged: {
- //       if (gcsPosition.isValid && allowGCSLocationCenter && !firstGCSPositionReceived && !firstVehiclePositionReceived) {
-        if (allowGCSLocationCenter) {
-            //firstGCSPositionReceived = true
+        if (gcsPosition.isValid && allowGCSLocationCenter && !firstGCSPositionReceived && !firstVehiclePositionReceived) {
+            firstGCSPositionReceived = true
             center = gcsPosition
-            //zoomLevel = QGroundControl.flightMapInitialZoom
+            zoomLevel = QGroundControl.flightMapInitialZoom
         }
     }
 
@@ -95,8 +95,10 @@ Map {
     Connections {
         target: gesture
 
-        onPanFinished:      userPanned = true
-        onFlickFinished:    userPanned = true
+        onPanStarted:       userPanning = true
+        onPanFinished:      userPanning = false
+        //onPanFinished:      userPanned = true
+        //onFlickFinished:    userPanned = true
     }
 
     function updateActiveMapType() {
@@ -135,7 +137,6 @@ Map {
         coordinate:     gcsPosition
 
         sourceItem: Image {
-            //source:         "/res/QGCLogoFull"
             source:         "/res/PlanckTag"
             mipmap:         true
             antialiasing:   true
