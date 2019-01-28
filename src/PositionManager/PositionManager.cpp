@@ -39,7 +39,7 @@ void QGCPositionManager::setToolbox(QGCToolbox *toolbox)
        _defaultSource = QGeoPositionInfoSource::createDefaultSource(this);
        qDebug() << _defaultSource;
    }
-   _simulatedSource = new SimulatedPosition();
+   //_simulatedSource = new SimulatedPosition();
    _landingPadSource = qgcApp()->toolbox()->landingPadManager();
 
    // Enable this to get a simulated target on desktop
