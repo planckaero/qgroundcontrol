@@ -96,8 +96,8 @@ Map {
         center: gcsPosition
         radius: 10
         color: "transparent"
-        border.color: "green"
-        border.width: 1
+        border.color: "lightgreen"
+        border.width: 2
     }
 
     // 25m range ring
@@ -106,7 +106,7 @@ Map {
         radius: 25
         color: "transparent"
         border.color: "orange"
-        border.width: 1
+        border.width: 2
     }
 
     // 50m range ring
@@ -115,7 +115,7 @@ Map {
         radius: 50
         color: "transparent"
         border.color: "yellow"
-        border.width: 1
+        border.width: 2
     }
 
     // 100m range ring
@@ -124,9 +124,8 @@ Map {
         radius: 100
         color: "transparent"
         border.color: "red"
-        border.width: 1
+        border.width: 2
     }
-
 
     // We track whether the user has panned or not to correctly handle automatic map positioning
     Connections {
