@@ -69,7 +69,7 @@ QGCToolbox::QGCToolbox(QGCApplication* app)
     _videoManager =             new VideoManager            (app, this);
     _mavlinkLogManager =        new MAVLinkLogManager       (app, this);
     _planckListener =           new PlanckListener          (app, this);
-    _landingPadManager =        new LandingPadPosition      (app, this);
+    _landingPadManager =        new LandingPadPosition      ();
     //-- Airmap Manager
     //-- This should be "pluggable" so an arbitrary AirSpace manager can be used
     //-- For now, we instantiate the one and only AirMap provider
