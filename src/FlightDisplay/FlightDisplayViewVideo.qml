@@ -33,6 +33,19 @@ Item {
     property var    _camera:            _isCamera ? _dynamicCameras.cameras.get(_curCameraIndex) : null
     property bool   _hasZoom:           _camera && _camera.hasZoom
     property int    _fitMode:           QGroundControl.settingsManager.videoSettings.videoFit.rawValue
+
+    CameraChooser {
+        id:             camChooser
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.bottomMargin: 20
+        anchors.rightMargin: 20
+
+        onCameraChoiceChanged:
+        {
+        }
+    }
+
     Rectangle {
         id:             noVideo
         anchors.fill:   parent
