@@ -1,0 +1,115 @@
+<?xml version='1.0'?>
+<mavlink>
+    <!-- PlanckAerosystems contact info:                            -->
+    <!-- company URL: http://planckaero.com/                        -->
+    <!-- email contact: info@planckaero.com.                        -->
+    <enums>
+        <enum name="PLANCK_STATUS_MODE">
+            <entry value="0" name="PLANCK_IDLE"/>
+            <entry value="1" name="PLANCK_TAKEOFF"/>
+            <entry value="2" name="PLANCK_STAB"/>
+            <entry value="3" name="PLANCK_RTB"/>
+            <entry value="4" name="PLANCK_SEARCHING"/>
+            <entry value="5" name="PLANCK_LAND_READY"/>
+            <entry value="6" name="PLANCK_LAND"/>
+            <entry value="7" name="PLANCK_ORBIT"/>
+            <entry value="8" name="PLANCK_LEAD_FOLLOW"/>
+        </enum>
+        <enum name="PLANCK_STATUS_FAILSAFE">
+            <description>These flags encode the MAV mode.</description>
+            <entry value="8" name="COMMBOX_GPS_OK"/>
+            <entry value="4" name="BATTERY_OK"/>
+            <entry value="2" name="COMMBOX_OK"/>
+            <entry value="1" name="RC_OK"/>
+        </enum>
+        <enum name="PLANCK_STATUS_CONTROLLER">
+            <description>These flags encode the MAV mode.</description>
+            <entry value="2" name="BOAT_ESTIMATOR_OK"/>
+            <entry value="1" name="TAG_ESTIMATOR_OK"/>
+        </enum>
+        <enum name="PLANCK_TRACKING_TARGET">
+            <description>These flags encode the MAV mode.</description>
+            <entry value="0" name="LANDING_PLATFORM"/>
+            <entry value="1" name="TARGET"/>
+        </enum>
+    </enums>
+    <messages>
+        <message id="9145" name="STATE_INFO">
+           <description></description>
+           <field type="uint64_t" name="time_usec">Timestamp (micros since boot or Unix epoch)</field>
+           <field type="float" name="roll">Roll angle (rad, -pi..+pi)</field>
+           <field type="float" name="pitch">Pitch angle (rad, -pi..+pi)</field>
+           <field type="float" name="yaw">Yaw angle (rad, -pi..+pi)</field>
+           <field type="int16_t" name="xacc">X acceleration (raw)</field>
+           <field type="int16_t" name="yacc">Y acceleration (raw)</field>
+           <field type="int16_t" name="zacc">Z acceleration (raw)</field>
+        </message>
+        <message id="9159" name="TARGET_STATE">
+           <description></description>
+           <field type="uint32_t" name="id">Target ID (1-based)</field>
+           <field type="uint64_t" name="time_usec">Timestamp (micros since boot or Unix epoch)</field>
+           <field type="int32_t" name="latitude">Latitude (WGS84), in degrees * 1E7</field>
+           <field type="int32_t" name="longitude">Longitude (WGS84, in degrees * 1E7</field>
+           <field type="int32_t" name="altitude">Altitude (AMSL), in meters * 1000 (positive for up)</field>
+           <field type="float" name="vn">GPS velocity in m/s in NORTH direction in earth-fixed NED frame</field>
+           <field type="float" name="ve">GPS velocity in m/s in EAST direction in earth-fixed NED frame</field>
+           <field type="float" name="vd">GPS velocity in m/s in DOWN direction in earth-fixed NED frame</field>
+           <field type="float" name="heading">Heading in degrees (0=North, positive clockwise)</field>
+        </message>
+        <message id="9190" name="VERSION_QUERY_RESPONSE">
+           <description>Used for obtaining software version numbers. Request and response are the same message</description>
+           <field type="uint8_t" name="target_system">System ID</field>
+           <field type="uint8_t" name="target_component">Component ID</field>
+           <field type="uint8_t" name="response">Query or response (QUERY=0, RESPONSE=NON-ZERO)</field>
+           <field type="uint8_t" name="entity">Entity to query/respond (planck-ctrl=0)</field>
+           <field type="int8_t[40]" name="version">NULL-terminated string response with version or N/A for query (max 40 chars including NULL-term)</field>
+        </message>
+        <message id="9235" name="LANDING_PLATFORM_HEARTBEAT">
+           <description>Landing platform heartbeat message</description>
+           <field type="uint64_t" name="time_us">Wall-clock time in u-seconds of the landing platform</field>
+        </message>
+        <message id="9236" name="LANDING_PLATFORM_STATE">
+           <description>The state of a landing platform, including WGS84 position and pose information (roll/pitch/yaw) in earth frame</description>
+           <field type="int32_t" name="latitude">Latitude (WGS84), in degrees * 1E7</field>
+           <field type="int32_t" name="longitude">Longitude (WGS84, in degrees * 1E7</field>
+           <field type="int32_t" name="altitude">Altitude (AMSL), in meters * 1000 (positive for up)</field>
+           <field type="float" name="vn">GPS velocity in m/s in NORTH direction in earth-fixed NED frame</field>
+           <field type="float" name="ve">GPS velocity in m/s in EAST direction in earth-fixed NED frame</field>
+           <field type="float" name="vd">GPS velocity in m/s in DOWN direction in earth-fixed NED frame</field>
+           <field type="float" name="roll">Roll in degrees of the platform</field>
+           <field type="float" name="pitch">Pitch in degrees of the platform</field>
+           <field type="float" name="yaw">Yaw in degrees of the platform</field>
+        </message>
+        <message id="9237" name="ORBIT_COMMAND">
+           <description>Instruction for vehicle to orbit landing platform at a fixed radius, at a fixed rate</description>
+           <field type="uint8_t" name="target_system">System ID</field>
+           <field type="uint8_t" name="target_component">Component ID</field>
+           <field type="float" name="altitude">Altitude in meters at which orbit takes place</field>
+           <field type="float" name="angular_velocity">Rate in rad/sec at which to orbit (positive=clockwise)</field>
+           <field type="float" name="radius">Distance in meters from center of landing platform to orbit</field>
+           <field type="float" name="orientation">vehicle direction during orbit (away-relative, positive-right, example: 0=outward)</field>
+           <field type="uint32_t" name="target">Target to track (LANDING-PLATFORM=0, >0 indicates target ID to track)</field>
+        </message>
+        <message id="9238" name="LEAD_FOLLOW_COMMAND">
+           <description>Instruction for vehicle to maintain a fixed X/Y position, relative to the landing platform in either earth-frame or platform-frame</description>
+           <field type="uint8_t" name="target_system">System ID</field>
+           <field type="uint8_t" name="target_component">Component ID</field>
+           <field type="float" name="altitude">Altitude in meters at which lead/follow takes place</field>
+           <field type="float" name="x_offset">Maintain x distance from landing platform (forward-positive for platform-frame, north-positive for earth-frame)</field>
+           <field type="float" name="y_offset">Maintain y distance from landing platform (starboard-positive for platform-frame, east-positive for earth-frame)</field>
+           <field type="uint8_t" name="frame">Reference frame (NORTH-EAST-DOWN=0, FORWARD-STARBOARD-DOWN=1)</field>
+           <field type="uint32_t" name="target">Target to track (LANDING-PLATFORM=0, >0 indicates target ID to track)</field>
+        </message>
+        <message id="9239" name="PLANCK_STATUS">
+           <description>The state of the vehicle, for UX usage</description>
+           <field type="uint8_t" name="mode">Vehicle state (IDLE=0, TAKEOFF, STAB, RTB, SEARCHING, LAND_READY, LAND, ORBIT, LEAD_FOLLOW)</field>
+           <field type="uint8_t" name="status">Controller status bitfield (TAG_ESTIMATOR_OK=bit0, BOAT_ESTIMATOR_OK=bit1)</field>
+           <field type="uint8_t" name="failsafe">Failsafe status bitfield (RC_OK=bit0, COMMBOX_OK=bit1, BATTERY_OK=bit2, COMMBOX_GPS_OK)</field>
+        </message>
+        <message id="9240" name="PLANCK_RADIO_STATUS">
+           <description>The state of various radio links, for UX usage</description>
+           <field type="uint8_t" name="signal_strength">Signal strength in percent (0%-100%)</field>
+           <field type="uint8_t" name="status">Radio status bitfield (usage TBD)</field>
+        </message>
+    </messages>
+</mavlink>
