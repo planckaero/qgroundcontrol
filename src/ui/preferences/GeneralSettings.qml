@@ -751,12 +751,32 @@ QGCView {
 
                             QGCLabel {
                                 text:                   qsTr("RTSP URL")
-                                visible:                _isRTSP && QGroundControl.settingsManager.videoSettings.rtspUrl.visible
+                                visible:                false //_isRTSP && QGroundControl.settingsManager.videoSettings.rtspUrl.visible
                             }
                             FactTextField {
                                 Layout.preferredWidth:  _comboFieldWidth
                                 fact:                   QGroundControl.settingsManager.videoSettings.rtspUrl
-                                visible:                _isRTSP && QGroundControl.settingsManager.videoSettings.rtspUrl.visible
+                                visible:                false //_isRTSP && QGroundControl.settingsManager.videoSettings.rtspUrl.visible
+                            }
+
+                            QGCLabel {
+                                text:                   qsTr("RTSP Downward Camera URL")
+                                visible:                _isRTSP && QGroundControl.settingsManager.videoSettings.rtspDownUrl.visible
+                            }
+                            FactTextField {
+                                Layout.preferredWidth:  _comboFieldWidth
+                                fact:                   QGroundControl.settingsManager.videoSettings.rtspDownUrl
+                                visible:                _isRTSP && QGroundControl.settingsManager.videoSettings.rtspDownUrl.visible
+                            }
+
+                            QGCLabel {
+                                text:                   qsTr("RTSP Gimbal Camera URL")
+                                visible:                _isRTSP && QGroundControl.settingsManager.videoSettings.rtspGimbalUrl.visible
+                            }
+                            FactTextField {
+                                Layout.preferredWidth:  _comboFieldWidth
+                                fact:                   QGroundControl.settingsManager.videoSettings.rtspGimbalUrl
+                                visible:                _isRTSP && QGroundControl.settingsManager.videoSettings.rtspGimbalUrl.visible
                             }
 
                             QGCLabel {

@@ -67,7 +67,7 @@ void VideoSettings::_setDefaults()
     if (_noVideo) {
         _nameToMetaDataMap[videoSourceName]->setRawDefaultValue(videoSourceNoVideo);
     } else {
-        _nameToMetaDataMap[videoSourceName]->setRawDefaultValue(videoDisabled);
+        _nameToMetaDataMap[videoSourceName]->setRawDefaultValue(videoSourceRTSP);
     }
 }
 
@@ -115,6 +115,24 @@ DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, rtspUrl)
         connect(_rtspUrlFact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
     }
     return _rtspUrlFact;
+}
+
+DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, rtspDownUrl)
+{
+    if (!_rtspDownUrlFact) {
+        _rtspDownUrlFact = _createSettingsFact(rtspDownUrlName);
+        connect(_rtspDownUrlFact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
+    }
+    return _rtspDownUrlFact;
+}
+
+DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, rtspGimbalUrl)
+{
+    if (!_rtspGimbalUrlFact) {
+        _rtspGimbalUrlFact = _createSettingsFact(rtspGimbalUrlName);
+        connect(_rtspGimbalUrlFact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
+    }
+    return _rtspGimbalUrlFact;
 }
 
 DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, tcpUrl)

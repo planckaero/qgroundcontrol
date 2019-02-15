@@ -22,6 +22,20 @@
     "defaultValue":     ""
 },
 {
+    "name":             "rtspDownUrl",
+    "shortDescription": "Video RTSP Downward Camera Url",
+    "longDescription":  "RTSP url address and port to bind to for down cam video stream. Example: rtsp://192.168.1.1:8554/live",
+    "type":             "string",
+    "defaultValue":     "rtsp://192.168.1.1:8554/vid"
+},
+{
+    "name":             "rtspGimbalUrl",
+    "shortDescription": "Video RTSP Gimbal Camera Url",
+    "longDescription":  "RTSP url address and port to bind to for gimbal cam video stream. Example: rtsp://192.168.1.1:8556/live",
+    "type":             "string",
+    "defaultValue":     "rtsp://192.168.1.1:8556/vid"
+},
+{
     "name":             "tcpUrl",
     "shortDescription": "Video TCP Url",
     "longDescription":  "TCP url address and port to bind to for video stream. Example: 192.168.143.200:3001",

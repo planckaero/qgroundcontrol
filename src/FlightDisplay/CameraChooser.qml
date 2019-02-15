@@ -14,8 +14,8 @@ Rectangle {
     property int cameraChoice:                      cameraDownward
 
     // Button attributes
-    readonly property int buttonWidth: 50
-    readonly property int buttonHeight: 30
+    readonly property int buttonWidth: 60
+    readonly property int buttonHeight: 40
     readonly property int buttonFontSize: 10
 
     // Box colors
@@ -49,7 +49,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             color: colorText
             font.pointSize: buttonFontSize
-            text: "DOWN"
+            text: "Down"
         }
         MouseArea {
             id: mouseAreaFree
@@ -79,7 +79,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             color: colorText
             font.pointSize: buttonFontSize
-            text: "GIMBL"
+            text: "Gimbal"
         }
         MouseArea {
             id: mouseAreaDrone

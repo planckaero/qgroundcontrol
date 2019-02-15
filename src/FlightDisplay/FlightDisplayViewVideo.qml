@@ -40,9 +40,15 @@ Item {
         anchors.right: parent.right
         anchors.bottomMargin: 20
         anchors.rightMargin: 20
+        readonly property string streamDown: "rtsp://192.168.1.1:8554/vid"
+        readonly property string streamGimbal: "rtsp://192.168.1.1:8556/vid"
 
         onCameraChoiceChanged:
         {
+            QGroundControl.settingsManager.videoSettings.rtspUrl.rawValue =
+                cameraChoice===cameraDownward ?
+                QGroundControl.settingsManager.videoSettings.rtspDownUrl.rawValue :
+                QGroundControl.settingsManager.videoSettings.rtspGimbalUrl.rawValue
         }
     }
 

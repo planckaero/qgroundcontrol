@@ -24,6 +24,8 @@ public:
     DEFINE_SETTINGFACT(udpPort)
     DEFINE_SETTINGFACT(tcpUrl)
     DEFINE_SETTINGFACT(rtspUrl)
+    DEFINE_SETTINGFACT(rtspDownUrl)
+    DEFINE_SETTINGFACT(rtspGimbalUrl)
     DEFINE_SETTINGFACT(aspectRatio)
     DEFINE_SETTINGFACT(videoFit)
     DEFINE_SETTINGFACT(gridLines)
