@@ -21,9 +21,9 @@ void PlanckListener::setToolbox(QGCToolbox *toolbox)
 void PlanckListener::onMAVLinkMessage(LinkInterface* link, mavlink_message_t message)
 {
     Q_UNUSED(link);
-    if (message.msgid == MAVLINK_MSG_ID_PLANCK_LANDING_PLATFORM_STATE) {
-        mavlink_planck_landing_platform_state_t lps;
-        mavlink_msg_planck_landing_platform_state_decode(&message, &lps);
+    if (message.msgid == MAVLINK_MSG_ID_LANDING_PLATFORM_STATE) {
+        mavlink_landing_platform_state_t lps;
+        mavlink_msg_landing_platform_state_decode(&message, &lps);
 
         LandingPadPosition* pos = qgcApp()->toolbox()->landingPadManager();
 
