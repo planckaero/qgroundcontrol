@@ -4,3 +4,6 @@
 [submodule "libs/planck_mavlink2"]
 	path = libs/planck_mavlink2
 	url = ssh://git@github.com/planckaero/planck_mavlink2
+[submodule "libs/mavlink"]
+	path = libs/mavlink
+	url = ssh://git@github.com/planckaero/mavlink
