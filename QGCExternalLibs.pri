@@ -27,7 +27,7 @@ isEmpty(MAVLINKPATH_REL) {
         MAVLINKPATH_REL = $$fromfile(user_config.pri, MAVLINKPATH_REL)
         message($$sprintf("Using user-supplied relativ mavlink path '%1' specified in user_config.pri", $$MAVLINKPATH_REL))
     } else {
-        MAVLINKPATH_REL = libs/planck_mavlink2
+        MAVLINKPATH_REL = libs/mavlink_generated
     }
 }
 
