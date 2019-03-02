@@ -42,8 +42,10 @@ public:
         AVOID_ADSB  = 19,
         GUIDED_NOGPS= 20,
         SAFE_RTL   = 21,   //Safe Return to Launch
+        PLANCK_TRACKING = 24,
+        PLANCK_LAND = 25,
     };
-    static const int modeCount = 22;
+    static const int modeCount = 24;
 
     APMCopterMode(uint32_t mode, bool settable);
 };
@@ -63,7 +65,7 @@ public:
     bool    multiRotorXConfig                   (Vehicle* vehicle) final;
     QString offlineEditingParamFile             (Vehicle* vehicle) final { Q_UNUSED(vehicle); return QStringLiteral(":/FirmwarePlugin/APM/Copter.OfflineEditing.params"); }
     QString pauseFlightMode                     (void) const override { return QString("Brake"); }
-    QString landFlightMode                      (void) const override { return QString("Land"); }
+    QString landFlightMode                      (void) const override { return QString("Planck Land"); }
     QString takeControlFlightMode               (void) const override { return QString("Loiter"); }
     bool    vehicleYawsToNextWaypointInMission  (const Vehicle* vehicle) const final;
     QString autoDisarmParameter                 (Vehicle* vehicle) final { Q_UNUSED(vehicle); return QStringLiteral("DISARM_DELAY"); }

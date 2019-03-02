@@ -42,6 +42,8 @@ APMCopterMode::APMCopterMode(uint32_t mode, bool settable) :
     enumToString.insert(AVOID_ADSB,"Avoid ADSB");
     enumToString.insert(GUIDED_NOGPS,"Guided No GPS");
     enumToString.insert(SAFE_RTL,"Smart RTL");
+    enumToString.insert(PLANCK_TRACKING, "Planck Track");
+    enumToString.insert(PLANCK_LAND,"Planck Land");
 
 
     setEnumToStringMapping(enumToString);
@@ -69,6 +71,8 @@ ArduCopterFirmwarePlugin::ArduCopterFirmwarePlugin(void)
     supportedFlightModes << APMCopterMode(APMCopterMode::AVOID_ADSB,true);
     supportedFlightModes << APMCopterMode(APMCopterMode::GUIDED_NOGPS,true);
     supportedFlightModes << APMCopterMode(APMCopterMode::SAFE_RTL,true);
+    supportedFlightModes << APMCopterMode(APMCopterMode::PLANCK_TRACKING,true);
+    supportedFlightModes << APMCopterMode(APMCopterMode::PLANCK_LAND,true);
 
 
 
@@ -175,7 +179,7 @@ int ArduCopterFirmwarePlugin::remapParamNameHigestMinorVersionNumber(int majorVe
 
 void ArduCopterFirmwarePlugin::guidedModeLand(Vehicle* vehicle)
 {
-    _setFlightModeAndValidate(vehicle, "Land");
+    _setFlightModeAndValidate(vehicle, "Planck Land");
 }
 
 bool ArduCopterFirmwarePlugin::multiRotorCoaxialMotors(Vehicle* vehicle)
