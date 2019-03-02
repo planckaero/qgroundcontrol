@@ -1243,7 +1243,7 @@
 </values>
 </param>
 <param humanName="Arm Checks to Peform (bitmask)" name="ARMING_CHECK" documentation="Checks prior to arming motor. This is a bitmask of checks that will be performed before allowing arming. The default is no checks, allowing arming at any time. You can select whatever checks you prefer by adding together the values of each check type to set this parameter. For example, to only allow arming when you have GPS lock and no RC failsafe you would set ARMING_CHECK to 72. For most users it is recommended that you set this to 1 to enable all checks." user="Standard">
-<field name="Bitmask">0:All,1:Barometer,2:Compass,3:GPS lock,4:INS,5:Parameters,6:RC Channels,7:Board voltage,8:Battery Level,10:Logging Available,11:Hardware safety switch,12:GPS Configuration</field>
+<field name="Bitmask">0:All,1:Barometer,2:Compass,3:GPS lock,4:INS,5:Parameters,6:RC Channels,7:Board voltage,8:Battery Level,10:Logging Available,11:Hardware safety switch,12:GPS Configuration,13:Planck Commbox GPS</field>
 <values>
 <value code="0">None</value>
 <value code="1">All</value>
@@ -1258,6 +1258,7 @@
 <value code="1024">LoggingAvailable</value>
 <value code="2048">Hardware safety switch</value>
 <value code="4096">GPS configuration</value>
+<value code="8192">Planck Commbox GPS</value>
 </values>
 </param>
 <param humanName="Accelerometer error threshold" name="ARMING_ACCTHRESH" documentation="Accelerometer error threshold used to determine inconsistent accelerometers. Compares this error range to other accelerometers to detect a hardware or calibration error. Lower value means tighter check and harder to pass arming check. Not all accelerometers are created equal." user="Advanced">
