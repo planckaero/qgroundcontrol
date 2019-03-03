@@ -43,6 +43,7 @@ APMCopterMode::APMCopterMode(uint32_t mode, bool settable) :
     enumToString.insert(GUIDED_NOGPS,"Guided No GPS");
     enumToString.insert(SAFE_RTL,"Smart RTL");
     enumToString.insert(PLANCK_TRACKING, "Planck Track");
+    enumToString.insert(PLANCK_RTB, "Planck RTB");
     enumToString.insert(PLANCK_LAND,"Planck Land");
 
 
@@ -72,6 +73,7 @@ ArduCopterFirmwarePlugin::ArduCopterFirmwarePlugin(void)
     supportedFlightModes << APMCopterMode(APMCopterMode::GUIDED_NOGPS,true);
     supportedFlightModes << APMCopterMode(APMCopterMode::SAFE_RTL,true);
     supportedFlightModes << APMCopterMode(APMCopterMode::PLANCK_TRACKING,true);
+    supportedFlightModes << APMCopterMode(APMCopterMode::PLANCK_RTB,true);
     supportedFlightModes << APMCopterMode(APMCopterMode::PLANCK_LAND,true);
 
 

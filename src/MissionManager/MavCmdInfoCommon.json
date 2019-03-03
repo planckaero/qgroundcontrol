@@ -1060,6 +1060,24 @@
                 "enumValues":       "3,4"
             }
         },
+        {
+            "id": 9001,
+            "rawName":      "MAV_CMD_NAV_PLANCK_TAKEOFF",
+            "friendlyName": "Planck takeoff",
+            "description":  "Planck takeoff command",
+            "category":     "Basic",
+            "param1": {
+                "label":            "Altitude",
+                "default":          10
+            }
+        },
+        {
+            "id": 9002,
+            "rawName":      "MAV_CMD_NAV_PLANCK_RTB",
+            "friendlyName": "Planck RTB",
+            "description":  "Planck RTB command",
+            "category":     "Basic"
+        },
         { "id": 30001, "rawName": "MAV_CMD_PAYLOAD_PREPARE_DEPLOY", "friendlyName": "Payload prepare deploy" },
         { "id": 30002, "rawName": "MAV_CMD_PAYLOAD_CONTROL_DEPLOY", "friendlyName": "Payload control deploy" }
     ]

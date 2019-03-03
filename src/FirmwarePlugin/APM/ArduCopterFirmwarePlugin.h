@@ -43,7 +43,8 @@ public:
         GUIDED_NOGPS= 20,
         SAFE_RTL   = 21,   //Safe Return to Launch
         PLANCK_TRACKING = 24,
-        PLANCK_LAND = 25,
+        PLANCK_RTB  = 25,
+        PLANCK_LAND = 26,
     };
     static const int modeCount = 24;
 
