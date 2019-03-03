@@ -120,7 +120,7 @@ Rectangle {
                 visible:        missionEndHeader.checked
 
                 QGCCheckBox {
-                    text:       qsTr("Return To Launch")
+                    text:       qsTr("Planck RTB")
                     checked:    missionItem.missionEndRTL
                     onClicked:  missionItem.missionEndRTL = checked
                 }

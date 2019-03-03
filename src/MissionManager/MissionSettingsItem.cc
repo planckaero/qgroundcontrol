@@ -170,7 +170,7 @@ bool MissionSettingsItem::addMissionEndAction(QList<MissionItem*>& items, int se
     if (_missionEndRTL) {
         qCDebug(MissionSettingsComplexItemLog) << "Appending end action RTL seqNum" << seqNum;
         item = new MissionItem(seqNum,
-                               MAV_CMD_NAV_RETURN_TO_LAUNCH,
+                               MAV_CMD_NAV_PLANCK_RTB,
                                MAV_FRAME_MISSION,
                                0, 0, 0, 0, 0, 0, 0,        // param 1-7 not used
                                true,                       // autoContinue
@@ -201,7 +201,7 @@ bool MissionSettingsItem::scanForMissionSettings(QmlObjectListModel* visualItems
     if (item) {
         MissionItem& missionItem = item->missionItem();
 
-        if (missionItem.command() == MAV_CMD_NAV_RETURN_TO_LAUNCH &&
+        if ((missionItem.command() == MAV_CMD_NAV_RETURN_TO_LAUNCH || missionItem.command() == MAV_CMD_NAV_PLANCK_RTB) &&
                 missionItem.param1() == 0 && missionItem.param2() == 0 && missionItem.param3() == 0 && missionItem.param4() == 0 && missionItem.param5() == 0 && missionItem.param6() == 0 && missionItem.param7() == 0) {
             qCDebug(MissionSettingsComplexItemLog) << "Scan: Found end action RTL";
             _missionEndRTL = true;
