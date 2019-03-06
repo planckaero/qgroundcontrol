@@ -10,6 +10,9 @@ typedef struct __mavlink_planck_stateinfo_t {
  float roll; /*< [rad] Roll angle (rad, -pi..+pi)*/
  float pitch; /*< [rad] Pitch angle (rad, -pi..+pi)*/
  float yaw; /*< [rad] Yaw angle (rad, -pi..+pi)*/
+ float gyro_x; /*< [rad/s] X-axis gyro rate*/
+ float gyro_y; /*< [rad/s] Y-axis gyro rate*/
+ float gyro_z; /*< [rad/s] Z-axis gyro rate*/
  float xacc; /*< [m/s/s] X acceleration (raw)*/
  float yacc; /*< [m/s/s] Y acceleration (raw)*/
  float zacc; /*< [m/s/s] Z acceleration (raw)*/
@@ -26,13 +29,13 @@ typedef struct __mavlink_planck_stateinfo_t {
  uint8_t status; /*<  Flight status: bit0:armed, bit1:in_flight, bit2:failsafe*/
 }) mavlink_planck_stateinfo_t;
 
-#define MAVLINK_MSG_ID_PLANCK_STATEINFO_LEN 72
-#define MAVLINK_MSG_ID_PLANCK_STATEINFO_MIN_LEN 72
-#define MAVLINK_MSG_ID_9001_LEN 72
-#define MAVLINK_MSG_ID_9001_MIN_LEN 72
+#define MAVLINK_MSG_ID_PLANCK_STATEINFO_LEN 84
+#define MAVLINK_MSG_ID_PLANCK_STATEINFO_MIN_LEN 84
+#define MAVLINK_MSG_ID_9001_LEN 84
+#define MAVLINK_MSG_ID_9001_MIN_LEN 84
 
-#define MAVLINK_MSG_ID_PLANCK_STATEINFO_CRC 190
-#define MAVLINK_MSG_ID_9001_CRC 190
+#define MAVLINK_MSG_ID_PLANCK_STATEINFO_CRC 97
+#define MAVLINK_MSG_ID_9001_CRC 97
 
 
 
@@ -40,51 +43,57 @@ typedef struct __mavlink_planck_stateinfo_t {
 #define MAVLINK_MESSAGE_INFO_PLANCK_STATEINFO { \
     9001, \
     "PLANCK_STATEINFO", \
-    19, \
-    {  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 68, offsetof(mavlink_planck_stateinfo_t, target_system) }, \
-         { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 69, offsetof(mavlink_planck_stateinfo_t, target_component) }, \
+    22, \
+    {  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 80, offsetof(mavlink_planck_stateinfo_t, target_system) }, \
+         { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 81, offsetof(mavlink_planck_stateinfo_t, target_component) }, \
          { "time_usec", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_planck_stateinfo_t, time_usec) }, \
          { "time_unix_usec", NULL, MAVLINK_TYPE_UINT64_T, 0, 8, offsetof(mavlink_planck_stateinfo_t, time_unix_usec) }, \
-         { "mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 70, offsetof(mavlink_planck_stateinfo_t, mode) }, \
-         { "status", NULL, MAVLINK_TYPE_UINT8_T, 0, 71, offsetof(mavlink_planck_stateinfo_t, status) }, \
+         { "mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 82, offsetof(mavlink_planck_stateinfo_t, mode) }, \
+         { "status", NULL, MAVLINK_TYPE_UINT8_T, 0, 83, offsetof(mavlink_planck_stateinfo_t, status) }, \
          { "roll", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_planck_stateinfo_t, roll) }, \
          { "pitch", NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_planck_stateinfo_t, pitch) }, \
          { "yaw", NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_planck_stateinfo_t, yaw) }, \
-         { "xacc", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_planck_stateinfo_t, xacc) }, \
-         { "yacc", NULL, MAVLINK_TYPE_FLOAT, 0, 32, offsetof(mavlink_planck_stateinfo_t, yacc) }, \
-         { "zacc", NULL, MAVLINK_TYPE_FLOAT, 0, 36, offsetof(mavlink_planck_stateinfo_t, zacc) }, \
-         { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 40, offsetof(mavlink_planck_stateinfo_t, lat) }, \
-         { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 44, offsetof(mavlink_planck_stateinfo_t, lon) }, \
-         { "alt", NULL, MAVLINK_TYPE_INT32_T, 0, 48, offsetof(mavlink_planck_stateinfo_t, alt) }, \
-         { "relative_alt", NULL, MAVLINK_TYPE_INT32_T, 0, 52, offsetof(mavlink_planck_stateinfo_t, relative_alt) }, \
-         { "vn", NULL, MAVLINK_TYPE_FLOAT, 0, 56, offsetof(mavlink_planck_stateinfo_t, vn) }, \
-         { "ve", NULL, MAVLINK_TYPE_FLOAT, 0, 60, offsetof(mavlink_planck_stateinfo_t, ve) }, \
-         { "vd", NULL, MAVLINK_TYPE_FLOAT, 0, 64, offsetof(mavlink_planck_stateinfo_t, vd) }, \
+         { "gyro_x", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_planck_stateinfo_t, gyro_x) }, \
+         { "gyro_y", NULL, MAVLINK_TYPE_FLOAT, 0, 32, offsetof(mavlink_planck_stateinfo_t, gyro_y) }, \
+         { "gyro_z", NULL, MAVLINK_TYPE_FLOAT, 0, 36, offsetof(mavlink_planck_stateinfo_t, gyro_z) }, \
+         { "xacc", NULL, MAVLINK_TYPE_FLOAT, 0, 40, offsetof(mavlink_planck_stateinfo_t, xacc) }, \
+         { "yacc", NULL, MAVLINK_TYPE_FLOAT, 0, 44, offsetof(mavlink_planck_stateinfo_t, yacc) }, \
+         { "zacc", NULL, MAVLINK_TYPE_FLOAT, 0, 48, offsetof(mavlink_planck_stateinfo_t, zacc) }, \
+         { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 52, offsetof(mavlink_planck_stateinfo_t, lat) }, \
+         { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 56, offsetof(mavlink_planck_stateinfo_t, lon) }, \
+         { "alt", NULL, MAVLINK_TYPE_INT32_T, 0, 60, offsetof(mavlink_planck_stateinfo_t, alt) }, \
+         { "relative_alt", NULL, MAVLINK_TYPE_INT32_T, 0, 64, offsetof(mavlink_planck_stateinfo_t, relative_alt) }, \
+         { "vn", NULL, MAVLINK_TYPE_FLOAT, 0, 68, offsetof(mavlink_planck_stateinfo_t, vn) }, \
+         { "ve", NULL, MAVLINK_TYPE_FLOAT, 0, 72, offsetof(mavlink_planck_stateinfo_t, ve) }, \
+         { "vd", NULL, MAVLINK_TYPE_FLOAT, 0, 76, offsetof(mavlink_planck_stateinfo_t, vd) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_PLANCK_STATEINFO { \
     "PLANCK_STATEINFO", \
-    19, \
-    {  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 68, offsetof(mavlink_planck_stateinfo_t, target_system) }, \
-         { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 69, offsetof(mavlink_planck_stateinfo_t, target_component) }, \
+    22, \
+    {  { "target_system", NULL, MAVLINK_TYPE_UINT8_T, 0, 80, offsetof(mavlink_planck_stateinfo_t, target_system) }, \
+         { "target_component", NULL, MAVLINK_TYPE_UINT8_T, 0, 81, offsetof(mavlink_planck_stateinfo_t, target_component) }, \
          { "time_usec", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_planck_stateinfo_t, time_usec) }, \
          { "time_unix_usec", NULL, MAVLINK_TYPE_UINT64_T, 0, 8, offsetof(mavlink_planck_stateinfo_t, time_unix_usec) }, \
-         { "mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 70, offsetof(mavlink_planck_stateinfo_t, mode) }, \
-         { "status", NULL, MAVLINK_TYPE_UINT8_T, 0, 71, offsetof(mavlink_planck_stateinfo_t, status) }, \
+         { "mode", NULL, MAVLINK_TYPE_UINT8_T, 0, 82, offsetof(mavlink_planck_stateinfo_t, mode) }, \
+         { "status", NULL, MAVLINK_TYPE_UINT8_T, 0, 83, offsetof(mavlink_planck_stateinfo_t, status) }, \
          { "roll", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_planck_stateinfo_t, roll) }, \
          { "pitch", NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_planck_stateinfo_t, pitch) }, \
          { "yaw", NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_planck_stateinfo_t, yaw) }, \
-         { "xacc", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_planck_stateinfo_t, xacc) }, \
-         { "yacc", NULL, MAVLINK_TYPE_FLOAT, 0, 32, offsetof(mavlink_planck_stateinfo_t, yacc) }, \
-         { "zacc", NULL, MAVLINK_TYPE_FLOAT, 0, 36, offsetof(mavlink_planck_stateinfo_t, zacc) }, \
-         { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 40, offsetof(mavlink_planck_stateinfo_t, lat) }, \
-         { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 44, offsetof(mavlink_planck_stateinfo_t, lon) }, \
-         { "alt", NULL, MAVLINK_TYPE_INT32_T, 0, 48, offsetof(mavlink_planck_stateinfo_t, alt) }, \
-         { "relative_alt", NULL, MAVLINK_TYPE_INT32_T, 0, 52, offsetof(mavlink_planck_stateinfo_t, relative_alt) }, \
-         { "vn", NULL, MAVLINK_TYPE_FLOAT, 0, 56, offsetof(mavlink_planck_stateinfo_t, vn) }, \
-         { "ve", NULL, MAVLINK_TYPE_FLOAT, 0, 60, offsetof(mavlink_planck_stateinfo_t, ve) }, \
-         { "vd", NULL, MAVLINK_TYPE_FLOAT, 0, 64, offsetof(mavlink_planck_stateinfo_t, vd) }, \
+         { "gyro_x", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_planck_stateinfo_t, gyro_x) }, \
+         { "gyro_y", NULL, MAVLINK_TYPE_FLOAT, 0, 32, offsetof(mavlink_planck_stateinfo_t, gyro_y) }, \
+         { "gyro_z", NULL, MAVLINK_TYPE_FLOAT, 0, 36, offsetof(mavlink_planck_stateinfo_t, gyro_z) }, \
+         { "xacc", NULL, MAVLINK_TYPE_FLOAT, 0, 40, offsetof(mavlink_planck_stateinfo_t, xacc) }, \
+         { "yacc", NULL, MAVLINK_TYPE_FLOAT, 0, 44, offsetof(mavlink_planck_stateinfo_t, yacc) }, \
+         { "zacc", NULL, MAVLINK_TYPE_FLOAT, 0, 48, offsetof(mavlink_planck_stateinfo_t, zacc) }, \
+         { "lat", NULL, MAVLINK_TYPE_INT32_T, 0, 52, offsetof(mavlink_planck_stateinfo_t, lat) }, \
+         { "lon", NULL, MAVLINK_TYPE_INT32_T, 0, 56, offsetof(mavlink_planck_stateinfo_t, lon) }, \
+         { "alt", NULL, MAVLINK_TYPE_INT32_T, 0, 60, offsetof(mavlink_planck_stateinfo_t, alt) }, \
+         { "relative_alt", NULL, MAVLINK_TYPE_INT32_T, 0, 64, offsetof(mavlink_planck_stateinfo_t, relative_alt) }, \
+         { "vn", NULL, MAVLINK_TYPE_FLOAT, 0, 68, offsetof(mavlink_planck_stateinfo_t, vn) }, \
+         { "ve", NULL, MAVLINK_TYPE_FLOAT, 0, 72, offsetof(mavlink_planck_stateinfo_t, ve) }, \
+         { "vd", NULL, MAVLINK_TYPE_FLOAT, 0, 76, offsetof(mavlink_planck_stateinfo_t, vd) }, \
          } \
 }
 #endif
@@ -104,6 +113,9 @@ typedef struct __mavlink_planck_stateinfo_t {
  * @param roll [rad] Roll angle (rad, -pi..+pi)
  * @param pitch [rad] Pitch angle (rad, -pi..+pi)
  * @param yaw [rad] Yaw angle (rad, -pi..+pi)
+ * @param gyro_x [rad/s] X-axis gyro rate
+ * @param gyro_y [rad/s] Y-axis gyro rate
+ * @param gyro_z [rad/s] Z-axis gyro rate
  * @param xacc [m/s/s] X acceleration (raw)
  * @param yacc [m/s/s] Y acceleration (raw)
  * @param zacc [m/s/s] Z acceleration (raw)
@@ -117,7 +129,7 @@ typedef struct __mavlink_planck_stateinfo_t {
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_planck_stateinfo_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint8_t target_system, uint8_t target_component, uint64_t time_usec, uint64_t time_unix_usec, uint8_t mode, uint8_t status, float roll, float pitch, float yaw, float xacc, float yacc, float zacc, int32_t lat, int32_t lon, int32_t alt, int32_t relative_alt, float vn, float ve, float vd)
+                               uint8_t target_system, uint8_t target_component, uint64_t time_usec, uint64_t time_unix_usec, uint8_t mode, uint8_t status, float roll, float pitch, float yaw, float gyro_x, float gyro_y, float gyro_z, float xacc, float yacc, float zacc, int32_t lat, int32_t lon, int32_t alt, int32_t relative_alt, float vn, float ve, float vd)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_PLANCK_STATEINFO_LEN];
@@ -126,20 +138,23 @@ static inline uint16_t mavlink_msg_planck_stateinfo_pack(uint8_t system_id, uint
     _mav_put_float(buf, 16, roll);
     _mav_put_float(buf, 20, pitch);
     _mav_put_float(buf, 24, yaw);
-    _mav_put_float(buf, 28, xacc);
-    _mav_put_float(buf, 32, yacc);
-    _mav_put_float(buf, 36, zacc);
-    _mav_put_int32_t(buf, 40, lat);
-    _mav_put_int32_t(buf, 44, lon);
-    _mav_put_int32_t(buf, 48, alt);
-    _mav_put_int32_t(buf, 52, relative_alt);
-    _mav_put_float(buf, 56, vn);
-    _mav_put_float(buf, 60, ve);
-    _mav_put_float(buf, 64, vd);
-    _mav_put_uint8_t(buf, 68, target_system);
-    _mav_put_uint8_t(buf, 69, target_component);
-    _mav_put_uint8_t(buf, 70, mode);
-    _mav_put_uint8_t(buf, 71, status);
+    _mav_put_float(buf, 28, gyro_x);
+    _mav_put_float(buf, 32, gyro_y);
+    _mav_put_float(buf, 36, gyro_z);
+    _mav_put_float(buf, 40, xacc);
+    _mav_put_float(buf, 44, yacc);
+    _mav_put_float(buf, 48, zacc);
+    _mav_put_int32_t(buf, 52, lat);
+    _mav_put_int32_t(buf, 56, lon);
+    _mav_put_int32_t(buf, 60, alt);
+    _mav_put_int32_t(buf, 64, relative_alt);
+    _mav_put_float(buf, 68, vn);
+    _mav_put_float(buf, 72, ve);
+    _mav_put_float(buf, 76, vd);
+    _mav_put_uint8_t(buf, 80, target_system);
+    _mav_put_uint8_t(buf, 81, target_component);
+    _mav_put_uint8_t(buf, 82, mode);
+    _mav_put_uint8_t(buf, 83, status);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_PLANCK_STATEINFO_LEN);
 #else
@@ -149,6 +164,9 @@ static inline uint16_t mavlink_msg_planck_stateinfo_pack(uint8_t system_id, uint
     packet.roll = roll;
     packet.pitch = pitch;
     packet.yaw = yaw;
+    packet.gyro_x = gyro_x;
+    packet.gyro_y = gyro_y;
+    packet.gyro_z = gyro_z;
     packet.xacc = xacc;
     packet.yacc = yacc;
     packet.zacc = zacc;
@@ -186,6 +204,9 @@ static inline uint16_t mavlink_msg_planck_stateinfo_pack(uint8_t system_id, uint
  * @param roll [rad] Roll angle (rad, -pi..+pi)
  * @param pitch [rad] Pitch angle (rad, -pi..+pi)
  * @param yaw [rad] Yaw angle (rad, -pi..+pi)
+ * @param gyro_x [rad/s] X-axis gyro rate
+ * @param gyro_y [rad/s] Y-axis gyro rate
+ * @param gyro_z [rad/s] Z-axis gyro rate
  * @param xacc [m/s/s] X acceleration (raw)
  * @param yacc [m/s/s] Y acceleration (raw)
  * @param zacc [m/s/s] Z acceleration (raw)
@@ -200,7 +221,7 @@ static inline uint16_t mavlink_msg_planck_stateinfo_pack(uint8_t system_id, uint
  */
 static inline uint16_t mavlink_msg_planck_stateinfo_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   uint8_t target_system,uint8_t target_component,uint64_t time_usec,uint64_t time_unix_usec,uint8_t mode,uint8_t status,float roll,float pitch,float yaw,float xacc,float yacc,float zacc,int32_t lat,int32_t lon,int32_t alt,int32_t relative_alt,float vn,float ve,float vd)
+                                   uint8_t target_system,uint8_t target_component,uint64_t time_usec,uint64_t time_unix_usec,uint8_t mode,uint8_t status,float roll,float pitch,float yaw,float gyro_x,float gyro_y,float gyro_z,float xacc,float yacc,float zacc,int32_t lat,int32_t lon,int32_t alt,int32_t relative_alt,float vn,float ve,float vd)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_PLANCK_STATEINFO_LEN];
@@ -209,20 +230,23 @@ static inline uint16_t mavlink_msg_planck_stateinfo_pack_chan(uint8_t system_id,
     _mav_put_float(buf, 16, roll);
     _mav_put_float(buf, 20, pitch);
     _mav_put_float(buf, 24, yaw);
-    _mav_put_float(buf, 28, xacc);
-    _mav_put_float(buf, 32, yacc);
-    _mav_put_float(buf, 36, zacc);
-    _mav_put_int32_t(buf, 40, lat);
-    _mav_put_int32_t(buf, 44, lon);
-    _mav_put_int32_t(buf, 48, alt);
-    _mav_put_int32_t(buf, 52, relative_alt);
-    _mav_put_float(buf, 56, vn);
-    _mav_put_float(buf, 60, ve);
-    _mav_put_float(buf, 64, vd);
-    _mav_put_uint8_t(buf, 68, target_system);
-    _mav_put_uint8_t(buf, 69, target_component);
-    _mav_put_uint8_t(buf, 70, mode);
-    _mav_put_uint8_t(buf, 71, status);
+    _mav_put_float(buf, 28, gyro_x);
+    _mav_put_float(buf, 32, gyro_y);
+    _mav_put_float(buf, 36, gyro_z);
+    _mav_put_float(buf, 40, xacc);
+    _mav_put_float(buf, 44, yacc);
+    _mav_put_float(buf, 48, zacc);
+    _mav_put_int32_t(buf, 52, lat);
+    _mav_put_int32_t(buf, 56, lon);
+    _mav_put_int32_t(buf, 60, alt);
+    _mav_put_int32_t(buf, 64, relative_alt);
+    _mav_put_float(buf, 68, vn);
+    _mav_put_float(buf, 72, ve);
+    _mav_put_float(buf, 76, vd);
+    _mav_put_uint8_t(buf, 80, target_system);
+    _mav_put_uint8_t(buf, 81, target_component);
+    _mav_put_uint8_t(buf, 82, mode);
+    _mav_put_uint8_t(buf, 83, status);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_PLANCK_STATEINFO_LEN);
 #else
@@ -232,6 +256,9 @@ static inline uint16_t mavlink_msg_planck_stateinfo_pack_chan(uint8_t system_id,
     packet.roll = roll;
     packet.pitch = pitch;
     packet.yaw = yaw;
+    packet.gyro_x = gyro_x;
+    packet.gyro_y = gyro_y;
+    packet.gyro_z = gyro_z;
     packet.xacc = xacc;
     packet.yacc = yacc;
     packet.zacc = zacc;
@@ -264,7 +291,7 @@ static inline uint16_t mavlink_msg_planck_stateinfo_pack_chan(uint8_t system_id,
  */
 static inline uint16_t mavlink_msg_planck_stateinfo_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_planck_stateinfo_t* planck_stateinfo)
 {
-    return mavlink_msg_planck_stateinfo_pack(system_id, component_id, msg, planck_stateinfo->target_system, planck_stateinfo->target_component, planck_stateinfo->time_usec, planck_stateinfo->time_unix_usec, planck_stateinfo->mode, planck_stateinfo->status, planck_stateinfo->roll, planck_stateinfo->pitch, planck_stateinfo->yaw, planck_stateinfo->xacc, planck_stateinfo->yacc, planck_stateinfo->zacc, planck_stateinfo->lat, planck_stateinfo->lon, planck_stateinfo->alt, planck_stateinfo->relative_alt, planck_stateinfo->vn, planck_stateinfo->ve, planck_stateinfo->vd);
+    return mavlink_msg_planck_stateinfo_pack(system_id, component_id, msg, planck_stateinfo->target_system, planck_stateinfo->target_component, planck_stateinfo->time_usec, planck_stateinfo->time_unix_usec, planck_stateinfo->mode, planck_stateinfo->status, planck_stateinfo->roll, planck_stateinfo->pitch, planck_stateinfo->yaw, planck_stateinfo->gyro_x, planck_stateinfo->gyro_y, planck_stateinfo->gyro_z, planck_stateinfo->xacc, planck_stateinfo->yacc, planck_stateinfo->zacc, planck_stateinfo->lat, planck_stateinfo->lon, planck_stateinfo->alt, planck_stateinfo->relative_alt, planck_stateinfo->vn, planck_stateinfo->ve, planck_stateinfo->vd);
 }
 
 /**
@@ -278,7 +305,7 @@ static inline uint16_t mavlink_msg_planck_stateinfo_encode(uint8_t system_id, ui
  */
 static inline uint16_t mavlink_msg_planck_stateinfo_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_planck_stateinfo_t* planck_stateinfo)
 {
-    return mavlink_msg_planck_stateinfo_pack_chan(system_id, component_id, chan, msg, planck_stateinfo->target_system, planck_stateinfo->target_component, planck_stateinfo->time_usec, planck_stateinfo->time_unix_usec, planck_stateinfo->mode, planck_stateinfo->status, planck_stateinfo->roll, planck_stateinfo->pitch, planck_stateinfo->yaw, planck_stateinfo->xacc, planck_stateinfo->yacc, planck_stateinfo->zacc, planck_stateinfo->lat, planck_stateinfo->lon, planck_stateinfo->alt, planck_stateinfo->relative_alt, planck_stateinfo->vn, planck_stateinfo->ve, planck_stateinfo->vd);
+    return mavlink_msg_planck_stateinfo_pack_chan(system_id, component_id, chan, msg, planck_stateinfo->target_system, planck_stateinfo->target_component, planck_stateinfo->time_usec, planck_stateinfo->time_unix_usec, planck_stateinfo->mode, planck_stateinfo->status, planck_stateinfo->roll, planck_stateinfo->pitch, planck_stateinfo->yaw, planck_stateinfo->gyro_x, planck_stateinfo->gyro_y, planck_stateinfo->gyro_z, planck_stateinfo->xacc, planck_stateinfo->yacc, planck_stateinfo->zacc, planck_stateinfo->lat, planck_stateinfo->lon, planck_stateinfo->alt, planck_stateinfo->relative_alt, planck_stateinfo->vn, planck_stateinfo->ve, planck_stateinfo->vd);
 }
 
 /**
@@ -294,6 +321,9 @@ static inline uint16_t mavlink_msg_planck_stateinfo_encode_chan(uint8_t system_i
  * @param roll [rad] Roll angle (rad, -pi..+pi)
  * @param pitch [rad] Pitch angle (rad, -pi..+pi)
  * @param yaw [rad] Yaw angle (rad, -pi..+pi)
+ * @param gyro_x [rad/s] X-axis gyro rate
+ * @param gyro_y [rad/s] Y-axis gyro rate
+ * @param gyro_z [rad/s] Z-axis gyro rate
  * @param xacc [m/s/s] X acceleration (raw)
  * @param yacc [m/s/s] Y acceleration (raw)
  * @param zacc [m/s/s] Z acceleration (raw)
@@ -307,7 +337,7 @@ static inline uint16_t mavlink_msg_planck_stateinfo_encode_chan(uint8_t system_i
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_planck_stateinfo_send(mavlink_channel_t chan, uint8_t target_system, uint8_t target_component, uint64_t time_usec, uint64_t time_unix_usec, uint8_t mode, uint8_t status, float roll, float pitch, float yaw, float xacc, float yacc, float zacc, int32_t lat, int32_t lon, int32_t alt, int32_t relative_alt, float vn, float ve, float vd)
+static inline void mavlink_msg_planck_stateinfo_send(mavlink_channel_t chan, uint8_t target_system, uint8_t target_component, uint64_t time_usec, uint64_t time_unix_usec, uint8_t mode, uint8_t status, float roll, float pitch, float yaw, float gyro_x, float gyro_y, float gyro_z, float xacc, float yacc, float zacc, int32_t lat, int32_t lon, int32_t alt, int32_t relative_alt, float vn, float ve, float vd)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_PLANCK_STATEINFO_LEN];
@@ -316,20 +346,23 @@ static inline void mavlink_msg_planck_stateinfo_send(mavlink_channel_t chan, uin
     _mav_put_float(buf, 16, roll);
     _mav_put_float(buf, 20, pitch);
     _mav_put_float(buf, 24, yaw);
-    _mav_put_float(buf, 28, xacc);
-    _mav_put_float(buf, 32, yacc);
-    _mav_put_float(buf, 36, zacc);
-    _mav_put_int32_t(buf, 40, lat);
-    _mav_put_int32_t(buf, 44, lon);
-    _mav_put_int32_t(buf, 48, alt);
-    _mav_put_int32_t(buf, 52, relative_alt);
-    _mav_put_float(buf, 56, vn);
-    _mav_put_float(buf, 60, ve);
-    _mav_put_float(buf, 64, vd);
-    _mav_put_uint8_t(buf, 68, target_system);
-    _mav_put_uint8_t(buf, 69, target_component);
-    _mav_put_uint8_t(buf, 70, mode);
-    _mav_put_uint8_t(buf, 71, status);
+    _mav_put_float(buf, 28, gyro_x);
+    _mav_put_float(buf, 32, gyro_y);
+    _mav_put_float(buf, 36, gyro_z);
+    _mav_put_float(buf, 40, xacc);
+    _mav_put_float(buf, 44, yacc);
+    _mav_put_float(buf, 48, zacc);
+    _mav_put_int32_t(buf, 52, lat);
+    _mav_put_int32_t(buf, 56, lon);
+    _mav_put_int32_t(buf, 60, alt);
+    _mav_put_int32_t(buf, 64, relative_alt);
+    _mav_put_float(buf, 68, vn);
+    _mav_put_float(buf, 72, ve);
+    _mav_put_float(buf, 76, vd);
+    _mav_put_uint8_t(buf, 80, target_system);
+    _mav_put_uint8_t(buf, 81, target_component);
+    _mav_put_uint8_t(buf, 82, mode);
+    _mav_put_uint8_t(buf, 83, status);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PLANCK_STATEINFO, buf, MAVLINK_MSG_ID_PLANCK_STATEINFO_MIN_LEN, MAVLINK_MSG_ID_PLANCK_STATEINFO_LEN, MAVLINK_MSG_ID_PLANCK_STATEINFO_CRC);
 #else
@@ -339,6 +372,9 @@ static inline void mavlink_msg_planck_stateinfo_send(mavlink_channel_t chan, uin
     packet.roll = roll;
     packet.pitch = pitch;
     packet.yaw = yaw;
+    packet.gyro_x = gyro_x;
+    packet.gyro_y = gyro_y;
+    packet.gyro_z = gyro_z;
     packet.xacc = xacc;
     packet.yacc = yacc;
     packet.zacc = zacc;
@@ -366,7 +402,7 @@ static inline void mavlink_msg_planck_stateinfo_send(mavlink_channel_t chan, uin
 static inline void mavlink_msg_planck_stateinfo_send_struct(mavlink_channel_t chan, const mavlink_planck_stateinfo_t* planck_stateinfo)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_planck_stateinfo_send(chan, planck_stateinfo->target_system, planck_stateinfo->target_component, planck_stateinfo->time_usec, planck_stateinfo->time_unix_usec, planck_stateinfo->mode, planck_stateinfo->status, planck_stateinfo->roll, planck_stateinfo->pitch, planck_stateinfo->yaw, planck_stateinfo->xacc, planck_stateinfo->yacc, planck_stateinfo->zacc, planck_stateinfo->lat, planck_stateinfo->lon, planck_stateinfo->alt, planck_stateinfo->relative_alt, planck_stateinfo->vn, planck_stateinfo->ve, planck_stateinfo->vd);
+    mavlink_msg_planck_stateinfo_send(chan, planck_stateinfo->target_system, planck_stateinfo->target_component, planck_stateinfo->time_usec, planck_stateinfo->time_unix_usec, planck_stateinfo->mode, planck_stateinfo->status, planck_stateinfo->roll, planck_stateinfo->pitch, planck_stateinfo->yaw, planck_stateinfo->gyro_x, planck_stateinfo->gyro_y, planck_stateinfo->gyro_z, planck_stateinfo->xacc, planck_stateinfo->yacc, planck_stateinfo->zacc, planck_stateinfo->lat, planck_stateinfo->lon, planck_stateinfo->alt, planck_stateinfo->relative_alt, planck_stateinfo->vn, planck_stateinfo->ve, planck_stateinfo->vd);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PLANCK_STATEINFO, (const char *)planck_stateinfo, MAVLINK_MSG_ID_PLANCK_STATEINFO_MIN_LEN, MAVLINK_MSG_ID_PLANCK_STATEINFO_LEN, MAVLINK_MSG_ID_PLANCK_STATEINFO_CRC);
 #endif
@@ -380,7 +416,7 @@ static inline void mavlink_msg_planck_stateinfo_send_struct(mavlink_channel_t ch
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_planck_stateinfo_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t target_system, uint8_t target_component, uint64_t time_usec, uint64_t time_unix_usec, uint8_t mode, uint8_t status, float roll, float pitch, float yaw, float xacc, float yacc, float zacc, int32_t lat, int32_t lon, int32_t alt, int32_t relative_alt, float vn, float ve, float vd)
+static inline void mavlink_msg_planck_stateinfo_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t target_system, uint8_t target_component, uint64_t time_usec, uint64_t time_unix_usec, uint8_t mode, uint8_t status, float roll, float pitch, float yaw, float gyro_x, float gyro_y, float gyro_z, float xacc, float yacc, float zacc, int32_t lat, int32_t lon, int32_t alt, int32_t relative_alt, float vn, float ve, float vd)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
@@ -389,20 +425,23 @@ static inline void mavlink_msg_planck_stateinfo_send_buf(mavlink_message_t *msgb
     _mav_put_float(buf, 16, roll);
     _mav_put_float(buf, 20, pitch);
     _mav_put_float(buf, 24, yaw);
-    _mav_put_float(buf, 28, xacc);
-    _mav_put_float(buf, 32, yacc);
-    _mav_put_float(buf, 36, zacc);
-    _mav_put_int32_t(buf, 40, lat);
-    _mav_put_int32_t(buf, 44, lon);
-    _mav_put_int32_t(buf, 48, alt);
-    _mav_put_int32_t(buf, 52, relative_alt);
-    _mav_put_float(buf, 56, vn);
-    _mav_put_float(buf, 60, ve);
-    _mav_put_float(buf, 64, vd);
-    _mav_put_uint8_t(buf, 68, target_system);
-    _mav_put_uint8_t(buf, 69, target_component);
-    _mav_put_uint8_t(buf, 70, mode);
-    _mav_put_uint8_t(buf, 71, status);
+    _mav_put_float(buf, 28, gyro_x);
+    _mav_put_float(buf, 32, gyro_y);
+    _mav_put_float(buf, 36, gyro_z);
+    _mav_put_float(buf, 40, xacc);
+    _mav_put_float(buf, 44, yacc);
+    _mav_put_float(buf, 48, zacc);
+    _mav_put_int32_t(buf, 52, lat);
+    _mav_put_int32_t(buf, 56, lon);
+    _mav_put_int32_t(buf, 60, alt);
+    _mav_put_int32_t(buf, 64, relative_alt);
+    _mav_put_float(buf, 68, vn);
+    _mav_put_float(buf, 72, ve);
+    _mav_put_float(buf, 76, vd);
+    _mav_put_uint8_t(buf, 80, target_system);
+    _mav_put_uint8_t(buf, 81, target_component);
+    _mav_put_uint8_t(buf, 82, mode);
+    _mav_put_uint8_t(buf, 83, status);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PLANCK_STATEINFO, buf, MAVLINK_MSG_ID_PLANCK_STATEINFO_MIN_LEN, MAVLINK_MSG_ID_PLANCK_STATEINFO_LEN, MAVLINK_MSG_ID_PLANCK_STATEINFO_CRC);
 #else
@@ -412,6 +451,9 @@ static inline void mavlink_msg_planck_stateinfo_send_buf(mavlink_message_t *msgb
     packet->roll = roll;
     packet->pitch = pitch;
     packet->yaw = yaw;
+    packet->gyro_x = gyro_x;
+    packet->gyro_y = gyro_y;
+    packet->gyro_z = gyro_z;
     packet->xacc = xacc;
     packet->yacc = yacc;
     packet->zacc = zacc;
@@ -444,7 +486,7 @@ static inline void mavlink_msg_planck_stateinfo_send_buf(mavlink_message_t *msgb
  */
 static inline uint8_t mavlink_msg_planck_stateinfo_get_target_system(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  68);
+    return _MAV_RETURN_uint8_t(msg,  80);
 }
 
 /**
@@ -454,7 +496,7 @@ static inline uint8_t mavlink_msg_planck_stateinfo_get_target_system(const mavli
  */
 static inline uint8_t mavlink_msg_planck_stateinfo_get_target_component(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  69);
+    return _MAV_RETURN_uint8_t(msg,  81);
 }
 
 /**
@@ -484,7 +526,7 @@ static inline uint64_t mavlink_msg_planck_stateinfo_get_time_unix_usec(const mav
  */
 static inline uint8_t mavlink_msg_planck_stateinfo_get_mode(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  70);
+    return _MAV_RETURN_uint8_t(msg,  82);
 }
 
 /**
@@ -494,7 +536,7 @@ static inline uint8_t mavlink_msg_planck_stateinfo_get_mode(const mavlink_messag
  */
 static inline uint8_t mavlink_msg_planck_stateinfo_get_status(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint8_t(msg,  71);
+    return _MAV_RETURN_uint8_t(msg,  83);
 }
 
 /**
@@ -528,13 +570,43 @@ static inline float mavlink_msg_planck_stateinfo_get_yaw(const mavlink_message_t
 }
 
 /**
+ * @brief Get field gyro_x from planck_stateinfo message
+ *
+ * @return [rad/s] X-axis gyro rate
+ */
+static inline float mavlink_msg_planck_stateinfo_get_gyro_x(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_float(msg,  28);
+}
+
+/**
+ * @brief Get field gyro_y from planck_stateinfo message
+ *
+ * @return [rad/s] Y-axis gyro rate
+ */
+static inline float mavlink_msg_planck_stateinfo_get_gyro_y(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_float(msg,  32);
+}
+
+/**
+ * @brief Get field gyro_z from planck_stateinfo message
+ *
+ * @return [rad/s] Z-axis gyro rate
+ */
+static inline float mavlink_msg_planck_stateinfo_get_gyro_z(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_float(msg,  36);
+}
+
+/**
  * @brief Get field xacc from planck_stateinfo message
  *
  * @return [m/s/s] X acceleration (raw)
  */
 static inline float mavlink_msg_planck_stateinfo_get_xacc(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  28);
+    return _MAV_RETURN_float(msg,  40);
 }
 
 /**
@@ -544,7 +616,7 @@ static inline float mavlink_msg_planck_stateinfo_get_xacc(const mavlink_message_
  */
 static inline float mavlink_msg_planck_stateinfo_get_yacc(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  32);
+    return _MAV_RETURN_float(msg,  44);
 }
 
 /**
@@ -554,7 +626,7 @@ static inline float mavlink_msg_planck_stateinfo_get_yacc(const mavlink_message_
  */
 static inline float mavlink_msg_planck_stateinfo_get_zacc(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  36);
+    return _MAV_RETURN_float(msg,  48);
 }
 
 /**
@@ -564,7 +636,7 @@ static inline float mavlink_msg_planck_stateinfo_get_zacc(const mavlink_message_
  */
 static inline int32_t mavlink_msg_planck_stateinfo_get_lat(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int32_t(msg,  40);
+    return _MAV_RETURN_int32_t(msg,  52);
 }
 
 /**
@@ -574,7 +646,7 @@ static inline int32_t mavlink_msg_planck_stateinfo_get_lat(const mavlink_message
  */
 static inline int32_t mavlink_msg_planck_stateinfo_get_lon(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int32_t(msg,  44);
+    return _MAV_RETURN_int32_t(msg,  56);
 }
 
 /**
@@ -584,7 +656,7 @@ static inline int32_t mavlink_msg_planck_stateinfo_get_lon(const mavlink_message
  */
 static inline int32_t mavlink_msg_planck_stateinfo_get_alt(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int32_t(msg,  48);
+    return _MAV_RETURN_int32_t(msg,  60);
 }
 
 /**
@@ -594,7 +666,7 @@ static inline int32_t mavlink_msg_planck_stateinfo_get_alt(const mavlink_message
  */
 static inline int32_t mavlink_msg_planck_stateinfo_get_relative_alt(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_int32_t(msg,  52);
+    return _MAV_RETURN_int32_t(msg,  64);
 }
 
 /**
@@ -604,7 +676,7 @@ static inline int32_t mavlink_msg_planck_stateinfo_get_relative_alt(const mavlin
  */
 static inline float mavlink_msg_planck_stateinfo_get_vn(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  56);
+    return _MAV_RETURN_float(msg,  68);
 }
 
 /**
@@ -614,7 +686,7 @@ static inline float mavlink_msg_planck_stateinfo_get_vn(const mavlink_message_t*
  */
 static inline float mavlink_msg_planck_stateinfo_get_ve(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  60);
+    return _MAV_RETURN_float(msg,  72);
 }
 
 /**
@@ -624,7 +696,7 @@ static inline float mavlink_msg_planck_stateinfo_get_ve(const mavlink_message_t*
  */
 static inline float mavlink_msg_planck_stateinfo_get_vd(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_float(msg,  64);
+    return _MAV_RETURN_float(msg,  76);
 }
 
 /**
@@ -641,6 +713,9 @@ static inline void mavlink_msg_planck_stateinfo_decode(const mavlink_message_t* 
     planck_stateinfo->roll = mavlink_msg_planck_stateinfo_get_roll(msg);
     planck_stateinfo->pitch = mavlink_msg_planck_stateinfo_get_pitch(msg);
     planck_stateinfo->yaw = mavlink_msg_planck_stateinfo_get_yaw(msg);
+    planck_stateinfo->gyro_x = mavlink_msg_planck_stateinfo_get_gyro_x(msg);
+    planck_stateinfo->gyro_y = mavlink_msg_planck_stateinfo_get_gyro_y(msg);
+    planck_stateinfo->gyro_z = mavlink_msg_planck_stateinfo_get_gyro_z(msg);
     planck_stateinfo->xacc = mavlink_msg_planck_stateinfo_get_xacc(msg);
     planck_stateinfo->yacc = mavlink_msg_planck_stateinfo_get_yacc(msg);
     planck_stateinfo->zacc = mavlink_msg_planck_stateinfo_get_zacc(msg);

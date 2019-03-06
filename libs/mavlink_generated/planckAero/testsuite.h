@@ -37,7 +37,7 @@ static void mavlink_test_planck_stateinfo(uint8_t system_id, uint8_t component_i
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
     mavlink_planck_stateinfo_t packet_in = {
-        93372036854775807ULL,93372036854776311ULL,129.0,157.0,185.0,213.0,241.0,269.0,963499544,963499752,963499960,963500168,409.0,437.0,465.0,209,20,87,154
+        93372036854775807ULL,93372036854776311ULL,129.0,157.0,185.0,213.0,241.0,269.0,297.0,325.0,353.0,963500168,963500376,963500584,963500792,493.0,521.0,549.0,245,56,123,190
     };
     mavlink_planck_stateinfo_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
@@ -46,6 +46,9 @@ static void mavlink_test_planck_stateinfo(uint8_t system_id, uint8_t component_i
         packet1.roll = packet_in.roll;
         packet1.pitch = packet_in.pitch;
         packet1.yaw = packet_in.yaw;
+        packet1.gyro_x = packet_in.gyro_x;
+        packet1.gyro_y = packet_in.gyro_y;
+        packet1.gyro_z = packet_in.gyro_z;
         packet1.xacc = packet_in.xacc;
         packet1.yacc = packet_in.yacc;
         packet1.zacc = packet_in.zacc;
@@ -74,12 +77,12 @@ static void mavlink_test_planck_stateinfo(uint8_t system_id, uint8_t component_i
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_stateinfo_pack(system_id, component_id, &msg , packet1.target_system , packet1.target_component , packet1.time_usec , packet1.time_unix_usec , packet1.mode , packet1.status , packet1.roll , packet1.pitch , packet1.yaw , packet1.xacc , packet1.yacc , packet1.zacc , packet1.lat , packet1.lon , packet1.alt , packet1.relative_alt , packet1.vn , packet1.ve , packet1.vd );
+    mavlink_msg_planck_stateinfo_pack(system_id, component_id, &msg , packet1.target_system , packet1.target_component , packet1.time_usec , packet1.time_unix_usec , packet1.mode , packet1.status , packet1.roll , packet1.pitch , packet1.yaw , packet1.gyro_x , packet1.gyro_y , packet1.gyro_z , packet1.xacc , packet1.yacc , packet1.zacc , packet1.lat , packet1.lon , packet1.alt , packet1.relative_alt , packet1.vn , packet1.ve , packet1.vd );
     mavlink_msg_planck_stateinfo_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_stateinfo_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.target_system , packet1.target_component , packet1.time_usec , packet1.time_unix_usec , packet1.mode , packet1.status , packet1.roll , packet1.pitch , packet1.yaw , packet1.xacc , packet1.yacc , packet1.zacc , packet1.lat , packet1.lon , packet1.alt , packet1.relative_alt , packet1.vn , packet1.ve , packet1.vd );
+    mavlink_msg_planck_stateinfo_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.target_system , packet1.target_component , packet1.time_usec , packet1.time_unix_usec , packet1.mode , packet1.status , packet1.roll , packet1.pitch , packet1.yaw , packet1.gyro_x , packet1.gyro_y , packet1.gyro_z , packet1.xacc , packet1.yacc , packet1.zacc , packet1.lat , packet1.lon , packet1.alt , packet1.relative_alt , packet1.vn , packet1.ve , packet1.vd );
     mavlink_msg_planck_stateinfo_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
@@ -92,7 +95,7 @@ static void mavlink_test_planck_stateinfo(uint8_t system_id, uint8_t component_i
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_stateinfo_send(MAVLINK_COMM_1 , packet1.target_system , packet1.target_component , packet1.time_usec , packet1.time_unix_usec , packet1.mode , packet1.status , packet1.roll , packet1.pitch , packet1.yaw , packet1.xacc , packet1.yacc , packet1.zacc , packet1.lat , packet1.lon , packet1.alt , packet1.relative_alt , packet1.vn , packet1.ve , packet1.vd );
+    mavlink_msg_planck_stateinfo_send(MAVLINK_COMM_1 , packet1.target_system , packet1.target_component , packet1.time_usec , packet1.time_unix_usec , packet1.mode , packet1.status , packet1.roll , packet1.pitch , packet1.yaw , packet1.gyro_x , packet1.gyro_y , packet1.gyro_z , packet1.xacc , packet1.yacc , packet1.zacc , packet1.lat , packet1.lon , packet1.alt , packet1.relative_alt , packet1.vn , packet1.ve , packet1.vd );
     mavlink_msg_planck_stateinfo_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
