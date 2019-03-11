@@ -285,46 +285,52 @@ static void mavlink_test_planck_cmd_msg(uint8_t system_id, uint8_t component_id,
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
-static void mavlink_test_planck_start_takeoff(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
+static void mavlink_test_planck_cmd_request(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
 {
 #ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
     mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
-        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_PLANCK_START_TAKEOFF >= 256) {
+        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_PLANCK_CMD_REQUEST >= 256) {
             return;
         }
 #endif
     mavlink_message_t msg;
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
-    mavlink_planck_start_takeoff_t packet_in = {
-        17.0,17,84
+    mavlink_planck_cmd_request_t packet_in = {
+        17.0,45.0,73.0,101.0,129.0,157.0,77,144,211
     };
-    mavlink_planck_start_takeoff_t packet1, packet2;
+    mavlink_planck_cmd_request_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
-        packet1.alt = packet_in.alt;
+        packet1.param1 = packet_in.param1;
+        packet1.param2 = packet_in.param2;
+        packet1.param3 = packet_in.param3;
+        packet1.param4 = packet_in.param4;
+        packet1.param5 = packet_in.param5;
+        packet1.param6 = packet_in.param6;
         packet1.target_system = packet_in.target_system;
         packet1.target_component = packet_in.target_component;
+        packet1.type = packet_in.type;
         
         
 #ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
         if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
            // cope with extensions
-           memset(MAVLINK_MSG_ID_PLANCK_START_TAKEOFF_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_PLANCK_START_TAKEOFF_MIN_LEN);
+           memset(MAVLINK_MSG_ID_PLANCK_CMD_REQUEST_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_PLANCK_CMD_REQUEST_MIN_LEN);
         }
 #endif
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_takeoff_encode(system_id, component_id, &msg, &packet1);
-    mavlink_msg_planck_start_takeoff_decode(&msg, &packet2);
+    mavlink_msg_planck_cmd_request_encode(system_id, component_id, &msg, &packet1);
+    mavlink_msg_planck_cmd_request_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_takeoff_pack(system_id, component_id, &msg , packet1.target_system , packet1.target_component , packet1.alt );
-    mavlink_msg_planck_start_takeoff_decode(&msg, &packet2);
+    mavlink_msg_planck_cmd_request_pack(system_id, component_id, &msg , packet1.target_system , packet1.target_component , packet1.type , packet1.param1 , packet1.param2 , packet1.param3 , packet1.param4 , packet1.param5 , packet1.param6 );
+    mavlink_msg_planck_cmd_request_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_takeoff_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.target_system , packet1.target_component , packet1.alt );
-    mavlink_msg_planck_start_takeoff_decode(&msg, &packet2);
+    mavlink_msg_planck_cmd_request_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.target_system , packet1.target_component , packet1.type , packet1.param1 , packet1.param2 , packet1.param3 , packet1.param4 , packet1.param5 , packet1.param6 );
+    mavlink_msg_planck_cmd_request_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
@@ -332,182 +338,12 @@ static void mavlink_test_planck_start_takeoff(uint8_t system_id, uint8_t compone
         for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
             comm_send_ch(MAVLINK_COMM_0, buffer[i]);
         }
-    mavlink_msg_planck_start_takeoff_decode(last_msg, &packet2);
+    mavlink_msg_planck_cmd_request_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_takeoff_send(MAVLINK_COMM_1 , packet1.target_system , packet1.target_component , packet1.alt );
-    mavlink_msg_planck_start_takeoff_decode(last_msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-}
-
-static void mavlink_test_planck_start_return_to_landing_platform(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
-{
-#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
-    mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
-        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_PLANCK_START_RETURN_TO_LANDING_PLATFORM >= 256) {
-            return;
-        }
-#endif
-    mavlink_message_t msg;
-        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
-        uint16_t i;
-    mavlink_planck_start_return_to_landing_platform_t packet_in = {
-        17.0,45.0,73.0,41,108
-    };
-    mavlink_planck_start_return_to_landing_platform_t packet1, packet2;
-        memset(&packet1, 0, sizeof(packet1));
-        packet1.alt = packet_in.alt;
-        packet1.rate_up = packet_in.rate_up;
-        packet1.rate_down = packet_in.rate_down;
-        packet1.target_system = packet_in.target_system;
-        packet1.target_component = packet_in.target_component;
-        
-        
-#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
-        if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
-           // cope with extensions
-           memset(MAVLINK_MSG_ID_PLANCK_START_RETURN_TO_LANDING_PLATFORM_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_PLANCK_START_RETURN_TO_LANDING_PLATFORM_MIN_LEN);
-        }
-#endif
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_return_to_landing_platform_encode(system_id, component_id, &msg, &packet1);
-    mavlink_msg_planck_start_return_to_landing_platform_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_return_to_landing_platform_pack(system_id, component_id, &msg , packet1.target_system , packet1.target_component , packet1.alt , packet1.rate_up , packet1.rate_down );
-    mavlink_msg_planck_start_return_to_landing_platform_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_return_to_landing_platform_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.target_system , packet1.target_component , packet1.alt , packet1.rate_up , packet1.rate_down );
-    mavlink_msg_planck_start_return_to_landing_platform_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-        mavlink_msg_to_send_buffer(buffer, &msg);
-        for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
-            comm_send_ch(MAVLINK_COMM_0, buffer[i]);
-        }
-    mavlink_msg_planck_start_return_to_landing_platform_decode(last_msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-        
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_return_to_landing_platform_send(MAVLINK_COMM_1 , packet1.target_system , packet1.target_component , packet1.alt , packet1.rate_up , packet1.rate_down );
-    mavlink_msg_planck_start_return_to_landing_platform_decode(last_msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-}
-
-static void mavlink_test_planck_start_land(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
-{
-#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
-    mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
-        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_PLANCK_START_LAND >= 256) {
-            return;
-        }
-#endif
-    mavlink_message_t msg;
-        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
-        uint16_t i;
-    mavlink_planck_start_land_t packet_in = {
-        17.0,17,84
-    };
-    mavlink_planck_start_land_t packet1, packet2;
-        memset(&packet1, 0, sizeof(packet1));
-        packet1.rate = packet_in.rate;
-        packet1.target_system = packet_in.target_system;
-        packet1.target_component = packet_in.target_component;
-        
-        
-#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
-        if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
-           // cope with extensions
-           memset(MAVLINK_MSG_ID_PLANCK_START_LAND_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_PLANCK_START_LAND_MIN_LEN);
-        }
-#endif
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_land_encode(system_id, component_id, &msg, &packet1);
-    mavlink_msg_planck_start_land_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_land_pack(system_id, component_id, &msg , packet1.target_system , packet1.target_component , packet1.rate );
-    mavlink_msg_planck_start_land_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_land_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.target_system , packet1.target_component , packet1.rate );
-    mavlink_msg_planck_start_land_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-        mavlink_msg_to_send_buffer(buffer, &msg);
-        for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
-            comm_send_ch(MAVLINK_COMM_0, buffer[i]);
-        }
-    mavlink_msg_planck_start_land_decode(last_msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-        
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_start_land_send(MAVLINK_COMM_1 , packet1.target_system , packet1.target_component , packet1.rate );
-    mavlink_msg_planck_start_land_decode(last_msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-}
-
-static void mavlink_test_planck_stop_controlling(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
-{
-#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
-    mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
-        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_PLANCK_STOP_CONTROLLING >= 256) {
-            return;
-        }
-#endif
-    mavlink_message_t msg;
-        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
-        uint16_t i;
-    mavlink_planck_stop_controlling_t packet_in = {
-        5,72,139
-    };
-    mavlink_planck_stop_controlling_t packet1, packet2;
-        memset(&packet1, 0, sizeof(packet1));
-        packet1.target_system = packet_in.target_system;
-        packet1.target_component = packet_in.target_component;
-        packet1.stop = packet_in.stop;
-        
-        
-#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
-        if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
-           // cope with extensions
-           memset(MAVLINK_MSG_ID_PLANCK_STOP_CONTROLLING_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_PLANCK_STOP_CONTROLLING_MIN_LEN);
-        }
-#endif
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_stop_controlling_encode(system_id, component_id, &msg, &packet1);
-    mavlink_msg_planck_stop_controlling_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_stop_controlling_pack(system_id, component_id, &msg , packet1.target_system , packet1.target_component , packet1.stop );
-    mavlink_msg_planck_stop_controlling_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_stop_controlling_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.target_system , packet1.target_component , packet1.stop );
-    mavlink_msg_planck_stop_controlling_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-        mavlink_msg_to_send_buffer(buffer, &msg);
-        for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
-            comm_send_ch(MAVLINK_COMM_0, buffer[i]);
-        }
-    mavlink_msg_planck_stop_controlling_decode(last_msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-        
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_planck_stop_controlling_send(MAVLINK_COMM_1 , packet1.target_system , packet1.target_component , packet1.stop );
-    mavlink_msg_planck_stop_controlling_decode(last_msg, &packet2);
+    mavlink_msg_planck_cmd_request_send(MAVLINK_COMM_1 , packet1.target_system , packet1.target_component , packet1.type , packet1.param1 , packet1.param2 , packet1.param3 , packet1.param4 , packet1.param5 , packet1.param6 );
+    mavlink_msg_planck_cmd_request_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
@@ -517,10 +353,7 @@ static void mavlink_test_planckAero(uint8_t system_id, uint8_t component_id, mav
     mavlink_test_planck_landing_platform_state(system_id, component_id, last_msg);
     mavlink_test_planck_status(system_id, component_id, last_msg);
     mavlink_test_planck_cmd_msg(system_id, component_id, last_msg);
-    mavlink_test_planck_start_takeoff(system_id, component_id, last_msg);
-    mavlink_test_planck_start_return_to_landing_platform(system_id, component_id, last_msg);
-    mavlink_test_planck_start_land(system_id, component_id, last_msg);
-    mavlink_test_planck_stop_controlling(system_id, component_id, last_msg);
+    mavlink_test_planck_cmd_request(system_id, component_id, last_msg);
 }
 
 #ifdef __cplusplus
