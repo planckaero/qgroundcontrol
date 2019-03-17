@@ -895,7 +895,10 @@ void APMFirmwarePlugin::guidedModeChangeAltitude(Vehicle* vehicle, double altitu
         return;
     }
 
-    setGuidedMode(vehicle, true);
+    if(vehicle->flightMode() != "Planck Track")
+    {
+        setGuidedMode(vehicle, true);
+    }
 
     mavlink_message_t msg;
     mavlink_set_position_target_local_ned_t cmd;
