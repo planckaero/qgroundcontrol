@@ -287,6 +287,7 @@ include(src/QtLocationPlugin/QGCLocationPlugin.pri)
 # External library configuration
 #
 
+include(libs/mavlink/mavlink.pri)
 include(QGCExternalLibs.pri)
 
 #
