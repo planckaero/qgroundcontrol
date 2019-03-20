@@ -37,7 +37,8 @@ DebugBuild {
 
 MacBuild {
     QMAKE_INFO_PLIST    = Custom-Info.plist
-    ICON                = $${BASEDIR}/resources/icons/macx.icns
+#    ICON                = $${BASEDIR}/resources/icons/macx.icns
+    ICON                = $${BASEDIR}/resources/icons/planck.icns
     OTHER_FILES        += Custom-Info.plist
     equals(QT_MAJOR_VERSION, 5) | greaterThan(QT_MINOR_VERSION, 5) {
         LIBS           += -framework ApplicationServices
@@ -49,7 +50,8 @@ LinuxBuild {
 }
 
 WindowsBuild {
-    RC_ICONS = resources/icons/qgroundcontrol.ico
+    RC_ICONS = resources/icons/planck_icon.ico
+#    RC_ICONS = resources/icons/qgroundcontrol.ico
 }
 
 #
