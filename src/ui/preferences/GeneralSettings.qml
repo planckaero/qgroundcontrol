@@ -741,12 +741,32 @@ QGCView {
 
                             QGCLabel {
                                 text:                   qsTr("UDP Port")
-                                visible:                (_isUDP || _isMPEGTS)  && QGroundControl.settingsManager.videoSettings.udpPort.visible
+                                visible:                false //(_isUDP || _isMPEGTS)  && QGroundControl.settingsManager.videoSettings.udpPort.visible
                             }
                             FactTextField {
                                 Layout.preferredWidth:  _comboFieldWidth
                                 fact:                   QGroundControl.settingsManager.videoSettings.udpPort
-                                visible:                (_isUDP || _isMPEGTS) && QGroundControl.settingsManager.videoSettings.udpPort.visible
+                                visible:                false //(_isUDP || _isMPEGTS) && QGroundControl.settingsManager.videoSettings.udpPort.visible
+                            }
+
+                            QGCLabel {
+                                text:                   qsTr("UDP Downward Camera Port")
+                                visible:                (_isUDP || _isMPEGTS)  && QGroundControl.settingsManager.videoSettings.udpDownPort.visible
+                            }
+                            FactTextField {
+                                Layout.preferredWidth:  _comboFieldWidth
+                                fact:                   QGroundControl.settingsManager.videoSettings.udpDownPort
+                                visible:                (_isUDP || _isMPEGTS) && QGroundControl.settingsManager.videoSettings.udpDownPort.visible
+                            }
+
+                            QGCLabel {
+                                text:                   qsTr("UDP Gimbal Camera Port")
+                                visible:                (_isUDP || _isMPEGTS)  && QGroundControl.settingsManager.videoSettings.udpGimbalPort.visible
+                            }
+                            FactTextField {
+                                Layout.preferredWidth:  _comboFieldWidth
+                                fact:                   QGroundControl.settingsManager.videoSettings.udpGimbalPort
+                                visible:                (_isUDP || _isMPEGTS) && QGroundControl.settingsManager.videoSettings.udpGimbalPort.visible
                             }
 
                             QGCLabel {
@@ -781,13 +801,34 @@ QGCView {
 
                             QGCLabel {
                                 text:                   qsTr("TCP URL")
-                                visible:                _isTCP && QGroundControl.settingsManager.videoSettings.tcpUrl.visible
+                                visible:                false //_isTCP && QGroundControl.settingsManager.videoSettings.tcpUrl.visible
                             }
                             FactTextField {
                                 Layout.preferredWidth:  _comboFieldWidth
                                 fact:                   QGroundControl.settingsManager.videoSettings.tcpUrl
-                                visible:                _isTCP && QGroundControl.settingsManager.videoSettings.tcpUrl.visible
+                                visible:                false //_isTCP && QGroundControl.settingsManager.videoSettings.tcpUrl.visible
                             }
+
+                            QGCLabel {
+                                text:                   qsTr("TCP Downward URL")
+                                visible:                _isTCP && QGroundControl.settingsManager.videoSettings.tcpDownUrl.visible
+                            }
+                            FactTextField {
+                                Layout.preferredWidth:  _comboFieldWidth
+                                fact:                   QGroundControl.settingsManager.videoSettings.tcpDownUrl
+                                visible:                _isTCP && QGroundControl.settingsManager.videoSettings.tcpDownUrl.visible
+                            }
+
+                            QGCLabel {
+                                text:                   qsTr("TCP Gimbal URL")
+                                visible:                _isTCP && QGroundControl.settingsManager.videoSettings.tcpGimbalUrl.visible
+                            }
+                            FactTextField {
+                                Layout.preferredWidth:  _comboFieldWidth
+                                fact:                   QGroundControl.settingsManager.videoSettings.tcpGimbalUrl
+                                visible:                _isTCP && QGroundControl.settingsManager.videoSettings.tcpGimbalUrl.visible
+                            }
+
                             QGCLabel {
                                 text:                   qsTr("Aspect Ratio")
                                 visible:                _isGst && QGroundControl.settingsManager.videoSettings.aspectRatio.visible

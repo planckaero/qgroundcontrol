@@ -22,7 +22,11 @@ public:
 
     DEFINE_SETTINGFACT(videoSource)
     DEFINE_SETTINGFACT(udpPort)
+    DEFINE_SETTINGFACT(udpDownPort)
+    DEFINE_SETTINGFACT(udpGimbalPort)
     DEFINE_SETTINGFACT(tcpUrl)
+    DEFINE_SETTINGFACT(tcpDownUrl)
+    DEFINE_SETTINGFACT(tcpGimbalUrl)
     DEFINE_SETTINGFACT(rtspUrl)
     DEFINE_SETTINGFACT(rtspDownUrl)
     DEFINE_SETTINGFACT(rtspGimbalUrl)
