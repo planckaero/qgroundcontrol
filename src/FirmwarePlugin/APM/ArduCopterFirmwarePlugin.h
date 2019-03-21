@@ -45,6 +45,7 @@ public:
         PLANCK_TRACKING = 24,
         PLANCK_RTB  = 25,
         PLANCK_LAND = 26,
+        PLANCK_WINGMAN = 27,
     };
     static const int modeCount = 24;
 
