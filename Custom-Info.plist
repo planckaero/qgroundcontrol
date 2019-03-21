@@ -4,8 +4,10 @@
 <dict>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>CFBundleIconFile</key>
-	<string>macx.icns</string>
+        <key>NSCameraUsageDescription</key>
+        <string>QGC uses UVC devices for video streaming.</string>
+        <key>CFBundleIconFile</key>
+	<string>planck.icns</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleVersion</key>
