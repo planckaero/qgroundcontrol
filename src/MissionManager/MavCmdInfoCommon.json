@@ -1078,6 +1078,25 @@
             "description":  "Planck RTB command",
             "category":     "Basic"
         },
+        {
+            "id": 9003,
+            "rawName":      "MAV_CMD_NAV_PLANCK_WINGMAN",
+            "friendlyName": "Planck Wingman",
+            "description":  "Planck Wingman command",
+            "category":     "Basic",
+            "param1": {
+                "label":            "x",
+                "default":          0
+            },
+            "param2": {
+                "label":            "y",
+                "default":          0
+            },
+            "param3": {
+                "label":            "z",
+                "default":          0
+            }
+        },
         { "id": 30001, "rawName": "MAV_CMD_PAYLOAD_PREPARE_DEPLOY", "friendlyName": "Payload prepare deploy" },
         { "id": 30002, "rawName": "MAV_CMD_PAYLOAD_CONTROL_DEPLOY", "friendlyName": "Payload control deploy" }
     ]
