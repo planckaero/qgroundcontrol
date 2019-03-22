@@ -895,7 +895,7 @@ void APMFirmwarePlugin::guidedModeChangeAltitude(Vehicle* vehicle, double altitu
         return;
     }
 
-    if(vehicle->flightMode() != "Planck Track")
+    if(vehicle->flightMode() != "Planck Track" && vehicle->flightMode() != "Planck Wingman")
     {
         setGuidedMode(vehicle, true);
     }
