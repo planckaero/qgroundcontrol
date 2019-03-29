@@ -28,6 +28,7 @@ public:
 
     Q_PROPERTY(QGeoCoordinate gcsPosition  READ gcsPosition  NOTIFY gcsPositionChanged)
     Q_PROPERTY(qreal          gcsHeading   READ gcsHeading   NOTIFY gcsHeadingChanged)
+    Q_PROPERTY(QGeoCoordinate wingmanPosition READ wingmanPosition NOTIFY wingmanPositionChanged)
 
     enum QGCPositionSource {
         Simulated,
@@ -40,6 +41,8 @@ public:
     QGeoCoordinate gcsPosition(void) { return _gcsPosition; }
 
     qreal gcsHeading() { return _gcsHeading; }
+
+    QGeoCoordinate wingmanPosition(void) { return _wingmanPosition; }
 
     void setPositionSource(QGCPositionSource source);
 
@@ -56,12 +59,14 @@ private slots:
 signals:
     void gcsPositionChanged(QGeoCoordinate gcsPosition);
     void gcsHeadingChanged(qreal gcsHeading);
+    void wingmanPositionChanged(QGeoCoordinate wingmanPosition);
     void positionInfoUpdated(QGeoPositionInfo update);
 
 private:
     int             _updateInterval;
     QGeoCoordinate  _gcsPosition;
     qreal           _gcsHeading;
+    QGeoCoordinate  _wingmanPosition;
 
     QGeoPositionInfoSource*     _currentSource;
     QGeoPositionInfoSource*     _defaultSource;

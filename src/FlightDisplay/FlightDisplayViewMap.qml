@@ -49,7 +49,7 @@ FlightMap {
     property var    _geoFenceController:        _planMasterController.geoFenceController
     property var    _rallyPointController:      _planMasterController.rallyPointController
     property var    _activeVehicle:             QGroundControl.multiVehicleManager.activeVehicle
-    property var    _activeVehicleCoordinate:   _activeVehicle ? _activeVehicle.coordinate : QtPositioning.coordinate()
+    property var    _activeVehicleCoordinate:   _activeVehicle.coordinate //_activeVehicle ? _activeVehicle.coordinate : QtPositioning.coordinate()
     property real   _toolButtonTopMargin:       parent.height - ScreenTools.availableHeight + (ScreenTools.defaultFontPixelHeight / 2)
     property bool   _airspaceEnabled:           QGroundControl.airmapSupported ? (QGroundControl.settingsManager.airMapSettings.enableAirMap.rawValue && QGroundControl.airspaceManager.connected): false
 
@@ -126,6 +126,7 @@ FlightMap {
     NumberAnimation on animatedLatitude { id: animateLat; from: _animatedLatitudeStart; to: _animatedLatitudeStop; duration: 1000 }
     NumberAnimation on animatedLongitude { id: animateLong; from: _animatedLongitudeStart; to: _animatedLongitudeStop; duration: 1000 }
 
+    // Allows centering on drone, landing pad, or free move
     MapCenterChooser {
         id: mapcenterchooser
         anchors.right: flightMap.right
@@ -148,8 +149,8 @@ FlightMap {
         animateLong.start()
     }
 
-    function recenterNeeded() {
-        var vehiclePoint = flightMap.fromCoordinate(_activeVehicleCoordinate, false /* clipToViewport */)
+    /*function recenterNeeded() {
+        var vehiclePoint = flightMap.fromCoordinate(_activeVehicleCoordinate, false /* clipToViewport /)
         var toolStripRightEdge = mapFromItem(toolStrip, toolStrip.x, 0).x + toolStrip.width
         var instrumentsWidth = 0
         if (QGroundControl.corePlugin.options.instrumentWidget && QGroundControl.corePlugin.options.instrumentWidget.widgetPosition === CustomInstrumentWidget.POS_TOP_RIGHT) {
@@ -158,23 +159,24 @@ FlightMap {
         }
         var centerViewport = Qt.rect(toolStripRightEdge, 0, width - toolStripRightEdge - instrumentsWidth, height)
         return !pointInRect(vehiclePoint, centerViewport)
-    }
+    }*/
 
     function updateMapToVehiclePosition() {
         // We let FlightMap handle first vehicle position
-        if (firstVehiclePositionReceived && _activeVehicleCoordinate.isValid && !_disableVehicleTracking) {
-            if (_keepVehicleCentered) {
+        if (/*firstVehiclePositionReceived &&*/ _activeVehicleCoordinate.isValid /*&& !_disableVehicleTracking*/) {
+            //if (_keepVehicleCentered) {
                 flightMap.center = _activeVehicleCoordinate
-            } else {
+            //}
+            /*else {
                 if (firstVehiclePositionReceived && recenterNeeded()) {
                     animatedMapRecenter(flightMap.center, _activeVehicleCoordinate)
                 }
-            }
+            }*/
         }
     }
 
     function updateMapToPadPosition() {
-        if(firstGCSPositionReceived && gcsPosition.isValid && !_disablePadTracking) {
+        if(/*firstGCSPositionReceived &&*/ gcsPosition.isValid /*&& !_disablePadTracking*/) {
             flightMap.center = gcsPosition
         }
     }
@@ -201,14 +203,15 @@ FlightMap {
         }
     }
 
-    /*onGcsPositionChanged: {
-        if(mapCenterchooser.centerMode===mapCenterchooser.centerLP)
-        {
-            animatedMapRecenter(flightMap.center, gcsPosition)
-        }
-    }*/
+    onGcsPositionChanged: {
+        updateMap()
+        //if(mapCenterchooser.centerMode===mapCenterchooser.centerLP)
+        //{
+        //    animatedMapRecenter(flightMap.center, gcsPosition)
+        //}
+    }
 
-    Timer {
+    /*Timer {
         id:         panRecenterTimer
         interval:   10000
         running:    false
@@ -218,10 +221,10 @@ FlightMap {
             _disablePadTracking = false
             updateMap()
         }
-    }
+    }*/
 
     Timer {
-        interval:       500
+        interval:       1000
         running:        !userPanning//true
         repeat:         true
         onTriggered:    updateMap()
@@ -412,7 +415,7 @@ FlightMap {
         id:             orbitMapCircle
         mapControl:     parent
         mapCircle:      _mapCircle
-        visible:        false
+        visible:        true//false
 
         property alias center:              _mapCircle.center
         property alias clockwiseRotation:   _mapCircle.clockwiseRotation

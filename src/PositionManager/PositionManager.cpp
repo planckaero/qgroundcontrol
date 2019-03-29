@@ -85,6 +85,7 @@ void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)
     if (newGCSPosition != _gcsPosition) {
         _gcsPosition = newGCSPosition;
         emit gcsPositionChanged(_gcsPosition);
+        emit wingmanPositionChanged(_gcsPosition);
     }
     if (newGCSHeading != _gcsHeading) {
         _gcsHeading = newGCSHeading;
