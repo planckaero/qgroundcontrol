@@ -415,7 +415,7 @@ FlightMap {
         id:             orbitMapCircle
         mapControl:     parent
         mapCircle:      _mapCircle
-        visible:        true//false
+        visible:        false
 
         property alias center:              _mapCircle.center
         property alias clockwiseRotation:   _mapCircle.clockwiseRotation
