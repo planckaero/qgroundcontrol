@@ -73,21 +73,11 @@ FlightMap {
         QGroundControl.flightMapZoom = zoomLevel
         updateAirspace(false)
     }
+
     onCenterChanged: {
         QGroundControl.flightMapPosition = center
         updateAirspace(false)
     }
-
-    // When the user pans the map we stop responding to vehicle coordinate updates until the panRecenterTimer fires
-    /*onUserPannedChanged: {
-        if (userPanned) {
-            console.log("user panned")
-            userPanned = false
-            _disableVehicleTracking = true
-            _disablePadTracking = true
-            panRecenterTimer.restart()
-        }
-    }*/
 
     onUserPanningChanged: {
         if(userPanning)
@@ -149,34 +139,15 @@ FlightMap {
         animateLong.start()
     }
 
-    /*function recenterNeeded() {
-        var vehiclePoint = flightMap.fromCoordinate(_activeVehicleCoordinate, false /* clipToViewport /)
-        var toolStripRightEdge = mapFromItem(toolStrip, toolStrip.x, 0).x + toolStrip.width
-        var instrumentsWidth = 0
-        if (QGroundControl.corePlugin.options.instrumentWidget && QGroundControl.corePlugin.options.instrumentWidget.widgetPosition === CustomInstrumentWidget.POS_TOP_RIGHT) {
-            // Assume standard instruments
-            instrumentsWidth = flightDisplayViewWidgets.getPreferredInstrumentWidth()
-        }
-        var centerViewport = Qt.rect(toolStripRightEdge, 0, width - toolStripRightEdge - instrumentsWidth, height)
-        return !pointInRect(vehiclePoint, centerViewport)
-    }*/
-
     function updateMapToVehiclePosition() {
         // We let FlightMap handle first vehicle position
-        if (/*firstVehiclePositionReceived &&*/ _activeVehicleCoordinate.isValid /*&& !_disableVehicleTracking*/) {
-            //if (_keepVehicleCentered) {
-                flightMap.center = _activeVehicleCoordinate
-            //}
-            /*else {
-                if (firstVehiclePositionReceived && recenterNeeded()) {
-                    animatedMapRecenter(flightMap.center, _activeVehicleCoordinate)
-                }
-            }*/
+        if (_activeVehicleCoordinate.isValid) {
+            flightMap.center = _activeVehicleCoordinate
         }
     }
 
     function updateMapToPadPosition() {
-        if(/*firstGCSPositionReceived &&*/ gcsPosition.isValid /*&& !_disablePadTracking*/) {
+        if(gcsPosition.isValid) {
             flightMap.center = gcsPosition
         }
     }
@@ -205,23 +176,8 @@ FlightMap {
 
     onGcsPositionChanged: {
         updateMap()
-        //if(mapCenterchooser.centerMode===mapCenterchooser.centerLP)
-        //{
-        //    animatedMapRecenter(flightMap.center, gcsPosition)
-        //}
+
     }
-
-    /*Timer {
-        id:         panRecenterTimer
-        interval:   10000
-        running:    false
-
-        onTriggered: {
-            _disableVehicleTracking = false
-            _disablePadTracking = false
-            updateMap()
-        }
-    }*/
 
     Timer {
         interval:       1000

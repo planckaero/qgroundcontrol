@@ -85,27 +85,14 @@ Map {
 
     ExclusiveGroup { id: mapTypeGroup }
 
-    // Center map to gcs location
-    /*onGcsPositionChanged: {
-        if (gcsPosition.isValid && allowGCSLocationCenter && !firstGCSPositionReceived && !firstVehiclePositionReceived) {
-            firstGCSPositionReceived = true
-            center = gcsPosition
-            zoomLevel = QGroundControl.flightMapInitialZoom
-        }
-    }*/
-
-
-
-
-
     /*function meters_to_degrees(meters) {
         var R = 6378137 // Radius of earth in M
         var HC = 3.1415927 * R // Half circumference
         //  HC/180 = meter/degree
         return meters * 180 / HC
     }*/
-
     readonly property double meters_to_deg: 0.000008983152841
+
 
     // 10m range ring
     MapCircle {
@@ -142,7 +129,6 @@ Map {
             color: "white"
         }
     }
-
 
     // 25m range ring
     MapCircle {
@@ -182,7 +168,6 @@ Map {
         }
     }
 
-
     // 50m range ring
     MapCircle {
         center: gcsPosition
@@ -219,7 +204,6 @@ Map {
         }
     }
 
-
     // 100m range ring
     MapCircle {
         center: gcsPosition
@@ -255,7 +239,6 @@ Map {
             color: "white"
         }
     }
-
 
     // 1000m range ring
     MapCircle {
@@ -334,7 +317,7 @@ Map {
         onRawValueChanged:  updateActiveMapType()
     }
 
-    /// Ground Station location
+    /// Ground Station Location
     MapQuickItem {
         anchorPoint.x:  sourceItem.width / 2
         anchorPoint.y:  sourceItem.height / 2
