@@ -210,6 +210,7 @@
         <file alias="VirtualJoystick.qml">src/FlightDisplay/VirtualJoystick.qml</file>
         <file alias="QGroundControl/FlightDisplay/MapCenterChooser.qml">src/FlightDisplay/MapCenterChooser.qml</file>
         <file alias="QGroundControl/FlightDisplay/CameraChooser.qml">src/FlightDisplay/CameraChooser.qml</file>
+        <file alias="QGroundControl/FlightDisplay/GuidedWingman.qml">src/FlightDisplay/GuidedWingman.qml</file>
     </qresource>
     <qresource prefix="/json">
         <file alias="CameraCalc.FactMetaData.json">src/MissionManager/CameraCalc.FactMetaData.json</file>

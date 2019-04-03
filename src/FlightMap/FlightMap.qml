@@ -36,10 +36,8 @@ Map {
     property bool   isSatelliteMap:                 activeMapType.name.indexOf("Satellite") > -1 || activeMapType.name.indexOf("Hybrid") > -1
     property var    gcsPosition:                    QGroundControl.qgcPositionManger.gcsPosition
     property var    gcsHeading:                     QGroundControl.qgcPositionManger.gcsHeading
-    property var    wingmanPosition:                QGroundControl.qgcPositionManger.wingmanPosition
     property bool   userPanned:                     false   ///< true: the user has manually panned the map
     property bool   userPanning:                    false
-    property bool   wingmanMode:                    false
     property bool   allowGCSLocationCenter:         true   ///< true: map will center/zoom to gcs location one time
     property bool   allowVehicleLocationCenter:     false   ///< true: map will center/zoom to vehicle location one time
     property bool   firstGCSPositionReceived:       false   ///< true: first gcs position update was responded to
@@ -85,27 +83,14 @@ Map {
 
     ExclusiveGroup { id: mapTypeGroup }
 
-    // Center map to gcs location
-    /*onGcsPositionChanged: {
-        if (gcsPosition.isValid && allowGCSLocationCenter && !firstGCSPositionReceived && !firstVehiclePositionReceived) {
-            firstGCSPositionReceived = true
-            center = gcsPosition
-            zoomLevel = QGroundControl.flightMapInitialZoom
-        }
-    }*/
-
-
-
-
-
     /*function meters_to_degrees(meters) {
         var R = 6378137 // Radius of earth in M
         var HC = 3.1415927 * R // Half circumference
         //  HC/180 = meter/degree
         return meters * 180 / HC
     }*/
-
     readonly property double meters_to_deg: 0.000008983152841
+
 
     // 10m range ring
     MapCircle {
@@ -142,7 +127,6 @@ Map {
             color: "white"
         }
     }
-
 
     // 25m range ring
     MapCircle {
@@ -182,7 +166,6 @@ Map {
         }
     }
 
-
     // 50m range ring
     MapCircle {
         center: gcsPosition
@@ -219,7 +202,6 @@ Map {
         }
     }
 
-
     // 100m range ring
     MapCircle {
         center: gcsPosition
@@ -255,7 +237,6 @@ Map {
             color: "white"
         }
     }
-
 
     // 1000m range ring
     MapCircle {
@@ -334,7 +315,7 @@ Map {
         onRawValueChanged:  updateActiveMapType()
     }
 
-    /// Ground Station location
+    /// Ground Station Location
     MapQuickItem {
         anchorPoint.x:  sourceItem.width / 2
         anchorPoint.y:  sourceItem.height / 2
@@ -356,26 +337,4 @@ Map {
         }
     }
 
-    MapQuickItem {
-        anchorPoint.x:  sourceItem.width / 2
-        anchorPoint.y:  sourceItem.height / 2
-        visible:        true //wingmanMode && wingmanPosition.isValid
-        coordinate:     wingmanPosition
-
-        sourceItem: Image {
-            source:         "AirframeQuadRotorPlus.png"
-            mipmap:         true
-            antialiasing:   true
-            fillMode:       Image.PreserveAspectFit
-            height:         ScreenTools.defaultFontPixelHeight * (isNaN(gcsHeading) ? 1.75 : 2.5 )
-            sourceSize.height: height
-            /*transform: Rotation {
-                origin.x:       mapItemImage.width  / 2
-                origin.y:       mapItemImage.height / 2
-                angle:          0 //isNaN(gcsHeading) ? 0 : gcsHeading
-            }*/
-        }
-
-
-    }
 } // Map

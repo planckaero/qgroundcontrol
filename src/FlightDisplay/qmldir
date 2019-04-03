@@ -8,6 +8,7 @@ GuidedActionConfirm         1.0 GuidedActionConfirm.qml
 GuidedActionsController     1.0 GuidedActionsController.qml
 GuidedActionList            1.0 GuidedActionList.qml
 GuidedAltitudeSlider        1.0 GuidedAltitudeSlider.qml
+GuidedWingman               1.0 GuidedWingman.qml
 MultiVehicleList            1.0 MultiVehicleList.qml
 PreFlightBatteryCheck       1.0 PreFlightBatteryCheck.qml
 BuiltInPreFlightCheckModel  1.0 BuiltInPreFlightCheckModel.qml

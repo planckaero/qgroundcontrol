@@ -46,6 +46,7 @@ Item {
     readonly property string pauseTitle:                    qsTr("Pause")
     readonly property string mvPauseTitle:                  qsTr("Pause (MV)")
     readonly property string changeAltTitle:                qsTr("Change Altitude")
+    readonly property string wingmanTitle:                  qsTr("Wingman")
     readonly property string orbitTitle:                    qsTr("Orbit")
     readonly property string landAbortTitle:                qsTr("Land Abort")
     readonly property string setWaypointTitle:              qsTr("Set Waypoint")
@@ -62,6 +63,7 @@ Item {
     readonly property string landMessage:                       qsTr("Land the vehicle at the current position.")
     readonly property string rtlMessage:                        qsTr("Return to the home position of the vehicle.")
     readonly property string changeAltMessage:                  qsTr("Change the altitude of the vehicle up or down.")
+    readonly property string wingmanMessage:                    qsTr("Switch to wingman (hold relative) mode.")
     readonly property string gotoMessage:                       qsTr("Move the vehicle to the specified location.")
              property string setWaypointMessage:                qsTr("Adjust current waypoint to %1.").arg(_actionData)
     readonly property string orbitMessage:                      qsTr("Orbit the vehicle around the specified location.")
@@ -92,6 +94,7 @@ Item {
     readonly property int actionMVStartMission:             19
     readonly property int actionVtolTransitionToFwdFlight:  20
     readonly property int actionVtolTransitionToMRFlight:   21
+    readonly property int actionWingman:                    22
 
     property bool showEmergenyStop:     _guidedActionsEnabled && !_hideEmergenyStop && _vehicleArmed && _vehicleFlying
     property bool showArm:              _guidedActionsEnabled && !_vehicleArmed
@@ -103,6 +106,7 @@ Item {
     property bool showContinueMission:  _guidedActionsEnabled && _missionAvailable && !_missionActive && _vehicleArmed && _vehicleFlying && (_currentMissionIndex < _missionItemCount - 1)
     property bool showPause:            _guidedActionsEnabled && _vehicleArmed && _activeVehicle.pauseVehicleSupported && _vehicleFlying && !_vehiclePaused
     property bool showChangeAlt:        _guidedActionsEnabled && _vehicleFlying && _activeVehicle.guidedModeSupported && _vehicleArmed && !_missionActive
+    property bool showWingman:          _guidedActionsEnabled && _vehicleFlying && _activeVehicle.guidedModeSupported && _vehicleArmed && !_missionActive
     property bool showOrbit:            _guidedActionsEnabled && !_hideOrbit && _vehicleFlying && _activeVehicle.orbitModeSupported && !_missionActive
     property bool showLandAbort:        _guidedActionsEnabled && _vehicleFlying && _activeVehicle.fixedWing && _vehicleLanding
     property bool showGotoLocation:     _guidedActionsEnabled && _vehicleFlying
@@ -288,6 +292,13 @@ Item {
             altitudeSlider.reset()
             altitudeSlider.visible = true
             break;
+        case actionWingman:
+            confirmDialog.title = wingmanTitle
+            confirmDialog.message = wingmanMessage
+            confirmDialog.hideTrigger = Qt.binding(function() { return !showWingman })
+            altitudeSlider.reset()
+            altitudeSlider.visible = true
+            break;
         case actionGoto:
             confirmDialog.title = gotoTitle
             confirmDialog.message = gotoMessage
@@ -378,6 +389,9 @@ Item {
         case actionChangeAlt:
             _activeVehicle.guidedModeChangeAltitude(actionAltitudeChange)
             break
+        case actionWingman:
+            _activeVehicle.guidedModeStartWingman(actionData, actionAltitudeChange)
+            break;
         case actionGoto:
             _activeVehicle.guidedModeGotoLocation(actionData)
             break
