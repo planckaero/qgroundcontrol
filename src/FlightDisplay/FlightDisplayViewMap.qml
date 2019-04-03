@@ -366,6 +366,50 @@ FlightMap {
         }
     }
 
+
+
+    /// Wingman Setpoint Location
+    MapQuickItem {
+        id:             wingmanSetpointItem
+        anchorPoint.x:  sourceItem.width / 2
+        anchorPoint.y:  sourceItem.height / 2
+        visible:        wingmanMode && wingmanPosition.isValid
+        coordinate:     wingmanPosition
+
+        sourceItem: Image {
+            source:         "/res/clockwise-arrow.svg"
+            mipmap:         true
+            antialiasing:   true
+            fillMode:       Image.PreserveAspectFit
+            height:         ScreenTools.defaultFontPixelHeight * (isNaN(gcsHeading) ? 1.75 : 2.5 )
+            sourceSize.height: height
+            /*transform: Rotation {
+                origin.x:       mapItemImage.width  / 2
+                origin.y:       mapItemImage.height / 2
+                angle:          0 //isNaN(gcsHeading) ? 0 : gcsHeading
+            }*/
+        }
+    }
+
+    /// Wingman Radius Line Location
+    MapQuickItem {
+        anchorPoint.x:  sourceItem.width / 2
+        anchorPoint.y:  sourceItem.height / 2
+        visible:        wingmanMode && wingmanPosition.isValid
+        coordinate:     wingmanPosition
+
+
+        sourceItem: MapPolyline {
+            width: 5
+            color: "lightgreen"
+            path: [
+                gcsPosition, wingmanPosition
+            ]
+        }
+    }
+
+
+
     // Orbit editing visuals
     QGCMapCircleVisuals {
         id:             orbitMapCircle
