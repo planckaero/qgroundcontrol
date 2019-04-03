@@ -90,6 +90,7 @@ public:
     void                pauseVehicle                    (Vehicle* vehicle) override;
     void                guidedModeRTL                   (Vehicle* vehicle) override;
     void                guidedModeChangeAltitude        (Vehicle* vehicle, double altitudeChange) override;
+    void                guidedModeStartWingman          (Vehicle* vehicle, float north_offset, float east_offset, float altitude) override;
     bool                adjustIncomingMavlinkMessage    (Vehicle* vehicle, mavlink_message_t* message) override;
     void                adjustOutgoingMavlinkMessage    (Vehicle* vehicle, LinkInterface* outgoingLink, mavlink_message_t* message) override;
     virtual void        initializeStreamRates           (Vehicle* vehicle);
