@@ -39,7 +39,6 @@ Map {
     property var    wingmanPosition:                QGroundControl.qgcPositionManger.wingmanPosition
     property bool   userPanned:                     false   ///< true: the user has manually panned the map
     property bool   userPanning:                    false
-    property bool   wingmanMode:                    false
     property bool   allowGCSLocationCenter:         true   ///< true: map will center/zoom to gcs location one time
     property bool   allowVehicleLocationCenter:     false   ///< true: map will center/zoom to vehicle location one time
     property bool   firstGCSPositionReceived:       false   ///< true: first gcs position update was responded to
