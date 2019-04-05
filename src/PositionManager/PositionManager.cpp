@@ -20,12 +20,14 @@ QGCPositionManager::QGCPositionManager(QGCApplication* app, QGCToolbox* toolbox)
     , _nmeaSource       (NULL)
     , _simulatedSource  (NULL)
     , _landingPadSource (NULL)
+    , _wingman          (NULL)
 {
-
+    _wingman = new Wingman();
 }
 
 QGCPositionManager::~QGCPositionManager()
 {
+    delete(_wingman);
     delete(_simulatedSource);
     delete(_nmeaSource);
 }
@@ -85,7 +87,6 @@ void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)
     if (newGCSPosition != _gcsPosition) {
         _gcsPosition = newGCSPosition;
         emit gcsPositionChanged(_gcsPosition);
-        emit wingmanPositionChanged(_gcsPosition);
     }
     if (newGCSHeading != _gcsHeading) {
         _gcsHeading = newGCSHeading;

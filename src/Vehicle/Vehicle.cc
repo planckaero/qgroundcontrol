@@ -3040,6 +3040,15 @@ void Vehicle::guidedModeChangeAltitude(double altitudeChange)
     _firmwarePlugin->guidedModeChangeAltitude(this, altitudeChange);
 }
 
+void Vehicle::guidedModeStartWingman(float north_offset, float east_offset, float altitude)
+{
+    if (!guidedModeSupported()) {
+        qgcApp()->showMessage(guided_mode_not_supported_by_vehicle);
+        return;
+    }
+    _firmwarePlugin->guidedModeStartWingman(this, north_offset, east_offset, altitude);
+}
+
 void Vehicle::guidedModeOrbit(const QGeoCoordinate& centerCoord, double radius, double amslAltitude)
 {
     if (!orbitModeSupported()) {

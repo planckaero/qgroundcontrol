@@ -36,7 +36,6 @@ Map {
     property bool   isSatelliteMap:                 activeMapType.name.indexOf("Satellite") > -1 || activeMapType.name.indexOf("Hybrid") > -1
     property var    gcsPosition:                    QGroundControl.qgcPositionManger.gcsPosition
     property var    gcsHeading:                     QGroundControl.qgcPositionManger.gcsHeading
-    property var    wingmanPosition:                QGroundControl.qgcPositionManger.wingmanPosition
     property bool   userPanned:                     false   ///< true: the user has manually panned the map
     property bool   userPanning:                    false
     property bool   allowGCSLocationCenter:         true   ///< true: map will center/zoom to gcs location one time

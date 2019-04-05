@@ -926,26 +926,10 @@ void APMFirmwarePlugin::guidedModeChangeAltitude(Vehicle* vehicle, double altitu
 
 void APMFirmwarePlugin::guidedModeStartWingman(Vehicle *vehicle, float north_offset, float east_offset, float altitude)
 {
-    mavlink_message_t msg;
-    mavlink_planck_cmd_request_t cmd;
-
-    memset(&cmd, 0, sizeof(cmd));
-
-    cmd.target_system    = static_cast<uint8_t>(vehicle->id());
-    cmd.target_component = static_cast<uint8_t>(vehicle->defaultComponentId());
-    cmd.param1 = north_offset;
-    cmd.param2 = east_offset;
-    cmd.param3 = altitude;
-
-    MAVLinkProtocol* mavlink = qgcApp()->toolbox()->mavlinkProtocol();
-    mavlink_msg_planck_cmd_request_encode_chan(
-        static_cast<uint8_t>(mavlink->getSystemId()),
-        static_cast<uint8_t>(mavlink->getComponentId()),
-        vehicle->priorityLink()->mavlinkChannel(),
-        &msg,
-        &cmd);
-
-    vehicle->sendMessageOnLink(vehicle->priorityLink(), msg);
+    vehicle->sendMavCommand(vehicle->defaultComponentId(),
+                            MAV_CMD_NAV_PLANCK_WINGMAN,
+                            true, // show error
+                            north_offset, east_offset, altitude, 0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void APMFirmwarePlugin::guidedModeTakeoff(Vehicle* vehicle, double altitudeRel)

@@ -292,6 +292,13 @@ Item {
             altitudeSlider.reset()
             altitudeSlider.visible = true
             break;
+        case actionWingman:
+            confirmDialog.title = wingmanTitle
+            confirmDialog.message = wingmanMessage
+            confirmDialog.hideTrigger = Qt.binding(function() { return !showWingman })
+            altitudeSlider.reset()
+            altitudeSlider.visible = true
+            break;
         case actionGoto:
             confirmDialog.title = gotoTitle
             confirmDialog.message = gotoMessage
@@ -382,6 +389,10 @@ Item {
         case actionChangeAlt:
             _activeVehicle.guidedModeChangeAltitude(actionAltitudeChange)
             break
+        case actionWingman:
+            _activeVehicle.guidedModeStartWingman(10, 10, actionAltitudeChange)
+            console.debug("Wingman mode")
+            break;
         case actionGoto:
             _activeVehicle.guidedModeGotoLocation(actionData)
             break
