@@ -129,6 +129,13 @@ FlightMap {
         }
     }
 
+    // Wingman offset selection
+    /*GuidedWingman {
+        id: wingmanSelection
+        anchors.bottom: flightmap.bottom
+        anchors.right:  flightman.right
+    }*/
+
     function animatedMapRecenter(fromCoord, toCoord) {
         _animatedLatitudeStart = fromCoord.latitude
         _animatedLongitudeStart = fromCoord.longitude
