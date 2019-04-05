@@ -132,8 +132,11 @@ FlightMap {
     // Wingman offset selection
     /*GuidedWingman {
         id: wingmanSelection
-        anchors.bottom: flightmap.bottom
-        anchors.right:  flightman.right
+        anchors.bottom: flightMap.bottom
+        anchors.right:  mapcenterchooser.left
+        anchors.bottomMargin: 30
+        anchors.rightMargin: 30
+        visible: true
     }*/
 
     function animatedMapRecenter(fromCoord, toCoord) {

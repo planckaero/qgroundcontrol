@@ -1,93 +1,108 @@
 
 import QtQuick                  2.3
 import QtQuick.Controls         1.2
+import QtLocation               5.3
 
 import QGroundControl               1.0
 import QGroundControl.Controls      1.0
-import QGroundControl.Vehicle       1.0
 
-/// Display small window to select wingman offset from vehicle
-Map {
-    id:                 _root
-    zoomLevel:          QGroundControl.flightMapZoom
-    center:             QGroundControl.flightMapPosition
-    height:     50
-    width:      50
+Rectangle {
+    height:     300
+    width:      300
+    color:      "#000004"
+    border.width:   3
+    border.color:   "white"
+    radius: 3
+    z: parent.z+5
 
-    property real _east_offset:         5
-    property real _north_offset:        5
+    property real _east_offset:         0
+    property real _north_offset:        0
 
-    /*MouseArea {
+    MouseArea {
+        anchors.fill: parent
+        preventStealing: true
+        enabled: true
+        onPressed: {
+            setpointCircle.x = mouseX - (setpointCircle.width/2)
+            setpointCircle.y = mouseY - (setpointCircle.height/2)
+            parent._east_offset = (mouseX - 150) / 10
+            parent._north_offset = (150 - mouseY) / 10
+            console.debug("Clicked:" + parent._east_offset + ":" + parent._north_offset)
+        }
+    }
 
-    }*/
-
-    QGCLabel {
+    // Title
+    Label {
         anchors.left:           parent.left
         anchors.right:          parent.right
+        anchors.topMargin:      10
         wrapMode:               Text.WordWrap
         horizontalAlignment:    Text.AlignHCenter
         text:                   qsTr("Wingman Relative Position")
     }
 
     /// Landing Pad
-    MapQuickItem {
-        anchors.center: parent.center
-        anchorPoint.x:  sourceItem.width / 2
-        anchorPoint.y:  sourceItem.height / 2
-        visible:        gcsPosition.isValid
-        coordinate:     gcsPosition
-
-        sourceItem: Image {
-            source:         "/res/PlanckTag"
-            mipmap:         true
-            antialiasing:   true
-            fillMode:       Image.PreserveAspectFit
-            height:         20
-            sourceSize.height: height
-        }
+    Image {
+        source:         "/res/PlanckTag"
+        mipmap:         true
+        antialiasing:   true
+        fillMode:       Image.PreserveAspectFit
+        height:         40
+        sourceSize.height:      height
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 
+    // Display of setpoint offset coordinates
     Column {
         id:                 numericColumn
-        anchors.margins:    _margins
-        anchors.top:        parent.top
-        anchors.left:       parent.left
         anchors.right:      parent.right
+        anchors.bottom:     parent.bottom
+        width:  80
+        height: 40
 
-        QGCLabel {
-            id:                         northField
-            anchors.horizontalCenter:   parent.horizontalCenter
-            text:                       _north_offset + "m North"
+        Label {
+            anchors.right:          parent.right
+            anchors.rightMargin:    5
+            text:                   _north_offset + "m North"
         }
-        QGCLabel {
-            id:                         eastField
-            anchors.horizontalCenter:   parent.horizontalCenter
-            text:                       _east_offset + "m East"
+        Label {
+            anchors.right:          parent.right
+            anchors.rightMargin:    5
+            text:                   _east_offset + "m East"
         }
     }
 
-    /*QGCSlider {
-        id:                 altSlider
-        anchors.margins:    _margins
-        anchors.top:        headerColumn.bottom
-        anchors.bottom:     parent.bottom
-        anchors.left:       parent.left
-        anchors.right:      parent.right
-        orientation:        Qt.Vertical
-        minimumValue:       -1
-        maximumValue:       1
-        zeroCentered:       true
-        rotation:           180
+    // Actually draws a circle, go figure
+    Rectangle {
+        id: setpointCircle
+        width: 20
+        height: width
+        color: "red"
+        border.color: "red"
+        border.width: 1
+        radius: width*0.5
+        x: 150 - (width/2)
+        y: 150 - (height/2)
+    }
 
-        // We want slide up to be positive values
-        transform: Rotation {
-            origin.x:   altSlider.width / 2
-            origin.y:   altSlider.height / 2
-            angle:      180
-        }
-    }*/
+    // 10m range ring
+    Rectangle {
+        id: ring
+        width: 200
+        height: width
+        color: "transparent"
+        border.color: "green"
+        border.width: 2
+        radius: width*0.5
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+    Text {
+        text: "10m"
+        color: "white"
+        anchors.bottom: ring.top
+        anchors.horizontalCenter: ring.horizontalCenter
+    }
 
-
-
-
-}
+} // Rectangle
