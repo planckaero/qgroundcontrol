@@ -49,10 +49,9 @@ FlightMap {
     property var    _geoFenceController:        _planMasterController.geoFenceController
     property var    _rallyPointController:      _planMasterController.rallyPointController
     property var    _activeVehicle:             QGroundControl.multiVehicleManager.activeVehicle
-    property var    _activeVehicleCoordinate:   _activeVehicle.coordinate //_activeVehicle ? _activeVehicle.coordinate : QtPositioning.coordinate()
+    property var    _activeVehicleCoordinate:   _activeVehicle ? _activeVehicle.coordinate : QtPositioning.coordinate()
     property real   _toolButtonTopMargin:       parent.height - ScreenTools.availableHeight + (ScreenTools.defaultFontPixelHeight / 2)
     property bool   _airspaceEnabled:           QGroundControl.airmapSupported ? (QGroundControl.settingsManager.airMapSettings.enableAirMap.rawValue && QGroundControl.airspaceManager.connected): false
-
     property bool   _disableVehicleTracking:    false
     property bool   _disablePadTracking:        false
     property bool   _keepVehicleCentered:       false //_mainIsMap ? false : true
