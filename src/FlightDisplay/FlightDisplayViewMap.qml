@@ -129,16 +129,6 @@ FlightMap {
         }
     }
 
-    // Wingman offset selection
-    /*GuidedWingman {
-        id: wingmanSelection
-        anchors.bottom: flightMap.bottom
-        anchors.right:  mapcenterchooser.left
-        anchors.bottomMargin: 30
-        anchors.rightMargin: 30
-        visible: true
-    }*/
-
     function animatedMapRecenter(fromCoord, toCoord) {
         _animatedLatitudeStart = fromCoord.latitude
         _animatedLongitudeStart = fromCoord.longitude
@@ -394,9 +384,6 @@ FlightMap {
         property var activeVehicle: _activeVehicle
         property var wingmanRelative: QtPositioning.coordinate()
         property var wingmanMeters: QtPositioning.coordinate()
-        //property real wingmanNorth: 0
-        //property real wingmanEast:  0
-
 
         onInWingmanModeChanged: {
             if (!inWingmanMode && visible) {
@@ -428,13 +415,6 @@ FlightMap {
             hide()
         }
     }
-
-
-    /*WingmanVisuals {
-        id:             wingmanVisuals
-        mapControl:     parent
-        visible:        true
-    }*/
 
     // Orbit editing visuals
     QGCMapCircleVisuals {

@@ -20,14 +20,11 @@ QGCPositionManager::QGCPositionManager(QGCApplication* app, QGCToolbox* toolbox)
     , _nmeaSource       (NULL)
     , _simulatedSource  (NULL)
     , _landingPadSource (NULL)
-    , _wingman          (NULL)
 {
-    _wingman = new Wingman();
 }
 
 QGCPositionManager::~QGCPositionManager()
 {
-    delete(_wingman);
     delete(_simulatedSource);
     delete(_nmeaSource);
 }

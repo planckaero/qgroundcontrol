@@ -17,7 +17,6 @@
 #include "QGCToolbox.h"
 #include "SimulatedPosition.h"
 #include "LandingPadPosition.h"
-#include "Wingman.h"
 
 class QGCPositionManager : public QGCTool {
     Q_OBJECT
@@ -29,7 +28,6 @@ public:
 
     Q_PROPERTY(QGeoCoordinate gcsPosition  READ gcsPosition  NOTIFY gcsPositionChanged)
     Q_PROPERTY(qreal          gcsHeading   READ gcsHeading   NOTIFY gcsHeadingChanged)
-    Q_PROPERTY(Wingman*       wingman               READ wingman                CONSTANT)
 
     enum QGCPositionSource {
         Simulated,
@@ -42,8 +40,6 @@ public:
     QGeoCoordinate gcsPosition(void) { return _gcsPosition; }
 
     qreal gcsHeading() { return _gcsHeading; }
-
-    Wingman* wingman(void) { return _wingman; }
 
     void setPositionSource(QGCPositionSource source);
 
@@ -72,6 +68,4 @@ private:
     QNmeaPositionInfoSource*    _nmeaSource;
     QGeoPositionInfoSource*     _simulatedSource;
     QGeoPositionInfoSource*     _landingPadSource;
-
-    Wingman*                    _wingman;
 };
