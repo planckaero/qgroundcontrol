@@ -924,7 +924,7 @@ void APMFirmwarePlugin::guidedModeChangeAltitude(Vehicle* vehicle, double altitu
     vehicle->sendMessageOnLink(vehicle->priorityLink(), msg);
 }
 
-void APMFirmwarePlugin::guidedModeStartWingman(Vehicle *vehicle, float north_offset, float east_offset, float altitude)
+void APMFirmwarePlugin::guidedModeStartWingman(Vehicle *vehicle, double north_offset, double east_offset, double altitude)
 {
     vehicle->sendMavCommand(vehicle->defaultComponentId(),
                             MAV_CMD_NAV_PLANCK_WINGMAN,

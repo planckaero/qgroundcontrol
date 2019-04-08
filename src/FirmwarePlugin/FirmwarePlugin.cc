@@ -283,7 +283,7 @@ void FirmwarePlugin::guidedModeChangeAltitude(Vehicle* vehicle, double altitudeR
     qgcApp()->showMessage(guided_mode_not_supported_by_vehicle);
 }
 
-void FirmwarePlugin::guidedModeStartWingman(Vehicle* vehicle, float north_offset, float east_offset, float altitude)
+void FirmwarePlugin::guidedModeStartWingman(Vehicle* vehicle, double north_offset, double east_offset, double altitude)
 {
     // Not supported by generic vehicle
     Q_UNUSED(vehicle);

@@ -185,7 +185,8 @@ FlightMap {
 
     onGcsPositionChanged: {
         updateMap()
-        wingmanVisuals.gcsLocation = gcsPosition
+        wingmanItem.coordinate.latitude = gcsPosition.latitude + wingmanItem.wingmanRelative.latitude
+        wingmanItem.coordinate.longitude = gcsPosition.longitude + wingmanItem.wingmanRelative.longitude
     }
 
     Timer {
@@ -375,11 +376,65 @@ FlightMap {
         }
     }
 
-    WingmanVisuals {
+    // Wingman visuals
+    MapQuickItem {
+        id:             wingmanItem
+        visible:        false
+        z:              QGroundControl.zOrderMapItems
+        anchorPoint.x:  sourceItem.anchorPointX
+        anchorPoint.y:  sourceItem.anchorPointY
+
+        sourceItem: MissionItemIndexLabel {
+            checked:    true
+            index:      -1
+            label:      qsTr("Wingman here", "Relative location")
+        }
+
+        property bool inWingmanMode: _activeVehicle ? _activeVehicle.flightMode === _activeVehicle.gotoFlightMode : false
+        property var activeVehicle: _activeVehicle
+        property var wingmanRelative: QtPositioning.coordinate()
+        property var wingmanMeters: QtPositioning.coordinate()
+        //property real wingmanNorth: 0
+        //property real wingmanEast:  0
+
+
+        onInWingmanModeChanged: {
+            if (!inWingmanMode && visible) {
+                // Hide wingman indicator when vehicle falls out of guided mode
+                visible = false
+            }
+        }
+
+        onActiveVehicleChanged: {
+            if (!_activeVehicle) {
+                visible = false
+            }
+        }
+
+        function show(coord) {
+            wingmanItem.coordinate = coord
+            wingmanItem.visible = true
+        }
+
+        function hide() {
+            wingmanItem.visible = false
+        }
+
+        function actionConfirmed() {
+            // We leave the indicator visible. The handling for onInGuidedModeChanged will hide it.
+        }
+
+        function actionCancelled() {
+            hide()
+        }
+    }
+
+
+    /*WingmanVisuals {
         id:             wingmanVisuals
         mapControl:     parent
         visible:        true
-    }
+    }*/
 
     // Orbit editing visuals
     QGCMapCircleVisuals {
@@ -472,6 +527,7 @@ FlightMap {
                 onTriggered: {
                     gotoLocationItem.show(clickMenu.coord)
                     orbitMapCircle.hide()
+                    wingmanItem.hide()
                     guidedActionsController.confirmAction(guidedActionsController.actionGoto, clickMenu.coord, gotoLocationItem)
                 }
             }
@@ -483,30 +539,59 @@ FlightMap {
                 onTriggered: {
                     orbitMapCircle.show(clickMenu.coord)
                     gotoLocationItem.hide()
+                    wingmanItem.hide()
                     guidedActionsController.confirmAction(guidedActionsController.actionOrbit, clickMenu.coord, orbitMapCircle)
                 }
             }
+
+            MenuItem {
+                text:           qsTr("Wingman")
+                visible:        guidedActionsController.showWingman
+
+                onTriggered: {
+                    wingmanItem.show(clickMenu.coord)
+                    orbitMapCircle.hide()
+                    gotoLocationItem.hide()
+                    guidedActionsController.confirmAction(guidedActionsController.actionWingman, wingmanItem.wingmanMeters, wingmanItem)
+                }
+            }
+
         }
 
         onClicked: {
-            if (guidedActionsController.guidedUIVisible || (!guidedActionsController.showGotoLocation && !guidedActionsController.showOrbit)) {
+            if (guidedActionsController.guidedUIVisible || (!guidedActionsController.showGotoLocation && !guidedActionsController.showOrbit && !guidedActionsController.showWingman)) {
                 return
             }
             orbitMapCircle.hide()
             gotoLocationItem.hide()
+            wingmanItem.hide()
             var clickCoord = flightMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
+
+            wingmanItem.wingmanRelative.latitude = clickCoord.latitude - gcsPosition.latitude
+            wingmanItem.wingmanRelative.longitude = clickCoord.longitude - gcsPosition.longitude
+            console.debug("Wingman relative: " + wingmanItem.wingmanRelative.latitude + ":" + wingmanItem.wingmanRelative.longitude)
+
+            // These actually return meters. I stuffed them into a geocoordinate, though.
+            var distance = gcsPosition.distanceTo(clickCoord)
+            var azimuth = gcsPosition.azimuthTo(clickCoord) * Math.PI / 180.0
+            console.debug("Distance: " + distance)
+            console.debug("Azimuth: " + azimuth)
+
+            wingmanItem.wingmanMeters.latitude = distance * Math.cos(azimuth)
+            wingmanItem.wingmanMeters.longitude = distance * Math.sin(azimuth)
+            console.debug("Wingman relative(m): " + wingmanItem.wingmanMeters.latitude + ":" + wingmanItem.wingmanMeters.longitude)
+
             if (guidedActionsController.showGotoLocation && guidedActionsController.showOrbit) {
                 clickMenu.coord = clickCoord
                 clickMenu.popup()
             } else if (guidedActionsController.showGotoLocation) {
-                gotoLocationItem.show(clickCoord)
-                guidedActionsController.confirmAction(guidedActionsController.actionGoto, clickCoord)
+                clickMenu.coord = clickCoord
+                clickMenu.popup()
             } else if (guidedActionsController.showOrbit) {
                 orbitMapCircle.show(clickCoord)
                 guidedActionsController.confirmAction(guidedActionsController.actionOrbit, clickCoord)
             } else if (guidedActionsController.showWingman) {
-                wingmanSetpointItem.show(clickCoord)
-                guidedActionsController.confirmAction(guidedActionsController.actionWingman, clickCoord)
+                wingmanItem.show(clickCoord)
             }
         }
     }

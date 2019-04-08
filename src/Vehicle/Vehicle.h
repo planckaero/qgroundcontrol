@@ -717,7 +717,7 @@ public:
     Q_INVOKABLE void guidedModeChangeAltitude(double altitudeChange);
 
     /// Command to initiate wingman mode
-    Q_INVOKABLE void guidedModeStartWingman(float north_offset, float east_offset, float altitude);
+    Q_INVOKABLE void guidedModeStartWingman(const QGeoCoordinate& wingmanCoord, float altitude);
 
     /// Command vehicle to orbit given center point
     ///     @param centerCoord Orit around this point
