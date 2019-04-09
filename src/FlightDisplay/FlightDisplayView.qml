@@ -596,12 +596,6 @@ QGCView {
                     visible:    _guidedController.showChangeAlt
                 },
                 {
-                    title:      _guidedController.wingmanTitle,
-                    text:       _guidedController.wingmanMessage,
-                    action:     _guidedController.actionWingman,
-                    visible:    _guidedController.showWingman
-                },
-                {
                     title:      _guidedController.landAbortTitle,
                     text:       _guidedController.landAbortMessage,
                     action:     _guidedController.actionLandAbort,
