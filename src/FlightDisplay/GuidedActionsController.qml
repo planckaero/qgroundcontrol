@@ -391,7 +391,6 @@ Item {
             break
         case actionWingman:
             _activeVehicle.guidedModeStartWingman(actionData, actionAltitudeChange)
-            console.debug("Wingman mode")
             break;
         case actionGoto:
             _activeVehicle.guidedModeGotoLocation(actionData)

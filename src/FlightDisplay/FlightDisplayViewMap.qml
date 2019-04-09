@@ -549,17 +549,13 @@ FlightMap {
 
             wingmanItem.wingmanRelative.latitude = clickCoord.latitude - gcsPosition.latitude
             wingmanItem.wingmanRelative.longitude = clickCoord.longitude - gcsPosition.longitude
-            console.debug("Wingman relative: " + wingmanItem.wingmanRelative.latitude + ":" + wingmanItem.wingmanRelative.longitude)
 
-            // These actually return meters. I stuffed them into a geocoordinate, though.
             var distance = gcsPosition.distanceTo(clickCoord)
             var azimuth = gcsPosition.azimuthTo(clickCoord) * Math.PI / 180.0
-            console.debug("Distance: " + distance)
-            console.debug("Azimuth: " + azimuth)
 
+            // These actually return meters. I stuffed them into a geocoordinate, though.
             wingmanItem.wingmanMeters.latitude = distance * Math.cos(azimuth)
             wingmanItem.wingmanMeters.longitude = distance * Math.sin(azimuth)
-            console.debug("Wingman relative(m): " + wingmanItem.wingmanMeters.latitude + ":" + wingmanItem.wingmanMeters.longitude)
 
             if (guidedActionsController.showGotoLocation && guidedActionsController.showOrbit) {
                 clickMenu.coord = clickCoord
