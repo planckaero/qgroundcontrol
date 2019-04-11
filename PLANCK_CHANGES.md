@@ -1,0 +1,13 @@
+--Added planck tag icon to symbolize landing pad on map.
+--Added listener class for planck-specific message detection, and correlating action.
+--Replaced QGC upper-left button icon with Planck icon.
+--Added button chooser for centering map on drone, landing pad, or free-move.
+--Added range rings around landing pad and range labels.
+--Added button chooser for downward vs gimbal camera selection.
+--Added downward and gimbal camera fields to settings page for relevant video input stream types.
+--Modified location of mavlink library and added autogeneration of header files during qmake process.
+--Created Planck legacy message dialect in mavlink.
+--Added selection of Planck flight modes to upper-center of window.
+--Added Planck icons for Windows, Mac, and Android.
+--Added Planck WINGMAN mode and selection from clicking map.
+--Removed firmware version warning
