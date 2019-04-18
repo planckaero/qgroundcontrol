@@ -89,6 +89,7 @@ FlightMap {
             _disableVehicleTracking = false
             _disablePadTracking = false
         }
+        mapcenterchooser.free = true
     }
 
     on_AirspaceEnabledChanged: {
