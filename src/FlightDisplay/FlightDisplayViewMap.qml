@@ -409,7 +409,7 @@ FlightMap {
         }
 
         function actionConfirmed() {
-            // We leave the indicator visible. The handling for onInGuidedModeChanged will hide it.
+            hide()
         }
 
         function actionCancelled() {
