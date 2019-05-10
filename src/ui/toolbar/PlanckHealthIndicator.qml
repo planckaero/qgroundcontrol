@@ -4,9 +4,7 @@ import QtQuick.Layouts  1.2
 
 import QGroundControl                       1.0
 import QGroundControl.Controls              1.0
-import QGroundControl.MultiVehicleManager   1.0
 import QGroundControl.ScreenTools           1.0
-import QGroundControl.Palette               1.0
 
 
 Item {
@@ -15,8 +13,8 @@ Item {
     anchors.bottom: parent.bottom
     visible:        true
 
-    property bool tagHealthy: QGroundControl.planckListener.tagHealth
-    property bool boatHealthy: QGroundControl.planckListener.boatHealth
+    property bool tagHealthy: QGroundControl.planckListener.TagHealth
+    property bool boatHealthy: QGroundControl.planckListener.BoatHealth
 
     Row {
         id:             planckhealthRow
@@ -29,15 +27,17 @@ Item {
             width: 40; height: 30
             color: "transparent"
 
+            // Visible border box
             Rectangle {
                 width:  30
                 height: 30
                 anchors.horizontalCenter: parent.horizontalCenter
                 color:  "transparent"
                 border.width: 2
-                border.color: "white"
+                border.color: tagHealthy ? "white" : "red"
             }
 
+            // Text label
             QGCLabel {
                 text:           "TAG"
                 font.family:    ScreenTools.demiboldFontFamily
@@ -51,7 +51,7 @@ Item {
             Rectangle {
                 visible: !tagHealthy
                 width: 40; height: 2
-                color: "white"
+                color: "red"
                 anchors.verticalCenter: parent.verticalCenter
                 transform: Rotation { origin.x: 20; origin.y: 0; angle: 45}
             }
@@ -63,15 +63,17 @@ Item {
             width: 40; height: 30
             color: "transparent"
 
+            // Visible border box
             Rectangle {
                 width:  30
                 height: 30
                 anchors.horizontalCenter: parent.horizontalCenter
                 color:  "transparent"
                 border.width: 2
-                border.color: "white"
+                border.color: boatHealthy ? "white" : "red"
             }
 
+            // Text label
             QGCLabel {
                 text:           "CB\nGPS"
                 font.family:    ScreenTools.demiboldFontFamily
@@ -85,7 +87,7 @@ Item {
             Rectangle {
                 visible: !boatHealthy
                 width: 42; height: 2
-                color: "white"
+                color: "red"
                 anchors.verticalCenter: parent.verticalCenter
                 transform: Rotation { origin.x: 20; origin.y: 0; angle: 45}
             }

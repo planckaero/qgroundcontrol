@@ -2,6 +2,7 @@
 #define PLANCKLISTENER_H
 
 #include <QObject>
+#include <QTimer>
 #include "QGCToolbox.h"
 #include <mavlink.h>
 
@@ -15,23 +16,22 @@ public:
 
     // Override from QGCTool
     virtual void setToolbox(QGCToolbox *toolbox);
-    Q_PROPERTY(bool tagHealth  READ tagHealth  NOTIFY tagHealthChanged)
-    Q_PROPERTY(bool boatHealth READ boatHealth  NOTIFY boatHealthChanged)
+    Q_PROPERTY(bool TagHealth  READ TagHealth  NOTIFY HealthChanged)
+    Q_PROPERTY(bool BoatHealth READ BoatHealth  NOTIFY HealthChanged)
 
-    bool tagHealth() { return _tagHealth; }
-    bool boatHealth() { return _boatHealth; }
+    bool TagHealth() { return tag_health; }
+    bool BoatHealth() { return boat_health; }
 signals:
-    void landingPadPosition(int lat, int lon);
-    void status(bool tag_est_ok, bool boat_est_ok);
-    void boatHealthChanged(bool);
-    void tagHealthChanged(bool);
+    void HealthChanged();
 
 public slots:
     void onMAVLinkMessage(LinkInterface* link, mavlink_message_t message);
+    void onHealthTimeout();
 
 private:
-    bool _tagHealth;
-    bool _boatHealth;
+    QTimer health_timer;
+    bool tag_health;
+    bool boat_health;
 };
 
 #endif // PLANCKLISTENER_H
