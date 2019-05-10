@@ -45,4 +45,14 @@ void PlanckListener::onMAVLinkMessage(LinkInterface* link, mavlink_message_t mes
             pos->setPosition(lps.latitude, lps.longitude);
         }
     }
+    else if(message.msgid == MAVLINK_MSG_ID_PLANCK_STATUS)
+    {
+        mavlink_planck_status_t stat;
+        mavlink_msg_planck_status_decode(&message, &stat);
+
+        _tagHealth = (stat.status & 0x01)!=0;
+        _boatHealth = (stat.status & 0x02)!=0;
+        tagHealthChanged(_tagHealth);
+        boatHealthChanged(_boatHealth);
+    }
 }

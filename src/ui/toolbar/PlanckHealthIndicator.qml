@@ -15,8 +15,8 @@ Item {
     anchors.bottom: parent.bottom
     visible:        true
 
-    property bool tagHealthy: false
-    property bool boatHealthy: false
+    property bool tagHealthy: QGroundControl.planckListener.tagHealth
+    property bool boatHealthy: QGroundControl.planckListener.boatHealth
 
     Row {
         id:             planckhealthRow
