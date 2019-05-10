@@ -24,31 +24,70 @@ Item {
         anchors.bottom: parent.bottom
         spacing:        ScreenTools.defaultFontPixelWidth
 
+        // Tag estimator health indicator
         Rectangle {
-            width:  45
-            height: 30
-            color:  tagHealthy ? "green" : "red"
-            Text {
-                text: "TAG"
-                font.bold: true
-                color: tagHealthy ? "white" : "black"
-                anchors.fill: parent
+            width: 40; height: 30
+            color: "transparent"
+
+            Rectangle {
+                width:  30
+                height: 30
+                anchors.horizontalCenter: parent.horizontalCenter
+                color:  "transparent"
+                border.width: 2
+                border.color: "white"
+            }
+
+            QGCLabel {
+                text:           "TAG"
+                font.family:    ScreenTools.demiboldFontFamily
+                font.pointSize: 10
+                anchors.fill:   parent
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
+
+            // Draw a diagonal line through box
+            Rectangle {
+                visible: !tagHealthy
+                width: 40; height: 2
+                color: "white"
+                anchors.verticalCenter: parent.verticalCenter
+                transform: Rotation { origin.x: 20; origin.y: 0; angle: 45}
+            }
+
         }
 
+        // Boat estimator health indicator
         Rectangle {
-            width:  45
-            height: 30
-            color:  boatHealthy ? "green" : "red"
-            Text {
-                text: "BOAT"
-                font.bold: true
-                color: boatHealthy ? "white" : "black"
-                anchors.fill: parent
+            width: 40; height: 30
+            color: "transparent"
+
+            Rectangle {
+                width:  30
+                height: 30
+                anchors.horizontalCenter: parent.horizontalCenter
+                color:  "transparent"
+                border.width: 2
+                border.color: "white"
+            }
+
+            QGCLabel {
+                text:           "CB\nGPS"
+                font.family:    ScreenTools.demiboldFontFamily
+                font.pointSize: 10
+                anchors.fill:   parent
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
+            }
+
+            // Draw a diagonal line through box
+            Rectangle {
+                visible: !boatHealthy
+                width: 42; height: 2
+                color: "white"
+                anchors.verticalCenter: parent.verticalCenter
+                transform: Rotation { origin.x: 20; origin.y: 0; angle: 45}
             }
         }
     }
