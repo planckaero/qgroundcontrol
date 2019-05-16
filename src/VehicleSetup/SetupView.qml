@@ -71,6 +71,11 @@ Rectangle {
         panelLoader.setSource("SetupParameterEditor.qml")
     }
 
+    function showPlanckPanel()
+    {
+        panelLoader.setSource("PlanckConfig.qml")
+    }
+
     function showPX4FlowPanel()
     {
         panelLoader.setSource("PX4FlowSensor.qml")
@@ -307,6 +312,16 @@ Rectangle {
                 onClicked: showParametersPanel()
             }
 
+            SubMenuButton {
+                setupIndicator:     false
+                exclusiveGroup:     setupButtonGroup
+                visible:            QGroundControl.multiVehicleManager.parameterReadyVehicleAvailable &&
+                                    !QGroundControl.multiVehicleManager.activeVehicle.highLatencyLink
+                text:               qsTr("Planck")
+                Layout.fillWidth:   true
+
+                onClicked: showPlanckPanel()
+            }
         }
     }
 
