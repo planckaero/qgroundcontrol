@@ -40,11 +40,13 @@ SetupPage {
                     width:  rectangle.x + rectangle.width
                     height: rectangle.y + rectangle.height
 
-                    property Fact _tagSizeLarge:      controller.getParameterFact(90, "TAG_SIZE_LARGE");
-                    property Fact _tagSizeMedium:     controller.getParameterFact(90, "TAG_SIZE_MED");
-                    property Fact _tagSizeSmall:      controller.getParameterFact(90, "TAG_SIZE_SMALL");
-                    property Fact _tagSizeCorner:     controller.getParameterFact(90, "TAG_CORNER_SIZE");
-                    property Fact _useCornerTags:     controller.getParameterFact(90, "TAG_USE_CORNERS");
+                    property Fact _tagSizeLarge:      Fact{}
+                    property Fact _tagSizeMedium:     Fact{}
+                    property Fact _tagSizeSmall:      Fact{}
+                    property Fact _tagSizeCorner:     Fact{}
+                    property Fact _useCornerTags:     Fact{}
+                    property bool _tagSizeLoaded:     false
+                    property bool _tagCornerLoaded:   false
 
                     function _modifyAllSizes(large, medium, small, corner) {
                         _tagSizeLarge.value = large;
@@ -54,7 +56,7 @@ SetupPage {
                     }
 
                     function _changeTagSizes(sizeIndex) {
-                        // Origami
+                        if (!_tagSizeLoaded) return;
                         if (sizeIndex === 0) {
                             _modifyAllSizes(0.611, 0.122, 0.024, 0.061);
                         }
@@ -68,7 +70,7 @@ SetupPage {
                     }
 
                     function _setTagLayout(layoutIndex) {
-                        console.log("_setTagLayout (" + layoutIndex + ")");
+                        if (!_tagCornerLoaded) return;
                         if (layoutIndex === 0) {
                             _useCornerTags.value = 0;
                         }
@@ -117,6 +119,13 @@ SetupPage {
                                     controller.parameterExists(90, "TAG_SIZE_MED")   &&
                                     controller.parameterExists(90, "TAG_SIZE_SMALL"))
                                 {
+                                    _tagSizeLarge = controller.getParameterFact(90, "TAG_SIZE_LARGE")
+                                    _tagSizeMedium = controller.getParameterFact(90, "TAG_SIZE_MED")
+                                    _tagSizeSmall = controller.getParameterFact(90, "TAG_SIZE_SMALL")
+                                    if (controller.parameterExists(90, "TAG_CORNER_SIZE")) {
+                                        _tagSizeCorner = controller.getParameterFact(90, "TAG_CORNER_SIZE");
+                                    }
+                                    _tagSizeLoaded = true;
                                     tagSizeModel.clear();
                                     tagSizeModel.append({"text": "Origami", "value": "0"});
                                     tagSizeModel.append({"text": "LARS", "value": "1"});
@@ -138,7 +147,7 @@ SetupPage {
                                     }
                                 }
                                 else {
-                                    console.log("TAG_SIZE_LARGE not found!");
+                                    console.log("TAG_SIZE_LARGE NOT FOUND!");
                                 }
                             }
                         }
@@ -161,10 +170,12 @@ SetupPage {
                                                         id: tagLayoutModel
                                                         ListElement {text: "N/A"; value: 0}
                                                     }
-                            onCurrentIndexChanged:  _setTagLayout(currentIndex); 
+                            onCurrentIndexChanged:  _setTagLayout(currentIndex);
 
                             Component.onCompleted: {
                                 if (controller.parameterExists(90, "TAG_USE_CORNERS")) {
+                                    _useCornerTags = controller.getParameterFact(90, "TAG_USE_CORNERS");
+                                    _tagCornerLoaded = true;
                                     tagLayoutModel.clear();
                                     tagLayoutModel.append({"text": "Three Tag", "value": "0"});
                                     tagLayoutModel.append({"text": "Seven Tag", "value": "1"});
@@ -179,9 +190,123 @@ SetupPage {
                 } // Item
             } // Component - tagSettings
 
+            // Controller Settings
+            Component {
+                id: controllerSettings
+
+                Item {
+                    width:  rectangle.x + rectangle.width
+                    height: rectangle.y + rectangle.height
+
+                    property Fact _trackTagInManual:    Fact{}
+                    property Fact _trackTagYaw:         Fact{}
+                    property Fact _trackTagCamera:      Fact{}
+                    property Fact _maxLeanAngle:        Fact{}
+
+                    QGCLabel {
+                        id:         controllerSettingLabel
+                        text:       qsTr("Controller")
+                        font.family: ScreenTools.demiboldFontFamily
+                    }
+
+                    Rectangle {
+                        id:                 rectangle
+                        anchors.topMargin:  _margins / 2
+                        anchors.left:       parent.left
+                        anchors.top:        controllerSettingLabel.bottom
+                        width:              trackCameraCheckbox.x + trackCameraCheckbox.width + _margins
+                        height:             maxLeanAngleText.y + maxLeanAngleText.height + _margins
+                        color:              palette.windowShade
+
+                        QGCLabel {
+                            id:                     trackTagLabel
+                            anchors.margins:        _margins
+                            anchors.left:           parent.left
+                            anchors.baseline:       trackTagInManualCheckbox.baseline
+                            text:                   qsTr("Tag Tracking: ")
+                        }
+
+                        FactCheckBox {
+                            id:                     trackTagInManualCheckbox
+                            anchors.margins:        _margins
+                            anchors.top:            parent.top
+                            anchors.left:           trackTagLabel.right
+                            text:                   qsTr("In Manual Mode")
+                            fact:                   _trackTagInManual
+                            checkedValue:           1
+                            uncheckedValue:         0
+                            enabled:                controller.parameterExists(90, "TRACK_TAG_MANUAL")
+                        }
+
+                        FactCheckBox {
+                            id:                     trackTagYawCheckbox
+                            anchors.margins:        _margins
+                            anchors.top:            parent.top
+                            anchors.left:           trackTagInManualCheckbox.right
+                            text:                   qsTr("Yaw Tracking")
+                            fact:                   _trackTagYaw
+                            checkedValue:           1
+                            uncheckedValue:         0
+                            enabled:                controller.parameterExists(90, "TRACK_TAG_YAW")
+                        }
+
+                        FactCheckBox {
+                            id:                     trackCameraCheckbox
+                            anchors.margins:        _margins
+                            anchors.top:            parent.top
+                            anchors.left:           trackTagYawCheckbox.right
+                            text:                   qsTr("Camera-Centric")
+                            fact:                   _trackTagCamera
+                            checkedValue:           1
+                            uncheckedValue:         0
+                            enabled:                controller.parameterExists(90, "TRACK_CAMERA")
+                        }
+
+                        QGCLabel {
+                            id:                     maxLeanAngleLabel
+                            anchors.margins:        _margins
+                            anchors.left:           parent.left
+                            anchors.baseline:       maxLeanAngleText.baseline
+                            text:                   qsTr("Max Lean Angle (Degrees): ")
+                        }
+
+                        FactTextField {
+                            id:                     maxLeanAngleText
+                            anchors.margins:        _margins
+                            anchors.top:            trackTagInManualCheckbox.bottom
+                            anchors.left:           maxLeanAngleLabel.right
+                            fact:                   _maxLeanAngle
+                            enabled:                controller.parameterExists(90, "MAX_LEAN_ANGLE")
+                        }
+                    } // Rectangle
+
+                    Component.onCompleted: {
+                        // only set facts if they exist
+                        if (controller.parameterExists(90, "TRACK_TAG_MANUAL")) {
+                            _trackTagInManual = controller.getParameterFact(90, "TRACK_TAG_MANUAL");
+                        }
+                        if (controller.parameterExists(90, "TRACK_TAG_YAW")) {
+                            _trackTagYaw = controller.getParameterFact(90, "TRACK_TAG_YAW");
+                        }
+                        if (controller.parameterExists(90, "TRACK_CAMERA")) {
+                            _trackTagCamera = controller.getParameterFact(90, "TRACK_CAMERA");
+                        }
+                        if (controller.parameterExists(90, "MAX_LEAN_ANGLE")) {
+                            _maxLeanAngle = controller.getParameterFact(90, "MAX_LEAN_ANGLE");
+                        }
+                    }
+                } // Item
+            } // Component - tagSettings
+
+            // Component Loaders
             Loader {
                 id: tagSettingsLoader
                 sourceComponent: tagSettings
+            }
+
+            Loader {
+                id: controllerSettingsLoader
+                sourceComponent: controllerSettings
             }
         } // Column
     } // Component
