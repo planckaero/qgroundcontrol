@@ -40,43 +40,39 @@ SetupPage {
                     width:  rectangle.x + rectangle.width
                     height: rectangle.y + rectangle.height
 
+                    // Tag Models
+                    property var _tagSizes:           [
+                        {name: "Origami", large: 0.611, medium: 0.122, small: 0.024, corner: 0.061},
+                        {name: "LARS",    large: 0.8,   medium: 0.16,  small: 0.032, corner: 0.08},
+                    ];
+                    property var _tagLayouts:         [
+                        {name: "3-Tag"},
+                        {name: "7-Tag"}
+                    ];
+
+                    // Tag Parameters
                     property Fact _tagSizeLarge:      Fact{}
                     property Fact _tagSizeMedium:     Fact{}
                     property Fact _tagSizeSmall:      Fact{}
                     property Fact _tagSizeCorner:     Fact{}
                     property Fact _useCornerTags:     Fact{}
-                    property bool _tagSizeLoaded:     false
-                    property bool _tagCornerLoaded:   false
 
-                    function _modifyAllSizes(large, medium, small, corner) {
-                        _tagSizeLarge.value = large;
-                        _tagSizeMedium.value = medium;
-                        _tagSizeSmall.value = small;
-                        _tagSizeCorner.value = corner;
-                    }
+                    // Configuration Indices
+                    property bool _tagSizesLoaded:    false;
+                    property bool _tagLayoutsLoaded:   false;
 
+                    // UI Callbacks
                     function _changeTagSizes(sizeIndex) {
-                        if (!_tagSizeLoaded) return;
-                        if (sizeIndex === 0) {
-                            _modifyAllSizes(0.611, 0.122, 0.024, 0.061);
-                        }
-                        else if (sizeIndex === 1) {
-                            _modifyAllSizes(0.8, 0.16, 0.032, 0.08);
-                        }
-                        else {
-                            // TODO: trigger some sort of prompt
-                            console.log("TODO: trigger custom size specification prompt");
-                        }
+                        if (!_tagSizesLoaded) return;
+                        _tagSizeLarge.value = _tagSizes[sizeIndex].large;
+                        _tagSizeMedium.value = _tagSizes[sizeIndex].medium;
+                        _tagSizeSmall.value = _tagSizes[sizeIndex].small;
+                        _tagSizeCorner.value = _tagSizes[sizeIndex].corner;
                     }
 
                     function _setTagLayout(layoutIndex) {
-                        if (!_tagCornerLoaded) return;
-                        if (layoutIndex === 0) {
-                            _useCornerTags.value = 0;
-                        }
-                        else if (layoutIndex === 1) {
-                            _useCornerTags.value = 1;
-                        }
+                        if (!_tagLayoutsLoaded) return;
+                        _useCornerTags.value = layoutIndex;
                     }
 
                     QGCLabel {
@@ -108,10 +104,7 @@ SetupPage {
                             anchors.top:        parent.top
                             anchors.left:       tagLayoutLabel.right
                             width:              ScreenTools.defaultFontPixelWidth * 32
-                            model:              ListModel {
-                                                    id: tagSizeModel
-                                                    ListElement {text: "N/A"; value: 0}
-                                                }
+                            model:              ListModel { id: tagSizeModel; ListElement{text: "N/A"; value: -1} }
                             onCurrentIndexChanged: _changeTagSizes(currentIndex);
 
                             Component.onCompleted: {
@@ -119,31 +112,34 @@ SetupPage {
                                     controller.parameterExists(90, "TAG_SIZE_MED")   &&
                                     controller.parameterExists(90, "TAG_SIZE_SMALL"))
                                 {
+                                    tagSizeModel.clear();
                                     _tagSizeLarge = controller.getParameterFact(90, "TAG_SIZE_LARGE")
                                     _tagSizeMedium = controller.getParameterFact(90, "TAG_SIZE_MED")
                                     _tagSizeSmall = controller.getParameterFact(90, "TAG_SIZE_SMALL")
                                     if (controller.parameterExists(90, "TAG_CORNER_SIZE")) {
                                         _tagSizeCorner = controller.getParameterFact(90, "TAG_CORNER_SIZE");
                                     }
-                                    _tagSizeLoaded = true;
-                                    tagSizeModel.clear();
-                                    tagSizeModel.append({"text": "Origami", "value": "0"});
-                                    tagSizeModel.append({"text": "LARS", "value": "1"});
-                                    tagSizeModel.append({"text": "Custom", "value": "2"});
-                                    if(_approxEqual(_tagSizeLarge.value, 0.8)   &&
-                                       _approxEqual(_tagSizeMedium.value, 0.16) &&
-                                       _approxEqual(_tagSizeSmall.value, 0.032))
-                                    {
-                                        tagSizeCombo.currentIndex = 1;
+                                    _tagSizesLoaded = true;
+                                    var customSizes = true;
+                                    for (var i = 0; i < _tagSizes.length; ++i) {
+                                        tagSizeModel.append({"text": _tagSizes[i].name, "value": i});
+                                        if(_approxEqual(_tagSizeLarge.value, _tagSizes[i].large)   &&
+                                           _approxEqual(_tagSizeMedium.value, _tagSizes[i].medium) &&
+                                           _approxEqual(_tagSizeSmall.value, _tagSizes[i].small))
+                                        {
+                                            customSizes = false;
+                                            tagSizeCombo.currentIndex = i;
+                                        }
                                     }
-                                    else if (_approxEqual(_tagSizeLarge.value, 0.611)  &&
-                                             _approxEqual(_tagSizeMedium.value, 0.122) &&
-                                             _approxEqual(_tagSizeSmall.value, 0.024))
-                                    {
-                                        tagSizeCombo.currentIndex = 0;
-                                    }
-                                    else {
-                                        tagSizeCombo.currentIndex = 2;
+                                    if (customSizes) {
+                                        var customIndex = _tagSizes.length;
+                                        tagSizeModel.append({"text": "Custom", "value": customIndex});
+                                        _tagSizes.push({name: "Custom",
+                                                        large: _tagSizeLarge.value,
+                                                        medium: _tagSizeMedium.value,
+                                                        small: _tagSizeSmall.value,
+                                                        corner: _tagSizeCorner.value});
+                                        tagSizeCombo.currentIndex = customIndex;
                                     }
                                 }
                                 else {
@@ -166,19 +162,17 @@ SetupPage {
                             anchors.top:            tagSizeCombo.bottom
                             anchors.left:           tagLayoutLabel.right
                             width:                  ScreenTools.defaultFontPixelWidth * 32
-                            model:                  ListModel {
-                                                        id: tagLayoutModel
-                                                        ListElement {text: "N/A"; value: 0}
-                                                    }
+                            model:                  ListModel { id: tagLayoutModel; ListElement{text: "N/A"; value: -1} }
                             onCurrentIndexChanged:  _setTagLayout(currentIndex);
 
                             Component.onCompleted: {
                                 if (controller.parameterExists(90, "TAG_USE_CORNERS")) {
-                                    _useCornerTags = controller.getParameterFact(90, "TAG_USE_CORNERS");
-                                    _tagCornerLoaded = true;
                                     tagLayoutModel.clear();
-                                    tagLayoutModel.append({"text": "Three Tag", "value": "0"});
-                                    tagLayoutModel.append({"text": "Seven Tag", "value": "1"});
+                                    _useCornerTags = controller.getParameterFact(90, "TAG_USE_CORNERS");
+                                    _tagLayoutsLoaded = true;
+                                    for (var i = 0; i < _tagSizes.length; ++i) {
+                                        tagLayoutModel.append({"text": _tagLayouts[i].name, "value": i});
+                                    }
                                     tagLayoutCombo.currentIndex = ((_useCornerTags.value) ? 1 : 0);
                                 }
                                 else {
@@ -296,7 +290,7 @@ SetupPage {
                         }
                     }
                 } // Item
-            } // Component - tagSettings
+            } // Component - ControllerSettings
 
             // Component Loaders
             Loader {
