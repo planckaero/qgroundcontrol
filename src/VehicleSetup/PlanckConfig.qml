@@ -1,4 +1,3 @@
-
 // TODO: figure out which imports are necessary
 import QtQuick          2.3
 import QtQuick.Controls 1.2
@@ -14,8 +13,10 @@ import QGroundControl.FactSystem    1.0
 import QGroundControl.FactControls  1.0
 
 SetupPage {
-    id: planckPage
-    pageComponent: planckPageComponent
+    id:                  planckPage
+    pageComponent:       planckPageComponent
+    pageName:            qsTr("Planck")
+    pageDescription:     qsTr("Planck Setup is used to configure Planck Aerosystem's flight software.")
 
     Component {
         id: planckPageComponent
@@ -28,9 +29,7 @@ SetupPage {
 
             QGCPalette { id: palette; colorGroupEnabled: true }
 
-            function _approxEqual(a, b) {
-                return (Math.abs(a - b) < 1e-5);
-            }
+            readonly property real  _margins:                       ScreenTools.defaultFontPixelHeight
 
             // Tag Settings
             Component {
@@ -75,6 +74,10 @@ SetupPage {
                         _useCornerTags.value = layoutIndex;
                     }
 
+                    function _approxEqual(a, b) {
+                        return (Math.abs(a - b) < 1e-5);
+                    }
+
                     QGCLabel {
                         id:         tagSettingLabel
                         text:       qsTr("Tag")
@@ -95,7 +98,7 @@ SetupPage {
                             anchors.margins:    _margins
                             anchors.left:       parent.left
                             anchors.baseline:   tagSizeCombo.baseline
-                            text:               qsTr("Size: ")
+                            text:               qsTr("Size:")
                         }
 
                         QGCComboBox {
@@ -153,7 +156,7 @@ SetupPage {
                             anchors.margins:        _margins
                             anchors.left:           parent.left
                             anchors.baseline:       tagLayoutCombo.baseline
-                            text:                   qsTr("Layout: ")
+                            text:                   qsTr("Layout:")
                         }
 
                         QGCComboBox {
@@ -213,7 +216,7 @@ SetupPage {
                         anchors.topMargin:  _margins / 2
                         anchors.left:       parent.left
                         anchors.top:        cameraSettingLabel.bottom
-                        width:              maxExposureText.x + maxExposureText.width + _margins
+                        width:              psiOffsetText.x + psiOffsetText.width + _margins
                         height:             psiOffsetText.y + psiOffsetText.height + _margins
                         color:              palette.windowShade
 
@@ -222,22 +225,22 @@ SetupPage {
                             id:                     exposureLabel
                             anchors.margins:        _margins
                             anchors.left:           parent.left
-                            anchors.top:            parent.top
-                            text:                   qsTr("Exposure")
+                            anchors.baseline:            initExposureText.baseline
+                            text:                   qsTr("Exposure:")
                         }
 
                         QGCLabel {
                             id:                     initExposureLabel
                             anchors.margins:        _margins
-                            anchors.left:           parent.left
+                            anchors.left:           exposureLabel.right
                             anchors.baseline:       initExposureText.baseline
-                            text:                   qsTr("Initial: ")
+                            text:                   qsTr("init")
                         }
 
                         FactTextField {
                             id:                     initExposureText
                             anchors.margins:        _margins
-                            anchors.top:            exposureLabel.bottom
+                            anchors.top:            parent.top
                             anchors.left:           initExposureLabel.right
                             fact:                   _exposure
                             enabled:                controller.parameterExists(90, "EXPOSURE")
@@ -254,13 +257,13 @@ SetupPage {
                             anchors.margins:        _margins
                             anchors.left:           initExposureText.right
                             anchors.baseline:       minExposureText.baseline
-                            text:                   qsTr("Minimum: ")
+                            text:                   qsTr("min")
                         }
 
                         FactTextField {
                             id:                     minExposureText
                             anchors.margins:        _margins
-                            anchors.top:            exposureLabel.bottom
+                            anchors.top:            parent.top
                             anchors.left:           minExposureLabel.right
                             validator:              IntValidator{ bottom: 1; top: 5000; }
                             fact:                   _minExposure
@@ -278,13 +281,13 @@ SetupPage {
                             anchors.margins:        _margins
                             anchors.left:           minExposureText.right
                             anchors.baseline:       maxExposureText.baseline
-                            text:                   qsTr("Maximum: ")
+                            text:                   qsTr("max")
                         }
 
                         FactTextField {
                             id:                     maxExposureText
                             anchors.margins:        _margins
-                            anchors.top:            exposureLabel.bottom
+                            anchors.top:            parent.top
                             anchors.left:           maxExposureLabel.right
                             validator:              IntValidator{ bottom: 1; top: 5000; }
                             fact:                   _maxExposure
@@ -302,22 +305,22 @@ SetupPage {
                             id:                     xyzOffsetLabel
                             anchors.margins:        _margins
                             anchors.left:           parent.left
-                            anchors.top:            maxExposureText.bottom
-                            text:                   qsTr("Spatial Offset (Meters)")
+                            anchors.baseline:       xOffsetText.baseline
+                            text:                   qsTr("Spatial Offset (m):")
                         }
 
                         QGCLabel {
-                            id:                     xOffsetLabel
-                            anchors.margins:        _margins
-                            anchors.left:           parent.left
-                            anchors.baseline:       xOffsetText.baseline
-                            text:                   qsTr("X: ")
+                            id:                            xOffsetLabel
+                            anchors.margins:               _margins
+                            anchors.horizontalCenter:      phiOffsetLabel.horizontalCenter
+                            anchors.baseline:              xOffsetText.baseline
+                            text:                          qsTr("X")
                         }
 
                         FactTextField {
                             id:                     xOffsetText
                             anchors.margins:        _margins
-                            anchors.top:            xyzOffsetLabel.bottom
+                            anchors.top:            maxExposureText.bottom
                             anchors.left:           phiOffsetLabel.right
                             fact:                   _xOffset
                             enabled:                controller.parameterExists(90, "CAM_X_OFF")
@@ -330,17 +333,17 @@ SetupPage {
                         }
 
                         QGCLabel {
-                            id:                     yOffsetLabel
-                            anchors.margins:        _margins
-                            anchors.left:           xOffsetText.right
-                            anchors.baseline:       yOffsetText.baseline
-                            text:                   qsTr("Y: ")
+                            id:                          yOffsetLabel
+                            anchors.margins:             _margins
+                            anchors.horizontalCenter:    thetaOffsetLabel.horizontalCenter
+                            anchors.baseline:            yOffsetText.baseline
+                            text:                        qsTr("Y")
                         }
 
                         FactTextField {
                             id:                     yOffsetText
                             anchors.margins:        _margins
-                            anchors.top:            xyzOffsetLabel.bottom
+                            anchors.top:            maxExposureText.bottom
                             anchors.left:           thetaOffsetLabel.right
                             fact:                   _yOffset
                             enabled:                controller.parameterExists(90, "CAM_Y_OFF")
@@ -353,17 +356,17 @@ SetupPage {
                         }
 
                         QGCLabel {
-                            id:                     zOffsetLabel
-                            anchors.margins:        _margins
-                            anchors.left:           yOffsetText.right
-                            anchors.baseline:       zOffsetText.baseline
-                            text:                   qsTr("Z: ")
+                            id:                          zOffsetLabel
+                            anchors.margins:             _margins
+                            anchors.horizontalCenter:    psiOffsetLabel.horizontalCenter
+                            anchors.baseline:            zOffsetText.baseline
+                            text:                        qsTr("Z")
                         }
 
                         FactTextField {
                             id:                     zOffsetText
                             anchors.margins:        _margins
-                            anchors.top:            xyzOffsetLabel.bottom
+                            anchors.top:            maxExposureText.bottom
                             anchors.left:           psiOffsetLabel.right
                             fact:                   _zOffset
                             enabled:                controller.parameterExists(90, "CAM_Z_OFF")
@@ -379,22 +382,22 @@ SetupPage {
                             id:                     angleOffsetLabel
                             anchors.margins:        _margins
                             anchors.left:           parent.left
-                            anchors.top:            zOffsetText.bottom
-                            text:                   qsTr("Angle Offset (Degrees)")
+                            anchors.baseline:       phiOffsetText.baseline
+                            text:                   qsTr("Angle Offset (deg):")
                         }
 
                         QGCLabel {
                             id:                     phiOffsetLabel
                             anchors.margins:        _margins
-                            anchors.left:           parent.left
+                            anchors.left:           angleOffsetLabel.right
                             anchors.baseline:       phiOffsetText.baseline
-                            text:                   qsTr("Phi: ")
+                            text:                   qsTr("Roll")
                         }
 
                         FactTextField {
                             id:                     phiOffsetText
                             anchors.margins:        _margins
-                            anchors.top:            angleOffsetLabel.bottom
+                            anchors.top:            zOffsetText.bottom
                             anchors.left:           phiOffsetLabel.right
                             validator:              DoubleValidator{ bottom: 0.0; top: 359.99; }
                             fact:                   _phiOffset
@@ -412,13 +415,13 @@ SetupPage {
                             anchors.margins:        _margins
                             anchors.left:           phiOffsetText.right
                             anchors.baseline:       thetaOffsetText.baseline
-                            text:                   qsTr("Theta: ")
+                            text:                   qsTr("Pitch")
                         }
 
                         FactTextField {
                             id:                     thetaOffsetText
                             anchors.margins:        _margins
-                            anchors.top:            angleOffsetLabel.bottom
+                            anchors.top:            zOffsetText.bottom
                             anchors.left:           thetaOffsetLabel.right
                             validator:              DoubleValidator{ bottom: 0.0; top: 359.99; }
                             fact:                   _thetaOffset
@@ -436,13 +439,13 @@ SetupPage {
                             anchors.margins:        _margins
                             anchors.left:           thetaOffsetText.right
                             anchors.baseline:       psiOffsetText.baseline
-                            text:                   qsTr("Psi: ")
+                            text:                   qsTr("Yaw")
                         }
 
                         FactTextField {
                             id:                     psiOffsetText
                             anchors.margins:        _margins
-                            anchors.top:            angleOffsetLabel.bottom
+                            anchors.top:            zOffsetText.bottom
                             anchors.left:           psiOffsetLabel.right
                             validator:              DoubleValidator{ bottom: 0.0; top: 359.99; }
                             fact:                   _psiOffset
@@ -491,7 +494,7 @@ SetupPage {
                             anchors.margins:        _margins
                             anchors.left:           parent.left
                             anchors.baseline:       trackTagInManualCheckbox.baseline
-                            text:                   qsTr("Tag Tracking: ")
+                            text:                   qsTr("Tag Tracking:")
                         }
 
                         FactCheckBox {
@@ -577,7 +580,7 @@ SetupPage {
                             anchors.margins:        _margins
                             anchors.left:           maxLeanAngleText.right
                             anchors.baseline:       maxLeanAngleText.baseline
-                            text:                   qsTr("Degrees (5-45)")
+                            text:                   qsTr("deg")
                         }
                     } // Rectangle
 
@@ -660,13 +663,13 @@ SetupPage {
                             anchors.margins:        _margins
                             anchors.left:           parent.left
                             anchors.baseline:       streamAddressText.baseline
-                            text:                   qsTr("Video: ")
+                            text:                   qsTr("Video:")
                         }
 
                         QGCTextField {
                             id:                     streamAddressText
                             anchors.margins:        _margins
-                            anchors.left:           streamLabel.right
+                            anchors.left:           remotelogLabel.right
                             anchors.top:            parent.top
                             width:                  ScreenTools.defaultFontPixelWidth * 22
                             enabled:                controller.parameterExists(90, "STREAM_IPADDR") &&
@@ -709,7 +712,7 @@ SetupPage {
                             anchors.margins:        _margins
                             anchors.left:           parent.left
                             anchors.baseline:       remotelogAddressText.baseline
-                            text:                   qsTr("Remote Logging: ")
+                            text:                   qsTr("Remote Logging:")
                         }
 
                         QGCTextField {
