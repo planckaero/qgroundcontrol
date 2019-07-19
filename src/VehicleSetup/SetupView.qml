@@ -314,6 +314,7 @@ Rectangle {
 
             SubMenuButton {
                 setupIndicator:     false
+                imageResource:      "/res/PlanckIcon"
                 exclusiveGroup:     setupButtonGroup
                 visible:            QGroundControl.multiVehicleManager.parameterReadyVehicleAvailable &&
                                     !QGroundControl.multiVehicleManager.activeVehicle.highLatencyLink
