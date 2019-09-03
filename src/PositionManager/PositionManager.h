@@ -49,6 +49,8 @@ public:
 
     void setNmeaSourceDevice(QIODevice* device);
 
+    void sendMessageToVehicle();
+
 private slots:
     void _positionUpdated(const QGeoPositionInfo &update);
     void _error(QGeoPositionInfoSource::Error positioningError);

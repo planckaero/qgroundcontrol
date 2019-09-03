@@ -79,6 +79,7 @@ void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)
         // Note that gcsPosition filters out possible crap values
         if (qAbs(update.coordinate().latitude()) > 0.001 && qAbs(update.coordinate().longitude()) > 0.001) {
             newGCSPosition = update.coordinate();
+            sendMessageToVehicle();
         }
     }
     if (newGCSPosition != _gcsPosition) {
@@ -141,4 +142,25 @@ void QGCPositionManager::setPositionSource(QGCPositionManager::QGCPositionSource
 void QGCPositionManager::_error(QGeoPositionInfoSource::Error positioningError)
 {
     qWarning() << "QGCPositionManager error" << positioningError;
+}
+
+void QGCPositionManager::sendMessageToVehicle()
+{
+    QmlObjectListModel& vehicles = *_toolbox->multiVehicleManager()->vehicles();
+    MAVLinkProtocol* mavlinkProtocol = _toolbox->mavlinkProtocol();
+    for (int i = 0; i < vehicles.count(); i++) {
+        Vehicle* vehicle = qobject_cast<Vehicle*>(vehicles[i]);
+        mavlink_message_t message;
+        mavlink_planck_landing_platform_state_t msg;
+        msg.latitude = (int32_t)(_gcsPosition.latitude()*1.E7);
+        msg.latitude = (int32_t)(_gcsPosition.longitude()*1.E7);
+        msg.altitude = (int32_t)(_gcsPosition.altitude()*1.E3);
+        msg.roll = msg.pitch = msg.yaw = msg.vn = msg.ve = msg.vd = 0;
+        mavlink_msg_planck_landing_platform_state_encode_chan(mavlinkProtocol->getSystemId(),
+                                              mavlinkProtocol->getComponentId(),
+                                              vehicle->priorityLink()->mavlinkChannel(),
+                                              &message,
+                                              &msg);
+        vehicle->sendMessageOnLink(vehicle->priorityLink(), message);
+    }
 }
