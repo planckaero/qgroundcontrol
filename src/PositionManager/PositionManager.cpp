@@ -79,12 +79,15 @@ void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)
         // Note that gcsPosition filters out possible crap values
         if (qAbs(update.coordinate().latitude()) > 0.001 && qAbs(update.coordinate().longitude()) > 0.001) {
             newGCSPosition = update.coordinate();
-            sendMessageToVehicle();
         }
     }
     if (newGCSPosition != _gcsPosition) {
         _gcsPosition = newGCSPosition;
         emit gcsPositionChanged(_gcsPosition);
+        if(_currentSource == _nmeaSource)
+        {
+            sendMessageToVehicle();
+        }
     }
     if (newGCSHeading != _gcsHeading) {
         _gcsHeading = newGCSHeading;
