@@ -84,7 +84,7 @@ void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)
     if (newGCSPosition != _gcsPosition) {
         _gcsPosition = newGCSPosition;
         emit gcsPositionChanged(_gcsPosition);
-        if(_currentSource == _nmeaSource)
+        if(_currentSource != nullptr && _currentSource == _nmeaSource)
         {
             sendMessageToVehicle();
         }
