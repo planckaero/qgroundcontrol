@@ -156,7 +156,7 @@ void QGCPositionManager::sendMessageToVehicle()
         mavlink_message_t message;
         mavlink_planck_landing_platform_state_t msg;
         msg.latitude = (int32_t)(_gcsPosition.latitude()*1.E7);
-        msg.latitude = (int32_t)(_gcsPosition.longitude()*1.E7);
+        msg.longitude = (int32_t)(_gcsPosition.longitude()*1.E7);
         msg.altitude = (int32_t)(_gcsPosition.altitude()*1.E3);
         msg.roll = msg.pitch = msg.yaw = msg.vn = msg.ve = msg.vd = 0;
         mavlink_msg_planck_landing_platform_state_encode_chan(mavlinkProtocol->getSystemId(),
