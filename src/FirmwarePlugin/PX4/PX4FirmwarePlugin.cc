@@ -54,6 +54,10 @@ PX4FirmwarePlugin::PX4FirmwarePlugin(void)
     , _followMeFlightMode   (tr("Follow Me"))
     , _simpleFlightMode     (tr("Simple"))
     , _orbitFlightMode      (tr("Orbit"))
+    , _planckTrackFlightMode(tr("Planck Track"))
+    , _planckRTBFlightMode  (tr("Planck RTB"))
+    , _planckLandFlightMode (tr("Planck Land"))
+    , _planckTakeoffFlightMode(tr("Planck Takeoff"))
 {
     qmlRegisterType<PX4AdvancedFlightModesController>   ("QGroundControl.Controllers", 1, 0, "PX4AdvancedFlightModesController");
     qmlRegisterType<PX4SimpleFlightModesController>     ("QGroundControl.Controllers", 1, 0, "PX4SimpleFlightModesController");
@@ -90,6 +94,10 @@ PX4FirmwarePlugin::PX4FirmwarePlugin(void)
         { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_READY,         false,  true,   true },
         { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_RTGS,          false,  true,   true },
         { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF,       false,  true,   true },
+        { PX4_CUSTOM_MAIN_MODE_PLANCK_TRACK,0,                                      true,   false,   true },
+        { PX4_CUSTOM_MAIN_MODE_PLANCK_RTB,  0,                                      true,   false,   true },
+        { PX4_CUSTOM_MAIN_MODE_PLANCK_LAND, 0,                                      true,   false,   true },
+        { PX4_CUSTOM_MAIN_MODE_PLANCK_TAKEOFF,0,                                    true,   false,   true },
     };
 
     // Must be in same order as above structure
@@ -112,6 +120,10 @@ PX4FirmwarePlugin::PX4FirmwarePlugin(void)
         &_readyFlightMode,
         &_rtgsFlightMode,
         &_takeoffFlightMode,
+        &_planckTrackFlightMode,
+        &_planckRTBFlightMode,
+        &_planckLandFlightMode,
+        &_planckTakeoffFlightMode
     };
 
     // Convert static information to dynamic list. This allows for plugin override class to manipulate list.
@@ -186,7 +198,7 @@ QString PX4FirmwarePlugin::flightMode(uint8_t base_mode, uint32_t custom_mode) c
         }
 
         if (!found) {
-            qWarning() << "Unknown flight mode" << custom_mode;
+            qWarning() << "Unknown flight mode" << base_mode << "," << custom_mode;
             return tr("Unknown %1:%2").arg(base_mode).arg(custom_mode);
         }
     } else {
