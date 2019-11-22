@@ -365,12 +365,14 @@ void PX4FirmwarePlugin::pauseVehicle(Vehicle* vehicle)
 
 void PX4FirmwarePlugin::guidedModeRTL(Vehicle* vehicle)
 {
-    _setFlightModeAndValidate(vehicle, _rtlFlightMode);
+    //_setFlightModeAndValidate(vehicle, _rtlFlightMode);
+    _setFlightModeAndValidate(vehicle, _planckRTBFlightMode);
 }
 
 void PX4FirmwarePlugin::guidedModeLand(Vehicle* vehicle)
 {
-    _setFlightModeAndValidate(vehicle, _landingFlightMode);
+    //_setFlightModeAndValidate(vehicle, _landingFlightMode);
+    _setFlightModeAndValidate(vehicle, _planckLandFlightMode);
 }
 
 void PX4FirmwarePlugin::_mavCommandResult(int vehicleId, int component, int command, int result, bool noReponseFromVehicle)
@@ -422,7 +424,7 @@ void PX4FirmwarePlugin::guidedModeTakeoff(Vehicle* vehicle, double takeoffAltRel
 
     connect(vehicle, &Vehicle::mavCommandResult, this, &PX4FirmwarePlugin::_mavCommandResult);
     vehicle->sendMavCommand(vehicle->defaultComponentId(),
-                            MAV_CMD_NAV_TAKEOFF,
+                            MAV_CMD_NAV_PLANCK_TAKEOFF,
                             true,                           // show error is fails
                             -1,                             // No pitch requested
                             0, 0,                           // param 2-4 unused
