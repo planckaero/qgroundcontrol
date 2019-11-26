@@ -308,7 +308,7 @@ QList<MAV_CMD> PX4FirmwarePlugin::supportedMissionCommands(void)
          << MAV_CMD_SET_CAMERA_MODE
          << MAV_CMD_IMAGE_START_CAPTURE << MAV_CMD_IMAGE_STOP_CAPTURE << MAV_CMD_VIDEO_START_CAPTURE << MAV_CMD_VIDEO_STOP_CAPTURE
          << MAV_CMD_NAV_DELAY
-         << MAV_CMD_CONDITION_YAW;
+         << MAV_CMD_CONDITION_YAW << MAV_CMD_NAV_PLANCK_TAKEOFF << MAV_CMD_NAV_PLANCK_RTB;
 
     return list;
 }
@@ -387,7 +387,7 @@ void PX4FirmwarePlugin::_mavCommandResult(int vehicleId, int component, int comm
         return;
     }
 
-    if (command == MAV_CMD_NAV_TAKEOFF && result == MAV_RESULT_ACCEPTED) {
+    if (command == MAV_CMD_NAV_PLANCK_TAKEOFF && result == MAV_RESULT_ACCEPTED) {
         // Now that we are in takeoff mode we can arm the vehicle which will cause it to takeoff.
         // We specifically don't retry arming if it fails. This way we don't fight with the user if
         // They are trying to disarm.
@@ -425,6 +425,7 @@ void PX4FirmwarePlugin::guidedModeTakeoff(Vehicle* vehicle, double takeoffAltRel
     connect(vehicle, &Vehicle::mavCommandResult, this, &PX4FirmwarePlugin::_mavCommandResult);
     vehicle->sendMavCommand(vehicle->defaultComponentId(),
                             MAV_CMD_NAV_PLANCK_TAKEOFF,
+                            //MAV_CMD_NAV_TAKEOFF,
                             true,                           // show error is fails
                             -1,                             // No pitch requested
                             0, 0,                           // param 2-4 unused
