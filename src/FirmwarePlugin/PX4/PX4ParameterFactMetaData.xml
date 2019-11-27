@@ -682,6 +682,10 @@ Note: ekf2 will limit the delta velocity bias estimate magnitude to be less than
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="15">Planck Track</value>
+        <value code="16">Planck RTB</value>
+        <value code="17">Planck Land</value>
+        <value code="18">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="-1" name="COM_FLTMODE2" type="INT32">
@@ -702,6 +706,10 @@ Note: ekf2 will limit the delta velocity bias estimate magnitude to be less than
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="15">Planck Track</value>
+        <value code="16">Planck RTB</value>
+        <value code="17">Planck Land</value>
+        <value code="18">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="-1" name="COM_FLTMODE3" type="INT32">
@@ -722,6 +730,10 @@ Note: ekf2 will limit the delta velocity bias estimate magnitude to be less than
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="15">Planck Track</value>
+        <value code="16">Planck RTB</value>
+        <value code="17">Planck Land</value>
+        <value code="18">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="-1" name="COM_FLTMODE4" type="INT32">
@@ -742,6 +754,10 @@ Note: ekf2 will limit the delta velocity bias estimate magnitude to be less than
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="15">Planck Track</value>
+        <value code="16">Planck RTB</value>
+        <value code="17">Planck Land</value>
+        <value code="18">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="-1" name="COM_FLTMODE5" type="INT32">
@@ -762,6 +778,10 @@ Note: ekf2 will limit the delta velocity bias estimate magnitude to be less than
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="15">Planck Track</value>
+        <value code="16">Planck RTB</value>
+        <value code="17">Planck Land</value>
+        <value code="18">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="-1" name="COM_FLTMODE6" type="INT32">
@@ -782,6 +802,10 @@ Note: ekf2 will limit the delta velocity bias estimate magnitude to be less than
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="15">Planck Track</value>
+        <value code="16">Planck RTB</value>
+        <value code="17">Planck Land</value>
+        <value code="18">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="120" name="COM_HLDL_LOSS_T" type="INT32">
