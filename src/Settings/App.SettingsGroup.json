@@ -219,5 +219,12 @@
     "longDescription":  "Enable Taisync Video Support",
     "type":             "bool",
     "defaultValue":     true
+},
+{
+    "name":             "sendPlanckGPS",
+    "shortDescription": "Send Planck GPS Position from Local GPS",
+    "longDescription":  "Send Planck GPS Position from Local GPS",
+    "type":             "bool",
+    "defaultValue":     false
 }
 ]

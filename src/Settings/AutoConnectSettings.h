@@ -32,4 +32,5 @@ public:
     DEFINE_SETTINGFACT(udpTargetHostIP)
     DEFINE_SETTINGFACT(udpTargetHostPort)
     DEFINE_SETTINGFACT(nmeaUdpPort)
+    DEFINE_SETTINGFACT(sendPlanckGPS)
 };

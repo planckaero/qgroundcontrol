@@ -10,6 +10,8 @@
 #include "PositionManager.h"
 #include "QGCApplication.h"
 #include "QGCCorePlugin.h"
+#include "AppSettings.h"
+#include "SettingsManager.h"
 
 QGCPositionManager::QGCPositionManager(QGCApplication* app, QGCToolbox* toolbox)
     : QGCTool           (app, toolbox)
@@ -27,6 +29,11 @@ QGCPositionManager::~QGCPositionManager()
 {
     delete(_simulatedSource);
     delete(_nmeaSource);
+}
+
+void QGCPositionManager::settingsChanged()
+{
+    _sendPlanckGPS = qgcApp()->toolbox()->settingsManager()->appSettings()->sendPlanckGPS()->rawValue().toBool();
 }
 
 void QGCPositionManager::setToolbox(QGCToolbox *toolbox)
@@ -47,6 +54,8 @@ void QGCPositionManager::setToolbox(QGCToolbox *toolbox)
    // }
 
    setPositionSource(QGCPositionSource::LandingPad);
+
+   connect(toolbox->settingsManager()->appSettings()->sendPlanckGPS(), &Fact::rawValueChanged, this, &QGCPositionManager::settingsChanged);
 }
 
 void QGCPositionManager::setNmeaSourceDevice(QIODevice* device)
@@ -84,7 +93,7 @@ void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)
     if (newGCSPosition != _gcsPosition) {
         _gcsPosition = newGCSPosition;
         emit gcsPositionChanged(_gcsPosition);
-        if(_currentSource != nullptr && _currentSource == _nmeaSource)
+        if(_currentSource != nullptr && _sendPlanckGPS)
         {
             sendMessageToVehicle();
         }
