@@ -41,7 +41,7 @@ Item {
             QGCLabel {
                 text:           "TAG"
                 font.family:    ScreenTools.demiboldFontFamily
-                font.pointSize: 10
+                font.pointSize: ScreenTools.smallFontPointSize
                 anchors.fill:   parent
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -77,7 +77,7 @@ Item {
             QGCLabel {
                 text:           "CB\nGPS"
                 font.family:    ScreenTools.demiboldFontFamily
-                font.pointSize: 10
+                font.pointSize: ScreenTools.smallFontPointSize
                 anchors.fill:   parent
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
