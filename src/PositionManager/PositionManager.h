@@ -51,6 +51,8 @@ public:
 
     void sendMessageToVehicle();
 
+    void settingsChanged();
+
 private slots:
     void _positionUpdated(const QGeoPositionInfo &update);
     void _error(QGeoPositionInfoSource::Error positioningError);
@@ -70,4 +72,5 @@ private:
     QNmeaPositionInfoSource*    _nmeaSource;
     QGeoPositionInfoSource*     _simulatedSource;
     QGeoPositionInfoSource*     _landingPadSource;
+    bool _sendPlanckGPS = false;
 };
