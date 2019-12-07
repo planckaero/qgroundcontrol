@@ -33,7 +33,24 @@ QGCPositionManager::~QGCPositionManager()
 
 void QGCPositionManager::settingsChanged()
 {
+    bool previous_setting = _sendPlanckGPS;
     _sendPlanckGPS = qgcApp()->toolbox()->settingsManager()->appSettings()->sendPlanckGPS()->rawValue().toBool();
+
+    //Check the position source.
+    if(previous_setting != _sendPlanckGPS) {
+        //If QGC is emitting the landing_platform state message, the source needs to be
+        //either NMEA or internal.  Otherwise it should be the LandingPad, meaning something
+        //else is sending position update messages
+        if(_sendPlanckGPS) {
+            if(_nmeaSource) {
+                setPositionSource(QGCPositionSource::NmeaGPS);
+            } else {
+                setPositionSource(QGCPositionSource::InternalGPS);
+            }
+        } else {
+            setPositionSource(QGCPositionSource::LandingPad);
+        }
+    }
 }
 
 void QGCPositionManager::setToolbox(QGCToolbox *toolbox)
@@ -45,7 +62,7 @@ void QGCPositionManager::setToolbox(QGCToolbox *toolbox)
        //-- Otherwise, create a default one
        _defaultSource = QGeoPositionInfoSource::createDefaultSource(this);
    }
-   //_simulatedSource = new SimulatedPosition();
+   _simulatedSource = new SimulatedPosition();
    _landingPadSource = qgcApp()->toolbox()->landingPadManager();
 
    // Enable this to get a simulated target on desktop
@@ -53,7 +70,14 @@ void QGCPositionManager::setToolbox(QGCToolbox *toolbox)
    //     _defaultSource = _simulatedSource;
    // }
 
-   setPositionSource(QGCPositionSource::LandingPad);
+   //Is the internal GPS providing Planck position updates?
+   if(_sendPlanckGPS) {
+       //This can be overrided if/when the NMEA source is used
+       setPositionSource(QGCPositionSource::InternalGPS);
+   } else {
+       setPositionSource(QGCPositionSource::LandingPad);
+   }
+
 
    connect(toolbox->settingsManager()->appSettings()->sendPlanckGPS(), &Fact::rawValueChanged, this, &QGCPositionManager::settingsChanged);
 }
@@ -90,13 +114,16 @@ void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)
             newGCSPosition = update.coordinate();
         }
     }
+
+    //Send the planck landing state position if necessary
+    if(_currentSource != nullptr && _sendPlanckGPS)
+    {
+        sendMessageToVehicle();
+    }
+
     if (newGCSPosition != _gcsPosition) {
         _gcsPosition = newGCSPosition;
         emit gcsPositionChanged(_gcsPosition);
-        if(_currentSource != nullptr && _sendPlanckGPS)
-        {
-            sendMessageToVehicle();
-        }
     }
     if (newGCSHeading != _gcsHeading) {
         _gcsHeading = newGCSHeading;
