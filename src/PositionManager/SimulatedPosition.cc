@@ -111,7 +111,6 @@ void SimulatedPosition::updatePosition()
     }
 
     lastPosition = info;
-
     emit positionUpdated(info);
 }
 
