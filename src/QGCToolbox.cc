@@ -29,6 +29,7 @@
 #include "QGCCorePlugin.h"
 #include "QGCOptions.h"
 #include "SettingsManager.h"
+#include "PlanckListener.h"
 #include "QGCApplication.h"
 #include "ADSBVehicleManager.h"
 #if defined(QGC_ENABLE_PAIRING)
@@ -78,6 +79,8 @@ QGCToolbox::QGCToolbox(QGCApplication* app)
 #if defined(QGC_ENABLE_PAIRING)
     _pairingManager         = new PairingManager            (app, this);
 #endif
+    _planckListener =           new PlanckListener          (app, this);
+    _landingPadManager =        new LandingPadPosition      ();
     //-- Airmap Manager
     //-- This should be "pluggable" so an arbitrary AirSpace manager can be used
     //-- For now, we instantiate the one and only AirMap provider
@@ -119,6 +122,7 @@ void QGCToolbox::setChildToolboxes(void)
     _mavlinkLogManager->setToolbox(this);
     _airspaceManager->setToolbox(this);
     _adsbVehicleManager->setToolbox(this);
+    _planckListener->setToolbox(this);
 #if defined(QGC_GST_TAISYNC_ENABLED)
     _taisyncManager->setToolbox(this);
 #endif

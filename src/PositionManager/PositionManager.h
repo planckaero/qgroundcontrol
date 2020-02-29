@@ -16,6 +16,7 @@
 
 #include "QGCToolbox.h"
 #include "SimulatedPosition.h"
+#include "LandingPadPosition.h"
 
 class QGCPositionManager : public QGCTool {
     Q_OBJECT
@@ -32,7 +33,8 @@ public:
         Simulated,
         InternalGPS,
         Log,
-        NmeaGPS
+        NmeaGPS,
+        LandingPad
     };
 
     QGeoCoordinate      gcsPosition         (void) { return _gcsPosition; }
@@ -65,5 +67,6 @@ private:
     QGeoPositionInfoSource*     _defaultSource =        nullptr;
     QNmeaPositionInfoSource*    _nmeaSource =           nullptr;
     QGeoPositionInfoSource*     _simulatedSource =      nullptr;
+    QGeoPositionInfoSource*     _landingPadSource =     nullptr;
     bool                        _usingPluginSource =    false;
 };

@@ -157,6 +157,9 @@ public:
     ///     @param altitudeChange If > 0, go up by amount specified, if < 0, go down by amount specified
     virtual void guidedModeChangeAltitude(Vehicle* vehicle, double altitudeChange);
 
+    /// Command vehicle to initiate wingman-mode
+    virtual void guidedModeStartWingman(Vehicle* vehicle, double north_offset, double east_offset, double altitude);
+
     /// Default tx mode to apply to joystick axes
     /// TX modes are as outlined here: http://www.rc-airplane-world.com/rc-transmitter-modes.html
     virtual int defaultJoystickTXMode(void);

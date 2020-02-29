@@ -48,6 +48,10 @@ APMCopterMode::APMCopterMode(uint32_t mode, bool settable) :
         { FOLLOW,       "Follow" },
 #endif
         { ZIGZAG,       "ZigZag" },
+        { PLANCK_TRACK,   "Planck Track" },
+        { PLANCK_RTB,     "Planck RTB" },
+        { PLANCK_LAND,    "Planck Land" },
+        { PLANCK_WINGMAN, "Planck Wingman" },
     });
 }
 
@@ -79,6 +83,10 @@ ArduCopterFirmwarePlugin::ArduCopterFirmwarePlugin(void)
         APMCopterMode(APMCopterMode::FOLLOW,        true),
 #endif
         APMCopterMode(APMCopterMode::ZIGZAG,        true),
+        APMCopterMode(APMCopterMode::PLANCK_TRACK,   true),
+        APMCopterMode(APMCopterMode::PLANCK_RTB,     true),
+        APMCopterMode(APMCopterMode::PLANCK_LAND,    true),
+        APMCopterMode(APMCopterMode::PLANCK_WINGMAN, true),
     });
 
     if (!_remapParamNameIntialized) {
@@ -120,7 +128,7 @@ int ArduCopterFirmwarePlugin::remapParamNameHigestMinorVersionNumber(int majorVe
 
 void ArduCopterFirmwarePlugin::guidedModeLand(Vehicle* vehicle)
 {
-    _setFlightModeAndValidate(vehicle, "Land");
+    _setFlightModeAndValidate(vehicle, "Planck Land");
 }
 
 bool ArduCopterFirmwarePlugin::multiRotorCoaxialMotors(Vehicle* vehicle)
