@@ -48,6 +48,12 @@ public:
         FOLLOW      = 23,  // follow attempts to follow another vehicle or ground station
 #endif
         ZIGZAG      = 24,  // ZIGZAG mode is able to fly in a zigzag manner with predefined point A and point B
+        //SYSTEMID = 25,
+        //AUTOROTATE = 26,
+        PLANCK_TRACK   = 27,
+        PLANCK_RTB     = 28,
+        PLANCK_LAND    = 29,
+        PLANCK_WINGMAN = 30,
     };
 
     APMCopterMode(uint32_t mode, bool settable);
@@ -68,7 +74,7 @@ public:
     bool    multiRotorXConfig                   (Vehicle* vehicle) final;
     QString offlineEditingParamFile             (Vehicle* vehicle) final { Q_UNUSED(vehicle); return QStringLiteral(":/FirmwarePlugin/APM/Copter.OfflineEditing.params"); }
     QString pauseFlightMode                     (void) const override { return QStringLiteral("Brake"); }
-    QString landFlightMode                      (void) const override { return QStringLiteral("Land"); }
+    QString landFlightMode                      (void) const override { return QStringLiteral("Planck Land"); }
     QString takeControlFlightMode               (void) const override { return QStringLiteral("Loiter"); }
     QString followFlightMode                    (void) const override { return QStringLiteral("Follow"); }
     bool    vehicleYawsToNextWaypointInMission  (const Vehicle* vehicle) const override;

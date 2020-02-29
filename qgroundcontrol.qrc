@@ -18,6 +18,7 @@
         <file alias="ROIIndicator.qml">src/ui/toolbar/ROIIndicator.qml</file>
         <file alias="TelemetryRSSIIndicator.qml">src/ui/toolbar/TelemetryRSSIIndicator.qml</file>
         <file alias="VTOLModeIndicator.qml">src/ui/toolbar/VTOLModeIndicator.qml</file>
+        <file alias="PlanckHealthIndicator.qml">src/ui/toolbar/PlanckHealthIndicator.qml</file>
     </qresource>
     <qresource prefix="/checklists">
         <file alias="DefaultChecklist.qml">src/FlightDisplay/DefaultChecklist.qml</file>
@@ -241,6 +242,9 @@
         <file alias="VibrationPageWidget.qml">src/FlightMap/Widgets/VibrationPageWidget.qml</file>
         <file alias="VideoPageWidget.qml">src/FlightMap/Widgets/VideoPageWidget.qml</file>
         <file alias="VirtualJoystick.qml">src/FlightDisplay/VirtualJoystick.qml</file>
+        <file alias="QGroundControl/FlightDisplay/CameraChooser.qml">src/FlightDisplay/CameraChooser.qml</file>
+        <file alias="QGroundControl/FlightDisplay/GuidedWingman.qml">src/FlightDisplay/GuidedWingman.qml</file>
+        <file alias="QGroundControl/FlightDisplay/MapCenterChooser.qml">src/FlightDisplay/MapCenterChooser.qml</file>
     </qresource>
     <qresource prefix="/json">
         <file alias="ADSBVehicleManager.SettingsGroup.json">src/Settings/ADSBVehicleManager.SettingsGroup.json</file>

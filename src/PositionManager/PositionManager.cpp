@@ -41,10 +41,10 @@ void QGCPositionManager::setToolbox(QGCToolbox *toolbox)
        //-- Otherwise, create a default one
        _defaultSource = QGeoPositionInfoSource::createDefaultSource(this);
    }
-   _simulatedSource = new SimulatedPosition();
+  _landingPadSource = qgcApp()->toolbox()->landingPadManager();
 
 #if 1
-   setPositionSource(QGCPositionSource::InternalGPS);
+   setPositionSource(QGCPositionSource::LandingPad);
 #else
    setPositionSource(QGCPositionManager::Simulated);
 #endif
@@ -125,6 +125,9 @@ void QGCPositionManager::setPositionSource(QGCPositionManager::QGCPositionSource
         break;
     case QGCPositionManager::Simulated:
         _currentSource = _simulatedSource;
+        break;
+    case QGCPositionManager::LandingPad:
+        _currentSource = _landingPadSource;
         break;
     case QGCPositionManager::NmeaGPS:
         _currentSource = _nmeaSource;

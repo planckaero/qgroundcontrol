@@ -396,7 +396,7 @@ VisualMissionItem* MissionController::insertSimpleMissionItem(QGeoCoordinate coo
 VisualMissionItem* MissionController::insertTakeoffItem(QGeoCoordinate /*coordinate*/, int visualItemIndex, bool makeCurrentItem)
 {
     int sequenceNumber = _nextSequenceNumber();
-    TakeoffMissionItem * newItem = new TakeoffMissionItem(_controllerVehicle->vtol() ? MAV_CMD_NAV_VTOL_TAKEOFF : MAV_CMD_NAV_TAKEOFF, _controllerVehicle, _flyView, _settingsItem, this);
+    TakeoffMissionItem * newItem = new TakeoffMissionItem(_controllerVehicle->vtol() ? MAV_CMD_NAV_VTOL_TAKEOFF : MAV_CMD_NAV_PLANCK_TAKEOFF, _controllerVehicle, _flyView, _settingsItem, this);
     newItem->setSequenceNumber(sequenceNumber);
     _initVisualItem(newItem);
 
@@ -1268,6 +1268,7 @@ void MissionController::_recalcWaypointLines(void)
             switch (command) {
             case MAV_CMD_NAV_TAKEOFF:
             case MAV_CMD_NAV_VTOL_TAKEOFF:
+            case MAV_CMD_NAV_PLANCK_TAKEOFF:
                 if (!linkEndToHome) {
                     // If we still haven't found the first coordinate item and we hit a takeoff command this means the mission starts from the ground.
                     // Link the first item back to home to show that.
@@ -1277,6 +1278,7 @@ void MissionController::_recalcWaypointLines(void)
                 }
                 break;
             case MAV_CMD_NAV_RETURN_TO_LAUNCH:
+            case MAV_CMD_NAV_PLANCK_RTB:
                 linkEndToHome = true;
                 foundRTL = true;
                 break;
@@ -1505,7 +1507,7 @@ void MissionController::_recalcMissionFlightStatus()
         SimpleMissionItem*  simpleItem =    qobject_cast<SimpleMissionItem*>(item);
         ComplexMissionItem* complexItem =   qobject_cast<ComplexMissionItem*>(item);
 
-        if (simpleItem && simpleItem->mavCommand() == MAV_CMD_NAV_RETURN_TO_LAUNCH) {
+        if (simpleItem && (simpleItem->mavCommand() == MAV_CMD_NAV_RETURN_TO_LAUNCH || simpleItem->mavCommand() == MAV_CMD_NAV_PLANCK_RTB)) {
             foundRTL = true;
         }
 
@@ -1565,7 +1567,7 @@ void MissionController::_recalcMissionFlightStatus()
         }
 
         // Link back to home if first item is takeoff and we have home position
-        if (firstCoordinateItem && simpleItem && (simpleItem->mavCommand() == MAV_CMD_NAV_TAKEOFF || simpleItem->mavCommand() == MAV_CMD_NAV_VTOL_TAKEOFF)) {
+        if (firstCoordinateItem && simpleItem && (simpleItem->mavCommand() == MAV_CMD_NAV_TAKEOFF || simpleItem->command() == MAV_CMD_NAV_PLANCK_TAKEOFF || simpleItem->mavCommand() == MAV_CMD_NAV_VTOL_TAKEOFF)) {
             if (homePositionValid) {
                 linkStartToHome = true;
                 if (_controllerVehicle->multiRotor() || _controllerVehicle->vtol()) {
@@ -1582,6 +1584,7 @@ void MissionController::_recalcMissionFlightStatus()
         if (simpleItem && _controllerVehicle->vtol()) {
             switch (simpleItem->command()) {
             case MAV_CMD_NAV_TAKEOFF:
+            case MAV_CMD_NAV_PLANCK_TAKEOFF:
                 vtolInHover = false;
                 break;
             case MAV_CMD_NAV_VTOL_TAKEOFF:
@@ -2332,6 +2335,7 @@ void MissionController::setCurrentPlanViewSeqNum(int sequenceNumber, bool force)
                     case MAV_CMD_NAV_VTOL_LAND:
                     case MAV_CMD_DO_LAND_START:
                     case MAV_CMD_NAV_RETURN_TO_LAUNCH:
+                    case MAV_CMD_NAV_PLANCK_RTB:
                         foundLand = true;
                         landSeqNum = currentSeqNumber;
                         break;
@@ -2461,10 +2465,11 @@ void MissionController::_updateTimeout()
             if(pSimpleItem) {
                 switch(pSimpleItem->command()) {
                 case MAV_CMD_NAV_TAKEOFF:
+                case MAV_CMD_NAV_PLANCK_TAKEOFF:
                 case MAV_CMD_NAV_WAYPOINT:
                 case MAV_CMD_NAV_LAND:
                     if(pSimpleItem->coordinate().isValid()) {
-                        if((MAV_CMD)pSimpleItem->command() == MAV_CMD_NAV_TAKEOFF) {
+                        if((MAV_CMD)pSimpleItem->command() == MAV_CMD_NAV_TAKEOFF || (MAV_CMD)pSimpleItem->command() == MAV_CMD_NAV_PLANCK_TAKEOFF) {
                             takeoffCoordinate = pSimpleItem->coordinate();
                         } else if(!firstCoordinate.isValid()) {
                             firstCoordinate = pSimpleItem->coordinate();

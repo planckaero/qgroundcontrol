@@ -115,6 +115,7 @@
 <value code="2">Enabled Continue with Mission in Auto Mode</value>
 <value code="3">Enabled always SmartRTL or RTL</value>
 <value code="4">Enabled always SmartRTL or Land</value>
+<value code="5">Enabled always Planck RTB or Planck Land</value>
 </values>
 </param>
 <param humanName="GPS Hdop Good" name="ArduCopter:GPS_HDOP_GOOD" documentation="GPS Hdop value at or below this value represent a good position.  Used for pre-arm checks" user="Advanced">
@@ -234,6 +235,7 @@
 <value code="3">Enabled always Land</value>
 <value code="4">Enabled always SmartRTL or RTL</value>
 <value code="5">Enabled always SmartRTL or Land</value>
+<value code="5">Enabled always Planck RTB or Planck Land</value>
 </values>
 </param>
 <param humanName="Throttle Failsafe Value" name="ArduCopter:FS_THR_VALUE" documentation="The PWM level in microseconds on channel 3 below which throttle failsafe triggers" user="Standard">
@@ -271,6 +273,10 @@
 <value code="21">Smart_RTL</value>
 <value code="22">FlowHold</value>
 <value code="23">Follow</value>
+<value code="24">PlanckTrack</value>
+<value code="25">PlanckRTB</value>
+<value code="26">PlanckLand</value>
+<value code="27">PlanckWingman</value>
 </values>
 </param>
 <param humanName="Flight Mode 2" name="ArduCopter:FLTMODE2" documentation="Flight mode when Channel 5 pwm is &gt;1230, &lt;= 1360" user="Standard">
@@ -296,6 +302,10 @@
 <value code="21">Smart_RTL</value>
 <value code="22">FlowHold</value>
 <value code="23">Follow</value>
+<value code="24">PlanckTrack</value>
+<value code="25">PlanckRTB</value>
+<value code="26">PlanckLand</value>
+<value code="27">PlanckWingman</value>
 </values>
 </param>
 <param humanName="Flight Mode 3" name="ArduCopter:FLTMODE3" documentation="Flight mode when Channel 5 pwm is &gt;1360, &lt;= 1490" user="Standard">
@@ -321,6 +331,10 @@
 <value code="21">Smart_RTL</value>
 <value code="22">FlowHold</value>
 <value code="23">Follow</value>
+<value code="24">PlanckTrack</value>
+<value code="25">PlanckRTB</value>
+<value code="26">PlanckLand</value>
+<value code="27">PlanckWingman</value>
 </values>
 </param>
 <param humanName="Flight Mode 4" name="ArduCopter:FLTMODE4" documentation="Flight mode when Channel 5 pwm is &gt;1490, &lt;= 1620" user="Standard">
@@ -346,6 +360,10 @@
 <value code="21">Smart_RTL</value>
 <value code="22">FlowHold</value>
 <value code="23">Follow</value>
+<value code="24">PlanckTrack</value>
+<value code="25">PlanckRTB</value>
+<value code="26">PlanckLand</value>
+<value code="27">PlanckWingman</value>
 </values>
 </param>
 <param humanName="Flight Mode 5" name="ArduCopter:FLTMODE5" documentation="Flight mode when Channel 5 pwm is &gt;1620, &lt;= 1749" user="Standard">
@@ -371,6 +389,10 @@
 <value code="21">Smart_RTL</value>
 <value code="22">FlowHold</value>
 <value code="23">Follow</value>
+<value code="24">PlanckTrack</value>
+<value code="25">PlanckRTB</value>
+<value code="26">PlanckLand</value>
+<value code="27">PlanckWingman</value>
 </values>
 </param>
 <param humanName="Flight Mode 6" name="ArduCopter:FLTMODE6" documentation="Flight mode when Channel 5 pwm is &gt;=1750" user="Standard">
@@ -396,6 +418,10 @@
 <value code="21">Smart_RTL</value>
 <value code="22">FlowHold</value>
 <value code="23">Follow</value>
+<value code="24">PlanckTrack</value>
+<value code="25">PlanckRTB</value>
+<value code="26">PlanckLand</value>
+<value code="27">PlanckWingman</value>
 </values>
 </param>
 <param humanName="Flightmode channel" name="ArduCopter:FLTMODE_CH" documentation="RC Channel to use for flight mode control" user="Advanced">
@@ -1231,7 +1257,7 @@
 </values>
 </param>
 <param humanName="Arm Checks to Peform (bitmask)" name="ARMING_CHECK" documentation="Checks prior to arming motor. This is a bitmask of checks that will be performed before allowing arming. The default is no checks, allowing arming at any time. You can select whatever checks you prefer by adding together the values of each check type to set this parameter. For example, to only allow arming when you have GPS lock and no RC failsafe you would set ARMING_CHECK to 72. For most users it is recommended that you set this to 1 to enable all checks." user="Standard">
-<field name="Bitmask">0:All,1:Barometer,2:Compass,3:GPS lock,4:INS,5:Parameters,6:RC Channels,7:Board voltage,8:Battery Level,10:Logging Available,11:Hardware safety switch,12:GPS Configuration</field>
+<field name="Bitmask">0:All,1:Barometer,2:Compass,3:GPS lock,4:INS,5:Parameters,6:RC Channels,7:Board voltage,8:Battery Level,10:Logging Available,11:Hardware safety switch,12:GPS Configuration,13:Planck Commbox GPS</field>
 <values>
 <value code="0">None</value>
 <value code="1">All</value>
@@ -1246,6 +1272,7 @@
 <value code="1024">LoggingAvailable</value>
 <value code="2048">Hardware safety switch</value>
 <value code="4096">GPS configuration</value>
+<value code="8192">Planck Commbox GPS</value>
 </values>
 </param>
 <param humanName="Accelerometer error threshold" name="ARMING_ACCTHRESH" documentation="Accelerometer error threshold used to determine inconsistent accelerometers. Compares this error range to other accelerometers to detect a hardware or calibration error. Lower value means tighter check and harder to pass arming check. Not all accelerometers are created equal." user="Advanced">
@@ -1734,6 +1761,7 @@
 <value code="3">SmartRTL</value>
 <value code="4">SmartRTL or Land</value>
 <value code="5">Terminate</value>
+<value code="6">PlanckRTB or Planck Land</value>
 </values>
 </param>
 <param humanName="Critical battery failsafe action" name="BATT2_FS_CRT_ACT" documentation="What action the vehicle should perform if it hits a critical battery failsafe" user="Standard">
@@ -1744,6 +1772,7 @@
 <value code="3">SmartRTL</value>
 <value code="4">SmartRTL or Land</value>
 <value code="5">Terminate</value>
+<value code="6">PlanckRTB or Planck Land</value>
 </values>
 </param>
 </parameters>
@@ -1841,6 +1870,7 @@
 <value code="3">SmartRTL</value>
 <value code="4">SmartRTL or Land</value>
 <value code="5">Terminate</value>
+<value code="6">PlanckRTB or Planck Land</value>
 </values>
 </param>
 <param humanName="Critical battery failsafe action" name="BATT_FS_CRT_ACT" documentation="What action the vehicle should perform if it hits a critical battery failsafe" user="Standard">
@@ -1851,6 +1881,7 @@
 <value code="3">SmartRTL</value>
 <value code="4">SmartRTL or Land</value>
 <value code="5">Terminate</value>
+<value code="6">PlanckRTB or Planck Land</value>
 </values>
 </param>
 </parameters>
@@ -3507,7 +3538,7 @@
 <field name="Units">m</field>
 <field name="UnitText">meters</field>
 </param>
-<param humanName="Follow offset type" name="ffolFOLL_OFS_TYPE" documentation="Follow offset type" user="Standard">
+<param humanName="Follow offset type" name="FOLL_OFS_TYPE" documentation="Follow offset type" user="Standard">
 <values>
 <value code="0">North-East-Down</value>
 <value code=" 1">Relative to lead vehicle heading</value>
