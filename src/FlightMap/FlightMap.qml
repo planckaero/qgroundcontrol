@@ -38,6 +38,7 @@ Map {
     property var    gcsPosition:                    QGroundControl.qgcPositionManger.gcsPosition
     property real   gcsHeading:                     QGroundControl.qgcPositionManger.gcsHeading
     property bool   userPanned:                     false   ///< true: the user has manually panned the map
+    property bool   userPanning:                    false
     property bool   allowGCSLocationCenter:         false   ///< true: map will center/zoom to gcs location one time
     property bool   allowVehicleLocationCenter:     false   ///< true: map will center/zoom to vehicle location one time
     property bool   firstGCSPositionReceived:       false   ///< true: first gcs position update was responded to
@@ -77,23 +78,199 @@ Map {
         }
     }
 
-    // Center map to gcs location
-    onGcsPositionChanged: {
-        if (gcsPosition.isValid && allowGCSLocationCenter && !firstGCSPositionReceived && !firstVehiclePositionReceived) {
-            firstGCSPositionReceived = true
-            //-- Only center on gsc if we have no vehicle (and we are supposed to do so)
-            var activeVehicleCoordinate = activeVehicle ? activeVehicle.coordinate : QtPositioning.coordinate()
-            if(QGroundControl.settingsManager.flyViewSettings.keepMapCenteredOnVehicle.rawValue || !activeVehicleCoordinate.isValid)
-                center = gcsPosition
+    readonly property double meters_to_deg: 0.000008983152841
+
+    // 10m range ring
+        MapCircle {
+            center: gcsPosition
+            radius: 10
+            color: "transparent"
+            border.color: "lightgreen"
+            border.width: 2
         }
-    }
+
+        // 10m rectangle
+        MapQuickItem {
+            id: rect10m
+            coordinate {
+                latitude: gcsPosition.latitude + (meters_to_deg * 10)
+                longitude: gcsPosition.longitude
+            }
+            sourceItem: Rectangle {
+                width: 30
+                height: 15
+                color: "black"
+            }
+        }
+
+        // 10m ring label
+        MapQuickItem {
+            id: label10m
+            coordinate {
+                latitude: gcsPosition.latitude + (meters_to_deg * 10)
+                longitude: gcsPosition.longitude
+            }
+            sourceItem: Text {
+                text: "10m"
+                color: "white"
+            }
+        }
+
+        // 25m range ring
+        MapCircle {
+            center: gcsPosition
+            radius: 25
+            color: "transparent"
+            border.color: "orange"
+            border.width: 2
+        }
+
+        // 25m rectangle
+        MapQuickItem {
+            id: rect25m
+            coordinate {
+                latitude: gcsPosition.latitude + (meters_to_deg * 25)
+                longitude: gcsPosition.longitude
+            }
+
+            sourceItem: Rectangle {
+                width: 30
+                height: 15
+                color: "black"
+            }
+        }
+
+        // 25m ring label
+        MapQuickItem {
+            id: label25m
+            coordinate {
+                latitude: gcsPosition.latitude + (meters_to_deg * 25)
+                longitude: gcsPosition.longitude
+            }
+
+            sourceItem: Text {
+                text: "25m"
+                color: "white"
+            }
+        }
+
+        // 50m range ring
+            MapCircle {
+                center: gcsPosition
+                radius: 50
+                color: "transparent"
+                border.color: "yellow"
+                border.width: 2
+            }
+
+            // 50m rectangle
+            MapQuickItem {
+                id: rect50m
+                coordinate {
+                    latitude: gcsPosition.latitude + (meters_to_deg * 50)
+                    longitude: gcsPosition.longitude
+                }
+                sourceItem: Rectangle {
+                    width: 30
+                    height: 15
+                    color: "black"
+                }
+            }
+
+            // 50m ring label
+            MapQuickItem {
+                id: label50m
+                coordinate {
+                    latitude: gcsPosition.latitude + (meters_to_deg * 50)
+                    longitude: gcsPosition.longitude
+                }
+                sourceItem: Text {
+                    text: "50m"
+                    color: "white"
+                }
+            }
+
+            // 100m range ring
+            MapCircle {
+                center: gcsPosition
+                radius: 100
+                color: "transparent"
+                border.color: "red"
+                border.width: 2
+            }
+
+            // 100m rectangle
+            MapQuickItem {
+                id: rect100m
+                coordinate {
+                    latitude: gcsPosition.latitude + (meters_to_deg * 100)
+                    longitude: gcsPosition.longitude
+                }
+                sourceItem: Rectangle {
+                    width: 30
+                    height: 15
+                    color: "black"
+                }
+            }
+
+            // 100m ring label
+            MapQuickItem {
+                id: label100m
+                coordinate {
+                    latitude: gcsPosition.latitude + (meters_to_deg * 100)
+                    longitude: gcsPosition.longitude
+                }
+                sourceItem: Text {
+                    text: "100m"
+                    color: "white"
+                }
+            }
+
+            // 1000m range ring
+            MapCircle {
+                center: gcsPosition
+                radius: 1000
+                color: "transparent"
+                border.color: "greenyellow"
+                border.width: 2
+            }
+
+            // 1000m rectangle
+            MapQuickItem {
+                id: rect1000m
+                coordinate {
+                    latitude: gcsPosition.latitude + (meters_to_deg * 1000)
+                    longitude: gcsPosition.longitude
+                }
+
+                sourceItem: Rectangle {
+                    width: 30
+                    height: 15
+                    color: "black"
+                }
+            }
+
+            // 1000m ring label
+            MapQuickItem {
+                id: label1000m
+                coordinate {
+                    latitude: gcsPosition.latitude + (meters_to_deg * 1000)
+                    longitude: gcsPosition.longitude
+                }
+
+                sourceItem: Text {
+                    text: "1km"
+                    color: "white"
+                }
+            }
+
 
     // We track whether the user has panned or not to correctly handle automatic map positioning
     Connections {
         target: gesture
 
-        onPanFinished:      userPanned = true
-        onFlickFinished:    userPanned = true
+        onPanStarted:      userPanning = true
+        onPanFinished:     userPanning = true
     }
 
     function updateActiveMapType() {
@@ -133,18 +310,12 @@ Map {
         coordinate:     gcsPosition
 
         sourceItem: Image {
-            id:             mapItemImage
-            source:         isNaN(gcsHeading) ? "/res/QGCLogoFull" : "/res/QGCLogoArrow"
+            source:         "/res/PlanckTag"
             mipmap:         true
             antialiasing:   true
             fillMode:       Image.PreserveAspectFit
             height:         ScreenTools.defaultFontPixelHeight * (isNaN(gcsHeading) ? 1.75 : 2.5 )
             sourceSize.height: height
-            transform: Rotation {
-                origin.x:       mapItemImage.width  / 2
-                origin.y:       mapItemImage.height / 2
-                angle:          isNaN(gcsHeading) ? 0 : gcsHeading
-            }
         }
     }
 } // Map

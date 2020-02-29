@@ -766,6 +766,7 @@ QList<MAV_CMD> APMFirmwarePlugin::supportedMissionCommands(void)
         MAV_CMD_DO_GUIDED_LIMITS,
         MAV_CMD_DO_AUTOTUNE_ENABLE,
         MAV_CMD_NAV_VTOL_TAKEOFF, MAV_CMD_NAV_VTOL_LAND, MAV_CMD_DO_VTOL_TRANSITION,
+        MAV_CMD_NAV_PLANCK_TAKEOFF, MAV_CMD_NAV_PLANCK_RTB, MAV_CMD_NAV_PLANCK_WINGMAN,
 #if 0
     // Waiting for module update
         MAV_CMD_DO_SET_REVERSE,
@@ -941,7 +942,10 @@ void APMFirmwarePlugin::guidedModeChangeAltitude(Vehicle* vehicle, double altitu
         return;
     }
 
-    setGuidedMode(vehicle, true);
+    if(vehicle->flightMode() != "Planck Track" && vehicle->flightMode() != "Planck Wingman")
+    {
+        setGuidedMode(vehicle, true);
+    }
 
     mavlink_message_t msg;
     mavlink_set_position_target_local_ned_t cmd;
@@ -966,6 +970,15 @@ void APMFirmwarePlugin::guidedModeChangeAltitude(Vehicle* vehicle, double altitu
 
     vehicle->sendMessageOnLink(vehicle->priorityLink(), msg);
 }
+
+void APMFirmwarePlugin::guidedModeStartWingman(Vehicle *vehicle, double north_offset, double east_offset, double altitude)
+{
+    vehicle->sendMavCommand(vehicle->defaultComponentId(),
+                            MAV_CMD_NAV_PLANCK_WINGMAN,
+                            true, // show error
+                            north_offset, east_offset, altitude, 0.0f, 0.0f, 0.0f, 0.0f);
+}
+
 
 void APMFirmwarePlugin::guidedModeTakeoff(Vehicle* vehicle, double altitudeRel)
 {
@@ -1007,7 +1020,7 @@ bool APMFirmwarePlugin::_guidedModeTakeoff(Vehicle* vehicle, double altitudeRel)
         takeoffAltRel = altitudeRel;
     }
 
-    if (!_setFlightModeAndValidate(vehicle, "Guided")) {
+    if (!_setFlightModeAndValidate(vehicle, "Planck Track")) {
         qgcApp()->showMessage(tr("Unable to takeoff: Vehicle failed to change to Guided mode."));
         return false;
     }

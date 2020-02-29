@@ -86,12 +86,13 @@ public:
     bool                setFlightMode                   (const QString& flightMode, uint8_t* base_mode, uint32_t* custom_mode) override;
     bool                isGuidedMode                    (const Vehicle* vehicle) const override;
     QString             gotoFlightMode                  (void) const override { return QStringLiteral("Guided"); }
-    QString             rtlFlightMode                   (void) const override { return QString("RTL"); }
+    QString             rtlFlightMode                   (void) const override { return QString("Planck RTB"); }
     QString             smartRTLFlightMode              (void) const override { return QString("Smart RTL"); }
     QString             missionFlightMode               (void) const override { return QString("Auto"); }
     void                pauseVehicle                    (Vehicle* vehicle) override;
     void                guidedModeRTL                   (Vehicle* vehicle, bool smartRTL) override;
     void                guidedModeChangeAltitude        (Vehicle* vehicle, double altitudeChange) override;
+    void                guidedModeStartWingman          (Vehicle* vehicle, double north_offset, double east_offset, double altitude) override;
     bool                adjustIncomingMavlinkMessage    (Vehicle* vehicle, mavlink_message_t* message) override;
     void                adjustOutgoingMavlinkMessage    (Vehicle* vehicle, LinkInterface* outgoingLink, mavlink_message_t* message) override;
     virtual void        initializeStreamRates           (Vehicle* vehicle);

@@ -43,7 +43,7 @@ QML_IMPORT_PATH += $$PWD/src/QmlControls
 
 MacBuild {
     QMAKE_INFO_PLIST    = Custom-Info.plist
-    ICON                = $${BASEDIR}/resources/icons/macx.icns
+    ICON                = $${BASEDIR}/resources/icons/planck.icns
     OTHER_FILES        += Custom-Info.plist
     LIBS               += -framework ApplicationServices
 }
@@ -53,7 +53,7 @@ LinuxBuild {
 }
 
 WindowsBuild {
-    RC_ICONS = resources/icons/qgroundcontrol.ico
+    RC_ICONS = resources/icons/planck_icon.ico
     CONFIG += resources_big
 }
 
@@ -433,12 +433,14 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 #
 
 HEADERS += \
+    src/PositionManager/LandingPadPosition.h \
     src/api/QGCCorePlugin.h \
     src/api/QGCOptions.h \
     src/api/QGCSettings.h \
     src/api/QmlComponentInfo.h \
     src/comm/MavlinkMessagesTimer.h \
     src/GPS/Drivers/src/base_station.h \
+    src/comm/PlanckListener.h \
 
 contains (DEFINES, QGC_ENABLE_PAIRING) {
     HEADERS += \
@@ -446,11 +448,13 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 }
 
 SOURCES += \
+    src/PositionManager/LandingPadPosition.cc \
     src/api/QGCCorePlugin.cc \
     src/api/QGCOptions.cc \
     src/api/QGCSettings.cc \
     src/api/QmlComponentInfo.cc \
     src/comm/MavlinkMessagesTimer.cc \
+    src/comm/PlanckListener.cc \
 
 contains (DEFINES, QGC_ENABLE_PAIRING) {
     SOURCES += \
@@ -1379,3 +1383,6 @@ contains (CONFIG, QGC_DISABLE_INSTALLER_SETUP) {
 } else {
     include(QGCInstaller.pri)
 }
+
+DISTFILES += \
+    resources/icons/planck.icns
