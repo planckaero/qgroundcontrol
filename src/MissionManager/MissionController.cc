@@ -436,7 +436,7 @@ VisualMissionItem* MissionController::insertLandItem(QGeoCoordinate coordinate, 
         fwLanding->setLoiterDragAngleOnly(true);
         return fwLanding;
     } else {
-        return _insertSimpleMissionItemWorker(coordinate, MAV_CMD_NAV_RETURN_TO_LAUNCH, visualItemIndex, makeCurrentItem);
+        return _insertSimpleMissionItemWorker(coordinate, MAV_CMD_NAV_PLANCK_RTB, visualItemIndex, makeCurrentItem);
     }
 }
 
