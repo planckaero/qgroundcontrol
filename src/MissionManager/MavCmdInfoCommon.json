@@ -1067,6 +1067,7 @@
             "id": 9001,
             "rawName":      "MAV_CMD_NAV_PLANCK_TAKEOFF",
             "friendlyName": "Planck takeoff",
+            "friendlyEdit": true,
             "description":  "Planck takeoff command",
             "category":     "Basic",
             "param1": {
@@ -1078,6 +1079,7 @@
             "id": 9002,
             "rawName":      "MAV_CMD_NAV_PLANCK_RTB",
             "friendlyName": "Planck RTB",
+            "friendlyEdit": true,
             "description":  "Planck RTB command",
             "category":     "Basic"
         },
