@@ -304,10 +304,12 @@ Item {
         case actionRTL:
             confirmDialog.title = rtlTitle
             confirmDialog.message = rtlMessage
+/*
             if (activeVehicle.supportsSmartRTL) {
                 confirmDialog.optionText = qsTr("Smart RTL")
                 confirmDialog.optionChecked = false
             }
+*/
             confirmDialog.hideTrigger = Qt.binding(function() { return !showRTL })
             break;
         case actionChangeAlt:
