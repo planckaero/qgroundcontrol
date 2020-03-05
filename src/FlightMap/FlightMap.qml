@@ -270,7 +270,7 @@ Map {
         target: gesture
 
         onPanStarted:      userPanning = true
-        onPanFinished:     userPanning = true
+        onPanFinished:     userPanning = false
     }
 
     function updateActiveMapType() {
