@@ -109,7 +109,7 @@ FlightMap {
     }
 
     // When the user pans the map we stop responding to vehicle coordinate updates until the panRecenterTimer fires
-    onUserPannedChanged: {
+    onUserPanningChanged: {
         if (userPanning) {
             _disableVehicleTracking = true
             _disablePadTracking = true
