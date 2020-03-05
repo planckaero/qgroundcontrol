@@ -388,8 +388,8 @@ bool APMFirmwarePlugin::_handleIncomingStatusText(Vehicle* vehicle, mavlink_mess
                 case MAV_TYPE_HEXAROTOR:
                 case MAV_TYPE_OCTOROTOR:
                 case MAV_TYPE_TRICOPTER:
-                    supportedMajorNumber = 3;
-                    supportedMinorNumber = 5;
+                    supportedMajorNumber = 4;
+                    supportedMinorNumber = 0;
                     break;
                 case MAV_TYPE_GROUND_ROVER:
                 case MAV_TYPE_SURFACE_BOAT:
