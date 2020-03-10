@@ -1,4 +1,6 @@
 import QtQuick 2.0
+import QGroundControl               1.0
+import QGroundControl.ScreenTools   1.0
 
 Rectangle {
     id: camChooser
@@ -6,6 +8,7 @@ Rectangle {
     width: buttonWidth
     height: buttonHeight * 3
     z: parent.z + 4 // This is important. If this control is underneath the map, we don't get touch/click input
+    visible: !mainIsMap
 
     // Select camera to view
     readonly property int cameraNone:               0 // N/A
@@ -14,9 +17,9 @@ Rectangle {
     property int cameraChoice:                      cameraDownward
 
     // Button attributes
-    readonly property int buttonWidth: 60
-    readonly property int buttonHeight: 40
-    readonly property int buttonFontSize: 10
+    readonly property int buttonWidth: (ScreenTools.defaultFontPixelWidth * 10)
+    readonly property int buttonHeight: (ScreenTools.defaultFontPixelHeight * 3)
+    readonly property int buttonFontSize: (ScreenTools.defaultFontPointSize)
 
     // Box colors
     readonly property string colorBG:       "black"
