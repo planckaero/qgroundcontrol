@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QGroundControl.ScreenTools   1.0
 
 Rectangle {
     id: viewChooser
@@ -6,6 +7,7 @@ Rectangle {
     width: buttonWidth
     height: buttonHeight * 3
     z: parent.z + 4 // This is important. If this control is underneath the map, we don't get touch/click input
+    visible: mainIsMap
 
     // Free move of map or center on drone/landing pad
     readonly property int centerNONE:               0 // N/A
@@ -15,9 +17,10 @@ Rectangle {
     property bool   free:                           false
 
     // Button attributes
-    readonly property int buttonWidth:      50
-    readonly property int buttonHeight:     30
-    readonly property int buttonFontSize:   10
+
+    readonly property int buttonWidth: (ScreenTools.defaultFontPixelWidth * 10)
+    readonly property int buttonHeight: (ScreenTools.defaultFontPixelHeight * 3)
+    readonly property int buttonFontSize: (ScreenTools.defaultFontPointSize)
 
     // Box colors
     readonly property string colorBG:       "black"
