@@ -225,6 +225,7 @@ signals:
     void setArmed                   (bool arm);
     void setVtolInFwdFlight         (bool set);
     void setFlightMode              (const QString& flightMode);
+    void rcOverride                 (QVector<int> channels);
 
 protected:
     void    _setDefaultCalibration  ();
@@ -244,6 +245,14 @@ protected:
     void    _yawStep                (int direction);
     double  _localYaw       = 0.0;
     double  _localPitch     = 0.0;
+
+    void    _sendRCOverrides        ();
+    QTime   _rcOverrideTime;
+
+    //Toggle RC channels based on type (momentary, two/three-state)
+    void    _rcMomentary(int& channelValue, bool buttonDown, bool isUpDownPair = false, bool isUpButton = false);
+    void    _rcTwoState(int& channelValue);
+    void    _rcTriState(int& channelValue);
 
 private:
     virtual bool _open      ()          = 0;
@@ -305,6 +314,8 @@ protected:
     QStringList                     _availableActionTitles;
     MultiVehicleManager*            _multiVehicleManager = nullptr;
 
+    //For RC overrides
+    QVector<int> _rcOverrideChannels = QVector<int>(18, UINT16_MAX);  //All channels are ignored by default
 
 private:
     static const char*  _rgFunctionSettingsKey[maxFunction];

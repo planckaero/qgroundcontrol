@@ -299,6 +299,8 @@ int main(int argc, char *argv[])
 #pragma warning( disable : 4930 4101 )
 #endif
 
+    qRegisterMetaType<QVector<int>>();
+
     Q_IMPORT_PLUGIN(QGeoServiceProviderFactoryQGC)
 
     bool runUnitTests = false;          // Run unit tests
