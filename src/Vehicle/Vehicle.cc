@@ -4265,6 +4265,43 @@ void Vehicle::centerGimbal()
     }
 }
 
+void Vehicle::sendRCChannelOverride(QVector<int> channels) {
+
+    //18 channels to send
+    for (int i = channels.length(); i < 18; ++i) {
+      channels.append(UINT16_MAX); //initialize with "ignore" value
+    }
+
+    mavlink_rc_channels_override_t rc_msg;
+    rc_msg.chan1_raw = static_cast<uint16_t>(channels[0]);
+    rc_msg.chan2_raw = static_cast<uint16_t>(channels[1]);
+    rc_msg.chan3_raw = static_cast<uint16_t>(channels[2]);
+    rc_msg.chan4_raw = static_cast<uint16_t>(channels[3]);
+    rc_msg.chan5_raw = static_cast<uint16_t>(channels[4]);
+    rc_msg.chan6_raw = static_cast<uint16_t>(channels[5]);
+    rc_msg.chan7_raw = static_cast<uint16_t>(channels[6]);
+    rc_msg.chan8_raw = static_cast<uint16_t>(channels[7]);
+    rc_msg.chan9_raw  = static_cast<uint16_t>(channels[8]);
+    rc_msg.chan10_raw = static_cast<uint16_t>(channels[9]);
+    rc_msg.chan11_raw = static_cast<uint16_t>(channels[10]);
+    rc_msg.chan12_raw = static_cast<uint16_t>(channels[11]);
+    rc_msg.chan13_raw = static_cast<uint16_t>(channels[12]);
+    rc_msg.chan14_raw = static_cast<uint16_t>(channels[13]);
+    rc_msg.chan15_raw = static_cast<uint16_t>(channels[14]);
+    rc_msg.chan16_raw = static_cast<uint16_t>(channels[15]);
+    rc_msg.chan17_raw = static_cast<uint16_t>(channels[16]);
+    rc_msg.chan18_raw = static_cast<uint16_t>(channels[17]);
+
+    mavlink_message_t msg;
+    mavlink_msg_rc_channels_override_encode_chan(
+                _mavlink->getSystemId(),
+                _mavlink->getComponentId(),
+                priorityLink()->mavlinkChannel(),
+                &msg, &rc_msg);
+
+    sendMessageOnLink(priorityLink(), msg);
+}
+
 void Vehicle::_handleGimbalOrientation(const mavlink_message_t& message)
 {
     mavlink_mount_orientation_t o;

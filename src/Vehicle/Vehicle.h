@@ -780,6 +780,8 @@ public:
     Q_INVOKABLE void gimbalYawStep      (int direction);
     Q_INVOKABLE void centerGimbal       ();
 
+    Q_INVOKABLE void sendRCChannelOverride(QVector<int> channels);
+
 #if !defined(NO_ARDUPILOT_DIALECT)
     Q_INVOKABLE void flashBootloader();
 #endif

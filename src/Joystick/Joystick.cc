@@ -461,6 +461,7 @@ void Joystick::run()
     _open();
     //-- Reset timers
     _axisTime.start();
+    _rcOverrideTime.start();
     for (int buttonIndex = 0; buttonIndex < _totalButtonCount; buttonIndex++) {
         if(_buttonActionArray[buttonIndex]) {
             _buttonActionArray[buttonIndex]->buttonTime.start();
@@ -470,9 +471,19 @@ void Joystick::run()
         _update();
         _handleButtons();
         _handleAxis();
+        _sendRCOverrides();
         QGC::SLEEP::msleep(20);
     }
     _close();
+}
+
+void Joystick::_sendRCOverrides() {
+    int rcOverrideDelay = static_cast<int>(1000.0f / _axisFrequency);
+    //-- Check elapsed time since last run
+    if(_rcOverrideTime.elapsed() > rcOverrideDelay) {
+        _rcOverrideTime.start();
+        emit rcOverride(_rcOverrideChannels);
+    }
 }
 
 void Joystick::_handleButtons()
@@ -565,6 +576,7 @@ void Joystick::_handleAxis()
             _rgAxisValues[axisIndex] = newAxisValue;
             emit rawAxisValueChanged(axisIndex, newAxisValue);
         }
+
         if (_activeVehicle->joystickEnabled() && !_calibrationMode && _calibrated) {
             int     axis = _rgFunctionAxis[rollFunction];
             float   roll = _adjustRange(_rgAxisValues[axis],    _rgCalibration[axis], _deadband);
@@ -589,6 +601,15 @@ void Joystick::_handleAxis()
             if(_axisCount > 5) {
                 axis = _rgFunctionAxis[gimbalYawFunction];
                 gimbalYaw = _adjustRange(_rgAxisValues[axis],   _rgCalibration[axis],_deadband);
+            }
+
+            //Push the gimbal pitch/yaw into a single value for channel 8
+            if(gimbalPitch > 0) {
+                _rcMomentary(_rcOverrideChannels[7], true, true, true);
+            } else if (gimbalYaw > 0) {
+                _rcMomentary(_rcOverrideChannels[7], true, true, false);
+            } else {
+                _rcMomentary(_rcOverrideChannels[7], false, true, false);
             }
 
             if (_accumulator) {
@@ -664,6 +685,7 @@ void Joystick::startPolling(Vehicle* vehicle)
             disconnect(this, &Joystick::gimbalYawStep,      _activeVehicle, &Vehicle::gimbalYawStep);
             disconnect(this, &Joystick::centerGimbal,       _activeVehicle, &Vehicle::centerGimbal);
             disconnect(this, &Joystick::gimbalControlValue, _activeVehicle, &Vehicle::gimbalControlValue);
+            disconnect(this, &Joystick::rcOverride,         _activeVehicle, &Vehicle::sendRCChannelOverride);
         }
         // Always set up the new vehicle
         _activeVehicle = vehicle;
@@ -687,6 +709,7 @@ void Joystick::startPolling(Vehicle* vehicle)
             connect(this, &Joystick::gimbalYawStep,      _activeVehicle, &Vehicle::gimbalYawStep);
             connect(this, &Joystick::centerGimbal,       _activeVehicle, &Vehicle::centerGimbal);
             connect(this, &Joystick::gimbalControlValue, _activeVehicle, &Vehicle::gimbalControlValue);
+            connect(this, &Joystick::rcOverride,         _activeVehicle, &Vehicle::sendRCChannelOverride);
             // FIXME: ****
             //connect(this, &Joystick::buttonActionTriggered, uas, &UAS::triggerAction);
         }
@@ -712,6 +735,7 @@ void Joystick::stopPolling(void)
             disconnect(this, &Joystick::gimbalYawStep,      _activeVehicle, &Vehicle::gimbalYawStep);
             disconnect(this, &Joystick::centerGimbal,       _activeVehicle, &Vehicle::centerGimbal);
             disconnect(this, &Joystick::gimbalControlValue, _activeVehicle, &Vehicle::gimbalControlValue);
+            disconnect(this, &Joystick::rcOverride,         _activeVehicle, &Vehicle::sendRCChannelOverride);
         }
         // FIXME: ****
         //disconnect(this, &Joystick::buttonActionTriggered,  uas, &UAS::triggerAction);
@@ -985,31 +1009,79 @@ void Joystick::_executeButtonAction(const QString& action, bool buttonDown)
     } else if(action == _buttonActionNextStream || action == _buttonActionPreviousStream) {
         if (buttonDown) emit stepStream(action == _buttonActionNextStream ? 1 : -1);
     } else if(action == _buttonActionNextCamera || action == _buttonActionPreviousCamera) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[11]);
+#if 0
         if (buttonDown) emit stepCamera(action == _buttonActionNextCamera ? 1 : -1);
+#endif
     } else if(action == _buttonActionTriggerCamera) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[10]);
+#if 0
         if (buttonDown) emit triggerCamera();
+#endif
     } else if(action == _buttonActionStartVideoRecord) {
         if (buttonDown) emit startVideoRecord();
     } else if(action == _buttonActionStopVideoRecord) {
         if (buttonDown) emit stopVideoRecord();
     } else if(action == _buttonActionToggleVideoRecord) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[8]);
+#if 0
         if (buttonDown) emit toggleVideoRecord();
+#endif
     } else if(action == _buttonActionGimbalUp) {
+        _rcMomentary(_rcOverrideChannels[5], buttonDown, true, true);
+#if 0
         if (buttonDown) _pitchStep(1);
+#endif
     } else if(action == _buttonActionGimbalDown) {
+        _rcMomentary(_rcOverrideChannels[5], buttonDown, true, false);
+#if 0
         if (buttonDown) _pitchStep(-1);
+#endif
     } else if(action == _buttonActionGimbalLeft) {
+        _rcMomentary(_rcOverrideChannels[6], buttonDown, true, false);
+#if 0
         if (buttonDown) _yawStep(-1);
+#endif
     } else if(action == _buttonActionGimbalRight) {
+        _rcMomentary(_rcOverrideChannels[6], buttonDown, true, true);
+#if 0
         if (buttonDown) _yawStep(1);
+#endif
     } else if(action == _buttonActionGimbalCenter) {
+        if(buttonDown) _rcTriState(_rcOverrideChannels[9]);
+#if 0
         if (buttonDown) {
             _localPitch = 0.0;
             _localYaw   = 0.0;
             emit gimbalControlValue(0.0, 0.0);
         }
+#endif
     } else {
         qCDebug(JoystickLog) << "_buttonAction unknown action:" << action;
+    }
+}
+
+void Joystick::_rcMomentary(int& channelValue, bool buttonDown, bool isUpDownPair, bool isUpButton) {
+    int highValue = (isUpDownPair && !isUpButton) ? 1100 : 1900;
+    int lowValue = isUpDownPair ? 1500 : 1100;
+    channelValue = buttonDown ? highValue : lowValue;
+}
+
+void Joystick::_rcTwoState(int& channelValue) {
+    if(channelValue < 1500) {
+        channelValue = 1900;
+    } else {
+        channelValue = 1100;
+    }
+}
+
+void Joystick::_rcTriState(int& channelValue) {
+    if(channelValue <= 1100) {
+        channelValue = 1500;
+    } else if(channelValue <= 1500) {
+        channelValue = 1900;
+    } else {
+        channelValue = 1100;
     }
 }
 
