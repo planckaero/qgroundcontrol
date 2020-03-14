@@ -81,6 +81,8 @@ const char* Joystick::_buttonActionRC16 =               QT_TR_NOOP("RC16");
 const char* Joystick::_buttonActionRC17 =               QT_TR_NOOP("RC17");
 const char* Joystick::_buttonActionRC18 =               QT_TR_NOOP("RC18");
 const char* Joystick::_buttonActionTriButtonKill =      QT_TR_NOOP("Triple Button E-Stop");
+const char* Joystick::_buttonActionPlanckTrackAltHoldToggle = QT_TR_NOOP("Toggle PlanckTrack/AltHold");
+const char* Joystick::_buttonActionPlanckTrackLoiterToggle  = QT_TR_NOOP("Toggle PlanckTrack/Loiter");
 
 const char* Joystick::_rgFunctionSettingsKey[Joystick::maxFunction] = {
     "RollAxis",
@@ -1127,6 +1129,12 @@ void Joystick::_executeButtonAction(const QString& action, bool buttonDown)
         if (buttonDown) _rcTwoState(_rcOverrideChannels[17]);
     } else if (action == _buttonActionTriButtonKill) {
         _triButtonKillUpdate(buttonDown);
+    } else if (action == _buttonActionPlanckTrackLoiterToggle && buttonDown) {
+        //Allow transition from Loiter->PlanckTrack and ANY_MODE->Loiter
+        emit setFlightMode(_activeVehicle->flightMode() == "Loiter" ? "Planck Track" : "Loiter");
+    } else if (action == _buttonActionPlanckTrackAltHoldToggle && buttonDown) {
+        //Allow transition from AltHold->PlanckTrack and ANY_MODE->AltHold
+        emit setFlightMode(_activeVehicle->flightMode() == "Altitude Hold" ? "Planck Track" : "Altitude Hold");
     } else {
         qCDebug(JoystickLog) << "_buttonAction unknown action:" << action;
     }
@@ -1265,6 +1273,8 @@ void Joystick::_buildActionList(Vehicle* activeVehicle)
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC17));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC18));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionTriButtonKill));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionPlanckTrackLoiterToggle));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionPlanckTrackAltHoldToggle));
     for(int i = 0; i < _assignableButtonActions.count(); i++) {
         AssignableButtonAction* p = qobject_cast<AssignableButtonAction*>(_assignableButtonActions[i]);
         _availableActionTitles << p->action();
