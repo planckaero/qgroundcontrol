@@ -113,6 +113,8 @@ public:
     Q_INVOKABLE void    setButtonAction     (int button, const QString& action);
     Q_INVOKABLE QString getButtonAction     (int button);
 
+    Q_PROPERTY(bool     zAxisRC8                READ zAxisRC8               WRITE setZAxisRC8           NOTIFY zAxisRC8Changed)
+
     // Property accessors
 
     QString     name                () { return _name; }
@@ -180,6 +182,9 @@ public:
     /// Set joystick button repeat rate (in Hz)
     void  setButtonFrequency(float val);
 
+    bool zAxisRC8       ();
+    void setZAxisRC8    (bool use);
+
 signals:
     // The raw signals are only meant for use by calibration
     void rawAxisValueChanged        (int index, int value);
@@ -193,6 +198,8 @@ signals:
     void accumulatorChanged         (bool accumulator);
     void enabledChanged             (bool enabled);
     void circleCorrectionChanged    (bool circleCorrection);
+
+    void zAxisRC8Changed            (bool use);
 
     /// Signal containing new joystick information
     ///     @param roll:            Range is -1:1, negative meaning roll left, positive meaning roll right
@@ -253,6 +260,12 @@ protected:
     void    _rcMomentary(int& channelValue, bool buttonDown, bool isUpDownPair = false, bool isUpButton = false);
     void    _rcTwoState(int& channelValue);
     void    _rcTriState(int& channelValue);
+
+    //Triple button kill
+    void    _triButtonKillUpdate(const bool buttonDown);
+
+    //Initialize override channel values
+    void _initRCOverrideChannels(const QString& action, bool enable);
 
 private:
     virtual bool _open      ()          = 0;
@@ -317,6 +330,12 @@ protected:
     //For RC overrides
     QVector<int> _rcOverrideChannels = QVector<int>(18, UINT16_MAX);  //All channels are ignored by default
 
+    //Tri-button kill
+    int _triButtonKillState = 0;
+
+    //Is Z axis (trigger) used for RC8
+    bool _useZAxisRC8 = false;
+
 private:
     static const char*  _rgFunctionSettingsKey[maxFunction];
 
@@ -338,6 +357,7 @@ private:
     static const char* _vtolTXModeSettingsKey;
     static const char* _submarineTXModeSettingsKey;
     static const char* _gimbalSettingsKey;
+    static const char* _zAxisRC8SettingsKey;
 
     static const char* _buttonActionNone;
     static const char* _buttonActionArm;
@@ -362,6 +382,22 @@ private:
     static const char* _buttonActionGimbalLeft;
     static const char* _buttonActionGimbalRight;
     static const char* _buttonActionGimbalCenter;
+
+    static const char* _buttonActionGimbalDownRC6;
+    static const char* _buttonActionGimbalUpRC6;
+    static const char* _buttonActionGimbalLeftRC7;
+    static const char* _buttonActionGimbalRightRC7;
+    static const char* _buttonActionRC9TriState;
+    static const char* _buttonActionRC10TriState;
+    static const char* _buttonActionRC11;
+    static const char* _buttonActionRC12;
+    static const char* _buttonActionRC13;
+    static const char* _buttonActionRC14;
+    static const char* _buttonActionRC15;
+    static const char* _buttonActionRC16;
+    static const char* _buttonActionRC17;
+    static const char* _buttonActionRC18;
+    static const char* _buttonActionTriButtonKill;
 
 private slots:
     void _activeVehicleChanged(Vehicle* activeVehicle);
