@@ -40,6 +40,7 @@ const char* Joystick::_roverTXModeSettingsKey =         "TXMode_Rover";
 const char* Joystick::_vtolTXModeSettingsKey =          "TXMode_VTOL";
 const char* Joystick::_submarineTXModeSettingsKey =     "TXMode_Submarine";
 const char* Joystick::_gimbalSettingsKey =              "GimbalEnabled";
+const char* Joystick::_zAxisRC8SettingsKey =            "useZAxisRC8";
 
 const char* Joystick::_buttonActionNone =               QT_TR_NOOP("No Action");
 const char* Joystick::_buttonActionArm =                QT_TR_NOOP("Arm");
@@ -64,6 +65,22 @@ const char* Joystick::_buttonActionGimbalUp =           QT_TR_NOOP("Gimbal Up");
 const char* Joystick::_buttonActionGimbalLeft =         QT_TR_NOOP("Gimbal Left");
 const char* Joystick::_buttonActionGimbalRight =        QT_TR_NOOP("Gimbal Right");
 const char* Joystick::_buttonActionGimbalCenter =       QT_TR_NOOP("Gimbal Center");
+
+const char* Joystick::_buttonActionGimbalDownRC6 =      QT_TR_NOOP("Gimbal Down (RC6)");
+const char* Joystick::_buttonActionGimbalUpRC6 =        QT_TR_NOOP("Gimbal Up (RC6)");
+const char* Joystick::_buttonActionGimbalLeftRC7 =      QT_TR_NOOP("Gimbal Left (RC7)");
+const char* Joystick::_buttonActionGimbalRightRC7 =     QT_TR_NOOP("Gimbal Right (RC7)");
+const char* Joystick::_buttonActionRC9TriState =        QT_TR_NOOP("RC9 Tri-State");
+const char* Joystick::_buttonActionRC10TriState =       QT_TR_NOOP("RC10 Tri-State");
+const char* Joystick::_buttonActionRC11 =               QT_TR_NOOP("RC11");
+const char* Joystick::_buttonActionRC12 =               QT_TR_NOOP("RC12");
+const char* Joystick::_buttonActionRC13 =               QT_TR_NOOP("RC13");
+const char* Joystick::_buttonActionRC14 =               QT_TR_NOOP("RC14");
+const char* Joystick::_buttonActionRC15 =               QT_TR_NOOP("RC15");
+const char* Joystick::_buttonActionRC16 =               QT_TR_NOOP("RC16");
+const char* Joystick::_buttonActionRC17 =               QT_TR_NOOP("RC17");
+const char* Joystick::_buttonActionRC18 =               QT_TR_NOOP("RC18");
+const char* Joystick::_buttonActionTriButtonKill =      QT_TR_NOOP("Triple Button E-Stop");
 
 const char* Joystick::_rgFunctionSettingsKey[Joystick::maxFunction] = {
     "RollAxis",
@@ -226,6 +243,7 @@ void Joystick::_loadSettings()
     _buttonFrequency= settings.value(_buttonFrequencySettingsKey, 5.0f).toFloat();
     _circleCorrection = settings.value(_circleCorrectionSettingsKey, false).toBool();
     _gimbalEnabled  = settings.value(_gimbalSettingsKey, false).toBool();
+    _useZAxisRC8    = settings.value(_zAxisRC8SettingsKey, false).toBool();
 
     _throttleMode   = static_cast<ThrottleMode_t>(settings.value(_throttleModeSettingsKey, ThrottleModeDownZero).toInt(&convertOk));
     badSettings |= !convertOk;
@@ -288,6 +306,7 @@ void Joystick::_loadSettings()
             _buttonActionArray[button] = ap;
             _buttonActionArray[button]->buttonTime.start();
             qCDebug(JoystickLog) << "_loadSettings button:action" << button << _buttonActionArray[button]->action << _buttonActionArray[button]->repeat;
+            _initRCOverrideChannels(a, true);
         }
     }
 
@@ -331,6 +350,7 @@ void Joystick::_saveSettings()
     settings.setValue(_throttleModeSettingsKey,     _throttleMode);
     settings.setValue(_gimbalSettingsKey,           _gimbalEnabled);
     settings.setValue(_circleCorrectionSettingsKey, _circleCorrection);
+    settings.setValue(_zAxisRC8SettingsKey,         _useZAxisRC8);
 
     qCDebug(JoystickLog) << "_saveSettings calibrated:throttlemode:deadband:txmode" << _calibrated << _throttleMode << _deadband << _circleCorrection << _transmitterMode;
 
@@ -478,11 +498,17 @@ void Joystick::run()
 }
 
 void Joystick::_sendRCOverrides() {
-    int rcOverrideDelay = static_cast<int>(1000.0f / _axisFrequency);
-    //-- Check elapsed time since last run
-    if(_rcOverrideTime.elapsed() > rcOverrideDelay) {
-        _rcOverrideTime.start();
-        emit rcOverride(_rcOverrideChannels);
+    //Don't send any override messages if there are no channels to send
+    for(auto c : _rcOverrideChannels) {
+        if(c != UINT16_MAX) {
+            int rcOverrideDelay = static_cast<int>(1000.0f / _axisFrequency);
+            //-- Check elapsed time since last run
+            if(_rcOverrideTime.elapsed() > rcOverrideDelay) {
+                _rcOverrideTime.start();
+                emit rcOverride(_rcOverrideChannels);
+            }
+            break; //Break out of the for loop
+        }
     }
 }
 
@@ -604,12 +630,16 @@ void Joystick::_handleAxis()
             }
 
             //Push the gimbal pitch/yaw into a single value for channel 8
-            if(gimbalPitch > 0) {
-                _rcMomentary(_rcOverrideChannels[7], true, true, true);
-            } else if (gimbalYaw > 0) {
-                _rcMomentary(_rcOverrideChannels[7], true, true, false);
+            if(_useZAxisRC8) {
+                if(gimbalPitch > 0) {
+                    _rcMomentary(_rcOverrideChannels[7], true, true, true);
+                } else if (gimbalYaw > 0) {
+                    _rcMomentary(_rcOverrideChannels[7], true, true, false);
+                } else {
+                    _rcMomentary(_rcOverrideChannels[7], false, true, false);
+                }
             } else {
-                _rcMomentary(_rcOverrideChannels[7], false, true, false);
+                _rcOverrideChannels[7] = UINT16_MAX;
             }
 
             if (_accumulator) {
@@ -803,6 +833,27 @@ bool Joystick::getButtonRepeat(int button)
     return _buttonActionArray[button]->repeat;
 }
 
+void Joystick::_initRCOverrideChannels(const QString& action, bool enable)
+{
+    //If the button was an RC channel, set the particular RC channel to UINT16_MAX (ignore)
+    if (action == _buttonActionGimbalDownRC6 || action == _buttonActionGimbalUpRC6) {
+        _rcOverrideChannels[5] = enable ? 1500 : UINT16_MAX;
+    }
+    else if (action == _buttonActionGimbalLeftRC7 || action == _buttonActionGimbalRightRC7) {
+        _rcOverrideChannels[6] = enable ? 1500 : UINT16_MAX;
+    }
+    else if (action == _buttonActionRC9TriState)  _rcOverrideChannels[8]  = enable ? 1100 : UINT16_MAX;
+    else if (action == _buttonActionRC10TriState) _rcOverrideChannels[9]  = enable ? 1100 : UINT16_MAX;
+    else if (action == _buttonActionRC11)         _rcOverrideChannels[10] = enable ? 1100 : UINT16_MAX;
+    else if (action == _buttonActionRC12)         _rcOverrideChannels[11] = enable ? 1100 : UINT16_MAX;
+    else if (action == _buttonActionRC13)         _rcOverrideChannels[12] = enable ? 1100 : UINT16_MAX;
+    else if (action == _buttonActionRC14)         _rcOverrideChannels[13] = enable ? 1100 : UINT16_MAX;
+    else if (action == _buttonActionRC15)         _rcOverrideChannels[14] = enable ? 1100 : UINT16_MAX;
+    else if (action == _buttonActionRC16)         _rcOverrideChannels[15] = enable ? 1100 : UINT16_MAX;
+    else if (action == _buttonActionRC17)         _rcOverrideChannels[16] = enable ? 1100 : UINT16_MAX;
+    else if (action == _buttonActionRC18)         _rcOverrideChannels[17] = enable ? 1100 : UINT16_MAX;
+}
+
 void Joystick::setButtonAction(int button, const QString& action)
 {
     if (!_validButton(button)) {
@@ -819,6 +870,7 @@ void Joystick::setButtonAction(int button, const QString& action)
             //-- Clear from settings
             settings.remove(QString(_buttonActionNameKey).arg(button));
             settings.remove(QString(_buttonActionRepeatKey).arg(button));
+            _initRCOverrideChannels(action, false);
         }
     } else {
         if(!_buttonActionArray[button]) {
@@ -837,6 +889,7 @@ void Joystick::setButtonAction(int button, const QString& action)
         //-- Save to settings
         settings.setValue(QString(_buttonActionNameKey).arg(button),   _buttonActionArray[button]->action);
         settings.setValue(QString(_buttonActionRepeatKey).arg(button), _buttonActionArray[button]->repeat);
+        _initRCOverrideChannels(action, true);
     }
     emit buttonActionsChanged();
 }
@@ -941,6 +994,18 @@ void Joystick::setCircleCorrection(bool circleCorrection)
     emit circleCorrectionChanged(_circleCorrection);
 }
 
+bool Joystick::zAxisRC8()
+{
+    return _useZAxisRC8;
+}
+
+void Joystick::setZAxisRC8(bool use)
+{
+    _useZAxisRC8 = use;
+    _saveSettings();
+    emit zAxisRC8Changed(_useZAxisRC8);
+}
+
 void Joystick::setGimbalEnabled(bool set)
 {
     _gimbalEnabled = set;
@@ -1009,55 +1074,72 @@ void Joystick::_executeButtonAction(const QString& action, bool buttonDown)
     } else if(action == _buttonActionNextStream || action == _buttonActionPreviousStream) {
         if (buttonDown) emit stepStream(action == _buttonActionNextStream ? 1 : -1);
     } else if(action == _buttonActionNextCamera || action == _buttonActionPreviousCamera) {
-        if (buttonDown) _rcTwoState(_rcOverrideChannels[11]);
-#if 0
         if (buttonDown) emit stepCamera(action == _buttonActionNextCamera ? 1 : -1);
-#endif
     } else if(action == _buttonActionTriggerCamera) {
-        if (buttonDown) _rcTwoState(_rcOverrideChannels[10]);
-#if 0
         if (buttonDown) emit triggerCamera();
-#endif
     } else if(action == _buttonActionStartVideoRecord) {
         if (buttonDown) emit startVideoRecord();
     } else if(action == _buttonActionStopVideoRecord) {
         if (buttonDown) emit stopVideoRecord();
     } else if(action == _buttonActionToggleVideoRecord) {
-        if (buttonDown) _rcTwoState(_rcOverrideChannels[8]);
-#if 0
         if (buttonDown) emit toggleVideoRecord();
-#endif
     } else if(action == _buttonActionGimbalUp) {
-        _rcMomentary(_rcOverrideChannels[5], buttonDown, true, true);
-#if 0
         if (buttonDown) _pitchStep(1);
-#endif
     } else if(action == _buttonActionGimbalDown) {
-        _rcMomentary(_rcOverrideChannels[5], buttonDown, true, false);
-#if 0
         if (buttonDown) _pitchStep(-1);
-#endif
     } else if(action == _buttonActionGimbalLeft) {
-        _rcMomentary(_rcOverrideChannels[6], buttonDown, true, false);
-#if 0
         if (buttonDown) _yawStep(-1);
-#endif
     } else if(action == _buttonActionGimbalRight) {
-        _rcMomentary(_rcOverrideChannels[6], buttonDown, true, true);
-#if 0
         if (buttonDown) _yawStep(1);
-#endif
     } else if(action == _buttonActionGimbalCenter) {
-        if(buttonDown) _rcTriState(_rcOverrideChannels[9]);
-#if 0
         if (buttonDown) {
             _localPitch = 0.0;
             _localYaw   = 0.0;
             emit gimbalControlValue(0.0, 0.0);
         }
-#endif
+    } else if (action == _buttonActionGimbalDownRC6) {
+        _rcMomentary(_rcOverrideChannels[5], buttonDown, true, false);
+    } else if (action == _buttonActionGimbalUpRC6) {
+        _rcMomentary(_rcOverrideChannels[5], buttonDown, true, true);
+    } else if (action == _buttonActionGimbalLeftRC7) {
+        _rcMomentary(_rcOverrideChannels[6], buttonDown, true, false);
+    } else if (action == _buttonActionGimbalRightRC7) {
+        _rcMomentary(_rcOverrideChannels[6], buttonDown, true, true);
+    } else if (action == _buttonActionRC9TriState) {
+        if(buttonDown) _rcTriState(_rcOverrideChannels[8]);
+    } else if (action == _buttonActionRC10TriState) {
+        if(buttonDown) _rcTriState(_rcOverrideChannels[9]);
+    } else if (action == _buttonActionRC11) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[10]);
+    } else if (action == _buttonActionRC12) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[11]);
+    } else if (action == _buttonActionRC13) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[12]);
+    } else if (action == _buttonActionRC14) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[13]);
+    } else if (action == _buttonActionRC15) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[14]);
+    } else if (action == _buttonActionRC16) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[15]);
+    } else if (action == _buttonActionRC17) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[16]);
+    } else if (action == _buttonActionRC18) {
+        if (buttonDown) _rcTwoState(_rcOverrideChannels[17]);
+    } else if (action == _buttonActionTriButtonKill) {
+        _triButtonKillUpdate(buttonDown);
     } else {
         qCDebug(JoystickLog) << "_buttonAction unknown action:" << action;
+    }
+}
+
+void Joystick::_triButtonKillUpdate(const bool buttonDown) {
+    _triButtonKillState += (buttonDown ? 1 : -1);
+
+    if(_triButtonKillState < 0) _triButtonKillState = 0;
+    if(_triButtonKillState > 3) _triButtonKillState = 3;
+
+    if(_triButtonKillState >= 3) {
+        _activeVehicle->emergencyStop();
     }
 }
 
@@ -1168,6 +1250,21 @@ void Joystick::_buildActionList(Vehicle* activeVehicle)
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionGimbalLeft,    true));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionGimbalRight,   true));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionGimbalCenter));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionGimbalDownRC6));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionGimbalUpRC6));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionGimbalLeftRC7));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionGimbalRightRC7));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC9TriState));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC10TriState));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC11));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC12));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC13));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC14));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC15));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC16));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC17));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC18));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionTriButtonKill));
     for(int i = 0; i < _assignableButtonActions.count(); i++) {
         AssignableButtonAction* p = qobject_cast<AssignableButtonAction*>(_assignableButtonActions[i]);
         _availableActionTitles << p->action();
