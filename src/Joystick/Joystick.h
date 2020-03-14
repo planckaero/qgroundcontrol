@@ -398,6 +398,8 @@ private:
     static const char* _buttonActionRC17;
     static const char* _buttonActionRC18;
     static const char* _buttonActionTriButtonKill;
+    static const char* _buttonActionPlanckTrackAltHoldToggle;
+    static const char* _buttonActionPlanckTrackLoiterToggle;
 
 private slots:
     void _activeVehicleChanged(Vehicle* activeVehicle);
