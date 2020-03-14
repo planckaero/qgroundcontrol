@@ -4275,6 +4275,8 @@ void Vehicle::sendRCChannelOverride(QVector<int> channels) {
     rc_msg.chan16_raw = static_cast<uint16_t>(channels[15]);
     rc_msg.chan17_raw = static_cast<uint16_t>(channels[16]);
     rc_msg.chan18_raw = static_cast<uint16_t>(channels[17]);
+    rc_msg.target_system = id();
+    rc_msg.target_component = _defaultComponentId;
 
     mavlink_message_t msg;
     mavlink_msg_rc_channels_override_encode_chan(
