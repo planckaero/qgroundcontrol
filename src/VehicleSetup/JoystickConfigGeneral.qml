@@ -128,6 +128,33 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
+            //-----------------------------------------------------------------
+            //-- Enable z axis for RC8
+            QGCLabel {
+                text:               qsTr("Use Z-Axis for RC Channel 8")
+                Layout.alignment:   Qt.AlignVCenter
+                visible:            true
+            }
+            QGCCheckBox {
+                checked:            _activeJoystick ? _activeJoystick.zAxisRC8 : false
+                enabled:            true
+                id:                 zAxisRC8Enabled
+                Component.onCompleted: {
+                    checked = _activeJoystick.zAxisRC8
+                }
+                onClicked: {
+                    _activeJoystick.zAxisRC8 = checked
+                }
+                Connections {
+                    target: joystickManager
+                    onActiveJoystickChanged: {
+                        if(_activeJoystick) {
+                            zAxisRC8Enabled.checked = Qt.binding(function() { return _activeJoystick.zAxisRC8})
+                        }
+                    }
+                }
+                visible:            true
+            }
         }
         Row {
             spacing:                ScreenTools.defaultFontPixelWidth
