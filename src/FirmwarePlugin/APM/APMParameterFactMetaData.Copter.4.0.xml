@@ -102,7 +102,8 @@
 <value code="2">Enabled Continue with Mission in Auto Mode</value>
 <value code="3">Enabled always SmartRTL or RTL</value>
 <value code="4">Enabled always SmartRTL or Land</value>
-<value code="5">Enabled always Planck RTB or Planck Land</value>
+<value code="5">Enabled always Land</value>
+<value code="6">Enabled always Planck RTB or Planck Land</value>
 </values>
 </param>
 <param humanName="GPS Hdop Good" name="ArduCopter:GPS_HDOP_GOOD" documentation="GPS Hdop value at or below this value represent a good position.  Used for pre-arm checks" user="Advanced">
