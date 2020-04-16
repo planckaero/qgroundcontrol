@@ -276,5 +276,12 @@
     "longDescription":  "If this option is enabled, all Facts will be written to a CSV file with a 1 Hertz frequency.",
     "type":             "bool",
     "defaultValue":     false
+},
+{
+    "name":             "sendPlanckGPS",
+    "shortDescription": "Send Planck GPS Position from Local GPS",
+    "longDescription":  "Send Planck GPS Position from Local GPS",
+    "type":             "bool",
+    "defaultValue":     false
 }
 ]

@@ -69,4 +69,8 @@ private:
     QGeoPositionInfoSource*     _simulatedSource =      nullptr;
     QGeoPositionInfoSource*     _landingPadSource =     nullptr;
     bool                        _usingPluginSource =    false;
+    bool                        _sendPlanckGPS =        false;
+
+    void settingsChanged();
+    void sendMessageToVehicle();
 };

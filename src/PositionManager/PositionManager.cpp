@@ -10,6 +10,7 @@
 #include "PositionManager.h"
 #include "QGCApplication.h"
 #include "QGCCorePlugin.h"
+#include "SettingsManager.h"
 
 QGCPositionManager::QGCPositionManager(QGCApplication* app, QGCToolbox* toolbox)
     : QGCTool           (app, toolbox)
@@ -21,6 +22,7 @@ QGCPositionManager::~QGCPositionManager()
 {
     delete(_simulatedSource);
     delete(_nmeaSource);
+    delete(_landingPadSource);
 }
 
 void QGCPositionManager::setToolbox(QGCToolbox *toolbox)
@@ -41,13 +43,21 @@ void QGCPositionManager::setToolbox(QGCToolbox *toolbox)
        //-- Otherwise, create a default one
        _defaultSource = QGeoPositionInfoSource::createDefaultSource(this);
    }
+  _simulatedSource = new SimulatedPosition();
+
   _landingPadSource = qgcApp()->toolbox()->landingPadManager();
 
-#if 1
-   setPositionSource(QGCPositionSource::LandingPad);
-#else
-   setPositionSource(QGCPositionManager::Simulated);
-#endif
+  //Is the internal GPS providing Planck position updates?
+  _sendPlanckGPS = qgcApp()->toolbox()->settingsManager()->appSettings()->sendPlanckGPS()->rawValue().toBool();
+
+  setPositionSource(QGCPositionSource::LandingPad);
+
+  connect(toolbox->settingsManager()->appSettings()->sendPlanckGPS(), &Fact::rawValueChanged, this, &QGCPositionManager::settingsChanged);
+}
+
+void QGCPositionManager::settingsChanged()
+{
+    _sendPlanckGPS = qgcApp()->toolbox()->settingsManager()->appSettings()->sendPlanckGPS()->rawValue().toBool();
 }
 
 void QGCPositionManager::setNmeaSourceDevice(QIODevice* device)
@@ -82,6 +92,12 @@ void QGCPositionManager::_positionUpdated(const QGeoPositionInfo &update)
         // Note that gcsPosition filters out possible crap values
         if (qAbs(update.coordinate().latitude()) > 0.001 && qAbs(update.coordinate().longitude()) > 0.001) {
             newGCSPosition = update.coordinate();
+
+            //see if we should send a mavlink message for planck. Don't send if its a `landingPadSource`,
+            //as that is consuming PLANCK_LANDING_PLATFORM_STATE messages from another source (like the Planck commbox)
+            if(_sendPlanckGPS && _currentSource != nullptr && _currentSource != _landingPadSource) {
+                sendMessageToVehicle();
+            }
         }
     }
     if (newGCSPosition != _gcsPosition) {
@@ -151,4 +167,25 @@ void QGCPositionManager::setPositionSource(QGCPositionManager::QGCPositionSource
 void QGCPositionManager::_error(QGeoPositionInfoSource::Error positioningError)
 {
     qWarning() << "QGCPositionManager error" << positioningError;
+}
+
+void QGCPositionManager::sendMessageToVehicle()
+{
+    QmlObjectListModel& vehicles = *_toolbox->multiVehicleManager()->vehicles();
+    MAVLinkProtocol* mavlinkProtocol = _toolbox->mavlinkProtocol();
+    for (int i = 0; i < vehicles.count(); i++) {
+        Vehicle* vehicle = qobject_cast<Vehicle*>(vehicles[i]);
+        mavlink_message_t message;
+        mavlink_planck_landing_platform_state_t msg;
+        msg.latitude = (int32_t)(_gcsPosition.latitude()*1.E7);
+        msg.longitude = (int32_t)(_gcsPosition.longitude()*1.E7);
+        msg.altitude = (int32_t)(_gcsPosition.altitude()*1.E3);
+        msg.roll = msg.pitch = msg.yaw = msg.vn = msg.ve = msg.vd = 0;
+        mavlink_msg_planck_landing_platform_state_encode_chan(mavlinkProtocol->getSystemId(),
+                                              mavlinkProtocol->getComponentId(),
+                                              vehicle->priorityLink()->mavlinkChannel(),
+                                              &message,
+                                              &msg);
+        vehicle->sendMessageOnLink(vehicle->priorityLink(), message);
+    }
 }
