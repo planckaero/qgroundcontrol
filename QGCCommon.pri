@@ -164,6 +164,18 @@ exists ($$PWD/.git) {
     } else {
         message(QGroundControl $${GIT_VERSION})
     }
+
+    #Look for Planck ACE specific versioning
+    #Example tag:        v4.0.6-ACE-QGC-v1.2.3
+    #Should result in QGroundControl v4.0.6 ACE QGC v1.2.3 (gabc123)
+    #Example custom tag: v4.0.6-ACE-CUSTOMNAME-v1.2.3
+    #Should result in QGroundControl v4.0.6 ACE CUSTOMNAME v1.2.3 (gabc123)
+    message($${GIT_DESCRIBE})
+    contains(GIT_DESCRIBE, v[0-9]+.[0-9]+.[0-9]+.ACE.*) {
+        ACEVERSION = $$replace(GIT_DESCRIBE, "-", " ")
+        GIT_VERSION = "$${ACEVERSION} ($${GIT_HASH})"
+        message(ACE Version: $${GIT_VERSION})
+    }
 } else {
     GIT_VERSION     = None
     VERSION         = 0.0.0   # Marker to indicate out-of-tree build
