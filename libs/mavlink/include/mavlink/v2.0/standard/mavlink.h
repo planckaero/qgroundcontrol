@@ -1,12 +1,12 @@
 /** @file
- *  @brief MAVLink comm protocol built from planckAero.xml
+ *  @brief MAVLink comm protocol built from standard.xml
  *  @see http://mavlink.org
  */
 #pragma once
 #ifndef MAVLINK_H
 #define MAVLINK_H
 
-#define MAVLINK_PRIMARY_XML_IDX 2
+#define MAVLINK_PRIMARY_XML_IDX 0
 
 #ifndef MAVLINK_STX
 #define MAVLINK_STX 253
@@ -29,6 +29,6 @@
 #endif
 
 #include "version.h"
-#include "planckAero.h"
+#include "standard.h"
 
 #endif // MAVLINK_H
