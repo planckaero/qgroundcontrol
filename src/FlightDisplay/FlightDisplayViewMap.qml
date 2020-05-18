@@ -626,21 +626,18 @@ FlightMap {
                 gotoLocationItem.hide()
                 wingmanItem.hide()
                 var clickCoord = flightMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
-                if (guidedActionsController.showWingman) {
-                    wingmanItem.wingmanRelative.latitude = clickCoord.latitude - gcsPosition.latitude
-                    wingmanItem.wingmanRelative.longitude = clickCoord.longitude - gcsPosition.longitude
+                clickMenu.coord = clickCoord
+                clickMenu.popup()
 
-                    var distance = gcsPosition.distanceTo(clickCoord)
-                    var azimuth = gcsPosition.azimuthTo(clickCoord) * Math.PI / 180.0
+                wingmanItem.wingmanRelative.latitude = clickCoord.latitude - gcsPosition.latitude
+                wingmanItem.wingmanRelative.longitude = clickCoord.longitude - gcsPosition.longitude
 
-                    // These actually return meters. I stuffed them into a geocoordinate, though.
-                    wingmanItem.wingmanMeters.latitude = distance * Math.cos(azimuth)
-                    wingmanItem.wingmanMeters.longitude = distance * Math.sin(azimuth)
-                    wingmanItem.show(clickCoord)
-                else {
-                    clickMenu.coord = clickCoord
-                    clickMenu.popup()
-                }
+                var distance = gcsPosition.distanceTo(clickCoord)
+                var azimuth = gcsPosition.azimuthTo(clickCoord) * Math.PI / 180.0
+
+                // These actually return meters. I stuffed them into a geocoordinate, though.
+                wingmanItem.wingmanMeters.latitude = distance * Math.cos(azimuth)
+                wingmanItem.wingmanMeters.longitude = distance * Math.sin(azimuth)
             }
         }
     }

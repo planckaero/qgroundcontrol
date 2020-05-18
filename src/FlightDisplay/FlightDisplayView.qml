@@ -56,6 +56,7 @@ Item {
     property alias  _guidedController:              guidedActionsController
     property alias  _altitudeSlider:                altitudeSlider
     property real   _toolsMargin:                   ScreenTools.defaultFontPixelWidth * 0.75
+    property bool   _showAnnunciatorPanel:          QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.rawValue
 
     readonly property var       _dynamicCameras:        activeVehicle ? activeVehicle.dynamicCameras : null
     readonly property bool      _isCamera:              _dynamicCameras ? _dynamicCameras.cameras.count > 0 : false
@@ -725,6 +726,143 @@ Item {
             visible:            false
         }
     }
+
+    //-- Annunciator panel
+    Rectangle {
+        visible:                    _showAnnunciatorPanel
+        id:                         annunciatorPanel
+        anchors.horizontalCenter:   parent.horizontalCenter
+        anchors.topMargin:          _toolsMargin
+        anchors.top:                parent.top
+        z:                          _mapAndVideo.z + 1
+        color:                      qgcPal.globalTheme === QGCPalette.Light ? QGroundControl.corePlugin.options.toolbarBackgroundLight : QGroundControl.corePlugin.options.toolbarBackgroundDark
+        radius:                     ScreenTools.defaultFontPixelWidth / 2
+        width:                      annunciatorRow.width + _toolsMargin * 2
+        height:                     annunciatorRow.height + _toolsMargin * 2
+
+        Row {
+            id:     annunciatorRow
+            spacing:    ScreenTools.defaultFontPixelWidth
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+
+            Repeater {
+                id: annunciatorRepeater
+                readonly property double    ekfHighThresh:  0.8
+                readonly property double    vibeHighThresh: QGroundControl.settingsManager.flyViewSettings.vibeMaxThreshold.rawValue
+                readonly property double    tiltHighThresh: QGroundControl.settingsManager.flyViewSettings.tiltMaxThreshold.rawValue
+
+                function clamp(value, min, max) {
+                    return Math.min(max, Math.max(min, value))
+                }
+
+                //Linearly scale red & green up to the max.
+                //At max/2, both red and green are 1 to make yellow
+                function getColor(value, max) {
+                    var redVal = Math.abs(value)/(max/2)
+                    var greenVal = (-Math.abs(value)/(max/2)) + 2
+                    return Qt.rgba(clamp(redVal,0,1), clamp(greenVal,0,1), 0, 1)
+                }
+
+                function getEKFColor(value) {
+                    return getColor(value, ekfHighThresh)
+                }
+
+                function getAbsLargestOf(v1, v2, v3) {
+                    return Math.max(Math.abs(v1),Math.abs(v2),Math.abs(v3))
+                }
+
+                function getEKFVelColor() {
+                    if(!activeVehicle.estimatorStatus.goodHorizVelEstimate.value)       return qgcPal.colorGrey
+                    return getEKFColor(activeVehicle.estimatorStatus.velRatio.value)
+                }
+
+                function getEKFHPOSColor() {
+                    if(!activeVehicle.estimatorStatus.goodHorizPosAbsEstimate.value)    return qgcPal.colorGrey
+                    return getEKFColor(activeVehicle.estimatorStatus.horizPosRatio.value)
+                }
+
+                function getEKFVPOSColor() {
+                    if(!activeVehicle.estimatorStatus.goodVertPosAbsEstimate.value)     return qgcPal.colorGrey
+                    return getEKFColor(activeVehicle.estimatorStatus.vertPosRatio.value)
+                }
+
+                function getEKFMAGColor() {
+                    return getEKFColor(activeVehicle.estimatorStatus.magRatio.value)
+                }
+
+                function getEKFTerrColor() {
+                    if(!activeVehicle.estimatorStatus.goodVertPosAGLEstimate.value)     return qgcPal.colorGrey
+                    return getEKFColor(activeVehicle.estimatorStatus.haglRatio.value)
+                }
+
+                function getVibeColor() {
+                    return getColor(
+                                getAbsLargestOf(
+                                    activeVehicle.vibration.xAxis.value,
+                                    activeVehicle.vibration.yAxis.value,
+                                    activeVehicle.vibration.zAxis.value),
+                                vibeHighThresh)
+                }
+
+                function getTiltColor() {
+                    return getColor(
+                                getAbsLargestOf(
+                                    activeVehicle.roll.value,
+                                    activeVehicle.pitch.value,
+                                    0),
+                                tiltHighThresh)
+                }
+
+                model: [
+                    {
+                        text: qsTr("EKF\nVEL"),
+                        color: activeVehicle ? getEKFVelColor()     : qgcPal.colorGrey
+                    },
+                    {
+                        text: qsTr("EKF\nHPOS"),
+                        color: activeVehicle ? getEKFHPOSColor()    : qgcPal.colorGrey
+                    },
+                    {
+                        text: qsTr("EKF\nVPOS"),
+                        color: activeVehicle ? getEKFVPOSColor()    : qgcPal.colorGrey
+                    },
+                    {
+                        text: qsTr("EKF\nMAG"),
+                        color: activeVehicle ? getEKFMAGColor()     : qgcPal.colorGrey
+                    },
+                    {
+                        text: qsTr("EKF\nTERR"),
+                        color: activeVehicle ? getEKFTerrColor()    : qgcPal.colorGrey
+                    },
+                    {
+                        text: qsTr("VIBE"),
+                        color: activeVehicle ? getVibeColor()       : qgcPal.colorGrey
+                    },
+                    {
+                        text: qsTr("TILT"),
+                        color: activeVehicle ? getTiltColor()       : qgcPal.colorGrey
+                    }
+                ]
+
+                Rectangle {
+                    id:         ekfVelAnnunciator
+                    width:      ScreenTools.defaultFontPixelWidth * 5
+                    height:     ScreenTools.defaultFontPixelHeight * 2
+                    color:      modelData.color
+                    visible:    true
+                    QGCLabel {
+                        text:               modelData.text
+                        color:              activeVehicle ? Qt.rgba(0,0,0,1) : Qt.rgba(1,1,1,1)
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
+            }
+        }
+    }
+
 
     //-- Airspace Indicator
     Rectangle {

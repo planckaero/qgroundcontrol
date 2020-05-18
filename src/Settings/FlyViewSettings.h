@@ -27,4 +27,7 @@ public:
     DEFINE_SETTINGFACT(lockNoseUpCompass)
     DEFINE_SETTINGFACT(maxGoToLocationDistance)
     DEFINE_SETTINGFACT(keepMapCenteredOnVehicle)
+    DEFINE_SETTINGFACT(showAnnunciatorPanel)
+    DEFINE_SETTINGFACT(vibeMaxThreshold)
+    DEFINE_SETTINGFACT(tiltMaxThreshold)
 };
