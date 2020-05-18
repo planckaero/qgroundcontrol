@@ -728,6 +728,89 @@ Item {
         }
     }
 
+    //-- Annunciator panel
+    Rectangle {
+        visible:                    true
+        id:                         annunciatorPanel
+        anchors.horizontalCenter:   parent.horizontalCenter
+        anchors.topMargin:          _toolsMargin
+        anchors.top:                parent.top
+        z:                          _mapAndVideo.z + 4
+        color:                      qgcPal.globalTheme === QGCPalette.Light ? QGroundControl.corePlugin.options.toolbarBackgroundLight : QGroundControl.corePlugin.options.toolbarBackgroundDark
+        radius:                     ScreenTools.defaultFontPixelWidth / 2
+        width:                      annunciatorRow.width + _toolsMargin * 2
+        height:                     annunciatorRow.height + _toolsMargin * 2
+
+        Row {
+            id:     annunciatorRow
+            spacing:    ScreenTools.defaultFontPixelWidth
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+
+            Repeater {
+                id: annunciatorRepeater
+                property var green: Qt.rgba(0,1,0,1)
+                property var yellow: Qt.rgba(1,1,0,1)
+                property var red: Qt.rgba(1,0,0,1)
+                property var white: Qt.rgba(1,1,1,1)
+                property var black: Qt.rgba(0,0,0,1)
+                model: [
+                    {
+                        text: qsTr("EKF\nVEL"),
+                        color: yellow,
+                        textColor: black
+                    },
+                    {
+                        text: qsTr("EKF\nHPOS"),
+                        color: red,
+                        textColor: white
+                    },
+                    {
+                        text: qsTr("EKF\nVPOS"),
+                        color: green,
+                        textColor: black
+                    },
+                    {
+                        text: qsTr("EKF\nMAG"),
+                        color: yellow,
+                        textColor: black
+                    },
+                    {
+                        text: qsTr("EKF\nTERR"),
+                        color: red,
+                        textColor: white
+                    },
+                    {
+                        text: qsTr("VIBE"),
+                        color: green,
+                        textColor: black
+                    },
+                    {
+                        text: qsTr("TILT"),
+                        color: yellow,
+                        textColor: black
+                    }
+                ]
+
+                Rectangle {
+                    id:         ekfVelAnnunciator
+                    width:      ScreenTools.defaultFontPixelWidth * 5
+                    height:     ScreenTools.defaultFontPixelHeight * 2
+                    color:      modelData.color
+                    visible:    true
+                    QGCLabel {
+                        text:               modelData.text
+                        color:              modelData.textColor
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
+            }
+        }
+    }
+
+
     //-- Airspace Indicator
     Rectangle {
         id:             airspaceIndicator
