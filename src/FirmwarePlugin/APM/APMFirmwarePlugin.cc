@@ -307,6 +307,44 @@ void APMFirmwarePlugin::_handleIncomingHeartbeat(Vehicle* vehicle, mavlink_messa
     _ardupilotComponentMap[message->sysid][MAV_COMP_ID_UDP_BRIDGE] = false;
 }
 
+void APMFirmwarePlugin::_handleIncomingEKFStatusReport(mavlink_message_t *message)
+{
+    mavlink_ekf_status_report_t ekf_status;
+    mavlink_msg_ekf_status_report_decode(message, &ekf_status);
+
+    // Re-Encoding is always done using mavlink 1.0
+    mavlink_status_t* mavlinkStatusReEncode = mavlink_get_channel_status(0);
+    mavlinkStatusReEncode->flags |= MAVLINK_STATUS_FLAG_IN_MAVLINK1;
+
+    mavlink_estimator_status_t est_status;
+    est_status.time_usec = 0;
+    est_status.flags = 0;
+    if(ekf_status.flags & EKF_ATTITUDE)             est_status.flags |= ESTIMATOR_ATTITUDE;
+    if(ekf_status.flags & EKF_VELOCITY_HORIZ)       est_status.flags |= ESTIMATOR_VELOCITY_HORIZ;
+    if(ekf_status.flags & EKF_VELOCITY_VERT)        est_status.flags |= ESTIMATOR_VELOCITY_VERT;
+    if(ekf_status.flags & EKF_POS_HORIZ_REL)        est_status.flags |= ESTIMATOR_POS_HORIZ_REL;
+    if(ekf_status.flags & EKF_POS_HORIZ_ABS)        est_status.flags |= ESTIMATOR_POS_HORIZ_ABS;
+    if(ekf_status.flags & EKF_POS_VERT_ABS)         est_status.flags |= ESTIMATOR_POS_VERT_ABS;
+    if(ekf_status.flags & EKF_POS_VERT_AGL)         est_status.flags |= ESTIMATOR_POS_VERT_AGL;
+    if(ekf_status.flags & EKF_CONST_POS_MODE)       est_status.flags |= ESTIMATOR_CONST_POS_MODE;
+    if(ekf_status.flags & EKF_PRED_POS_HORIZ_REL)   est_status.flags |= ESTIMATOR_PRED_POS_HORIZ_REL;
+    if(ekf_status.flags & EKF_PRED_POS_HORIZ_ABS)   est_status.flags |= ESTIMATOR_PRED_POS_HORIZ_ABS;
+    est_status.mag_ratio = ekf_status.compass_variance;
+    est_status.vel_ratio = ekf_status.velocity_variance;
+    est_status.pos_vert_ratio = ekf_status.pos_vert_variance;
+    est_status.pos_horiz_ratio = ekf_status.pos_horiz_variance;
+    est_status.tas_ratio = ekf_status.airspeed_variance;
+    est_status.hagl_ratio = ekf_status.terrain_alt_variance;
+    est_status.pos_horiz_accuracy = 0;
+    est_status.pos_vert_accuracy= 0;
+
+    mavlink_msg_estimator_status_encode_chan(message->sysid,
+                                             message->compid,
+                                             0,                  // Re-encoding uses reserved channel 0
+                                             message,
+                                             &est_status);
+}
+
 bool APMFirmwarePlugin::adjustIncomingMavlinkMessage(Vehicle* vehicle, mavlink_message_t* message)
 {
     // We use loss of BATTERY_STATUS/HOME_POSITION as a trigger to reinitialize stream rates
@@ -333,6 +371,9 @@ bool APMFirmwarePlugin::adjustIncomingMavlinkMessage(Vehicle* vehicle, mavlink_m
                 break;
             case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
                 _handleRCChannelsRaw(vehicle, message);
+                break;
+            case MAVLINK_MSG_ID_EKF_STATUS_REPORT:
+                _handleIncomingEKFStatusReport(message);
                 break;
             }
         }

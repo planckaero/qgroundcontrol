@@ -64,6 +64,8 @@ Rectangle {
 
     readonly property real _internalWidthRatio: 0.8
 
+    property bool _showAnnunciatorPanel: QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.rawValue
+
         QGCFlickable {
             clip:               true
             anchors.fill:       parent
@@ -130,6 +132,44 @@ Rectangle {
                                 visible:    _showLogReplayStatusBar.visible
 
                                 property Fact _showLogReplayStatusBar: QGroundControl.settingsManager.flyViewSettings.showLogReplayStatusBar
+                            }
+
+                            FactCheckBox {
+                                text:       qsTr("Show Annunciator Panel")
+                                visible:    true
+                                fact:       QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel
+                            }
+
+                            GridLayout {
+                                columns: 2
+                                visible: true
+
+                                property Fact _guidedMinimumAltitude:   QGroundControl.settingsManager.flyViewSettings.guidedMinimumAltitude
+                                property Fact _guidedMaximumAltitude:   QGroundControl.settingsManager.flyViewSettings.guidedMaximumAltitude
+                                property Fact _maxGoToLocationDistance: QGroundControl.settingsManager.flyViewSettings.maxGoToLocationDistance
+
+                                QGCLabel {
+                                    text:                   qsTr("Annunciator Vibe Limit")
+                                    enabled:                _showAnnunciatorPanel
+                                }
+                                FactTextField {
+                                    Layout.preferredWidth:  _valueFieldWidth
+                                    enabled:                _showAnnunciatorPanel
+                                    fact:                   _vibeMaxThreshold
+
+                                    property Fact _vibeMaxThreshold :  QGroundControl.settingsManager.flyViewSettings.vibeMaxThreshold
+                                }
+                                QGCLabel {
+                                    text:                   qsTr("Annunciator Tilt Limit")
+                                    enabled:                _showAnnunciatorPanel
+                                }
+                                FactTextField {
+                                    Layout.preferredWidth:  _valueFieldWidth
+                                    enabled:                _showAnnunciatorPanel
+                                    fact:                   _tiltMaxThreshold
+
+                                    property Fact _tiltMaxThreshold :  QGroundControl.settingsManager.flyViewSettings.tiltMaxThreshold
+                                }
                             }
 
                             RowLayout {
