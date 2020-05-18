@@ -29,4 +29,7 @@ public:
     DEFINE_SETTINGFACT(keepMapCenteredOnVehicle)
     DEFINE_SETTINGFACT(showSimpleCameraControl)
     DEFINE_SETTINGFACT(showObstacleDistanceOverlay)
+    DEFINE_SETTINGFACT(showAnnunciatorPanel)
+    DEFINE_SETTINGFACT(vibeMaxThreshold)
+    DEFINE_SETTINGFACT(tiltMaxThreshold)
 };

@@ -102,6 +102,7 @@ private:
     bool _guidedModeTakeoff(Vehicle* vehicle, double altitudeRel);
     void _handleRCChannels(Vehicle* vehicle, mavlink_message_t* message);
     void _handleRCChannelsRaw(Vehicle* vehicle, mavlink_message_t* message);
+    void _handleIncomingEKFStatusReport(mavlink_message_t* message);
     QString _getLatestVersionFileUrl(Vehicle* vehicle) override;
     QString _versionRegex() override;
 

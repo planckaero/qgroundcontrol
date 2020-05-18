@@ -621,6 +621,37 @@ Rectangle {
                                     property Fact _checkInternet: QGroundControl.settingsManager.appSettings.checkInternet
                                 }
 
+                                FactCheckBox {
+                                    text:       qsTr("Show Annunciator Panel")
+                                    visible:    _showAnnunciatorPanel.visible
+                                    fact:       _showAnnunciatorPanel
+
+                                    property Fact _showAnnunciatorPanel: QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel
+                                }
+
+                                QGCLabel {
+                                    text:                   qsTr("Annunciator Vibe Limit")
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                }
+                                FactTextField {
+                                    Layout.preferredWidth:  _valueFieldWidth
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                    fact:                   _vibeMaxThreshold
+
+                                    property Fact _vibeMaxThreshold :  QGroundControl.settingsManager.flyViewSettings.vibeMaxThreshold
+                                }
+                                QGCLabel {
+                                    text:                   qsTr("Annunciator Tilt Limit")
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                }
+                                FactTextField {
+                                    Layout.preferredWidth:  _valueFieldWidth
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                    fact:                   _tiltMaxThreshold
+
+                                    property Fact _tiltMaxThreshold :  QGroundControl.settingsManager.flyViewSettings.tiltMaxThreshold
+                                }
+
                                 QGCCheckBox {
                                     id:         clearCheck
                                     text:       qsTr("Clear all settings on next start")
