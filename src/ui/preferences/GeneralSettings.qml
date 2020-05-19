@@ -549,6 +549,13 @@ Rectangle {
 
                                 property Fact _lockNoseUpCompass: QGroundControl.settingsManager.flyViewSettings.lockNoseUpCompass
                             }
+                            FactCheckBox {
+                                text:       qsTr("Show Annunciator Panel")
+                                visible:    _showAnnunciatorPanel.visible
+                                fact:       _showAnnunciatorPanel
+
+                                property Fact _showAnnunciatorPanel: QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel
+                            }
 
 
                             GridLayout {
