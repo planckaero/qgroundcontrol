@@ -56,6 +56,7 @@ Item {
     property alias  _guidedController:              guidedActionsController
     property alias  _altitudeSlider:                altitudeSlider
     property real   _toolsMargin:                   ScreenTools.defaultFontPixelWidth * 0.75
+    property bool   _showAnnunciatorPanel:          QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.rawValue
 
     readonly property var       _dynamicCameras:        activeVehicle ? activeVehicle.dynamicCameras : null
     readonly property bool      _isCamera:              _dynamicCameras ? _dynamicCameras.cameras.count > 0 : false
@@ -728,7 +729,7 @@ Item {
 
     //-- Annunciator panel
     Rectangle {
-        visible:                    true
+        visible:                    _showAnnunciatorPanel
         id:                         annunciatorPanel
         anchors.horizontalCenter:   parent.horizontalCenter
         anchors.topMargin:          _toolsMargin
@@ -747,46 +748,90 @@ Item {
 
             Repeater {
                 id: annunciatorRepeater
-                property var green: Qt.rgba(0,1,0,1)
-                property var yellow: Qt.rgba(1,1,0,1)
-                property var red: Qt.rgba(1,0,0,1)
-                property var white: Qt.rgba(1,1,1,1)
-                property var black: Qt.rgba(0,0,0,1)
+                property var ekfLowThresh: 0.5
+                property var ekfHighThresh: 0.8
+                property var vibeLowThresh: 30
+                property var vibeHighThresh: 50
+
+                function getColor(value, lowThresh, highThresh) {
+                    if(value > highThresh)      return qgcPal.colorRed
+                    else if(value > lowThresh)  return qgcPal.colorOrange
+                    else                        return qgcPal.colorGreen
+                }
+
+                function getEKFColor(value) {
+                    return getColor(value, ekfLowThresh, ekfHighThresh)
+                }
+
+                function getLargestOf(v1, v2, v3) {
+                    return Math.max(Math.abs(v1),Math.abs(v2),Math.abs(v3))
+                }
+
+                function getEKFVelColor() {
+                    if(!activeVehicle.estimatorStatus.goodHorizVelEstimate.value) return qgcPal.colorGrey
+                    return getEKFColor(activeVehicle.estimatorStatus.velRatio.value)
+                }
+
+                function getEKFHPOSColor() {
+                    if(!activeVehicle.estimatorStatus.goodHorizPosAbsEstimate.value) return qgcPal.colorGrey
+                    return getEKFColor(activeVehicle.estimatorStatus.horizPosRatio.value)
+                }
+
+                function getEKFVPOSColor() {
+                    if(!activeVehicle.estimatorStatus.goodVertPosAbsEstimate.value) return qgcPal.colorGrey
+                    return getEKFColor(activeVehicle.estimatorStatus.vertPosRatio.value)
+                }
+
+                function getEKFMAGColor() {
+                    return getEKFColor(activeVehicle.estimatorStatus.magRatio.value)
+                }
+
+                function getEKFTerrColor() {
+                    if(!activeVehicle.estimatorStatus.goodVertPosAGLEstimate.value) return qgcPal.colorGrey
+                    return getEKFColor(activeVehicle.estimatorStatus.haglRatio.value)
+                }
+
+                function getVibeColor() {
+                    return getColor(
+                                getLargestOf(
+                                    activeVehicle.vibration.xAxis.value,
+                                    activeVehicle.vibration.yAxis.value,
+                                    activeVehicle.vibration.zAxis.value),
+                                vibeLowThresh, vibeHighThresh)
+                }
+
+                function getTiltColor() {
+                    return getColor(getLargestOf(activeVehicle.roll.value, activeVehicle.pitch.value, 0), 15, 30)
+                }
+
                 model: [
                     {
                         text: qsTr("EKF\nVEL"),
-                        color: yellow,
-                        textColor: black
+                        color: activeVehicle ? getEKFVelColor() : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("EKF\nHPOS"),
-                        color: red,
-                        textColor: white
+                        color: activeVehicle ? getEKFHPOSColor() : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("EKF\nVPOS"),
-                        color: green,
-                        textColor: black
+                        color: activeVehicle ? getEKFVPOSColor() : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("EKF\nMAG"),
-                        color: yellow,
-                        textColor: black
+                        color: activeVehicle ? getEKFMAGColor() : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("EKF\nTERR"),
-                        color: red,
-                        textColor: white
+                        color: activeVehicle ? getEKFTerrColor() : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("VIBE"),
-                        color: green,
-                        textColor: black
+                        color: activeVehicle ? getVibeColor() : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("TILT"),
-                        color: yellow,
-                        textColor: black
+                        color: activeVehicle ? getTiltColor() : qgcPal.colorGrey
                     }
                 ]
 
@@ -798,7 +843,7 @@ Item {
                     visible:    true
                     QGCLabel {
                         text:               modelData.text
-                        color:              modelData.textColor
+                        color:              activeVehicle ? Qt.rgba(0,0,0,1) : Qt.rgba(1,1,1,1)
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
                         horizontalAlignment: Text.AlignHCenter
