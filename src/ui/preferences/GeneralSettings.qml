@@ -561,13 +561,35 @@ Rectangle {
                                 property Fact _showAnnunciatorPanel: QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel
                             }
 
-
                             GridLayout {
                                 columns: 2
 
                                 property Fact _guidedMinimumAltitude:   QGroundControl.settingsManager.flyViewSettings.guidedMinimumAltitude
                                 property Fact _guidedMaximumAltitude:   QGroundControl.settingsManager.flyViewSettings.guidedMaximumAltitude
                                 property Fact _maxGoToLocationDistance: QGroundControl.settingsManager.flyViewSettings.maxGoToLocationDistance
+
+                                QGCLabel {
+                                    text:                   qsTr("Maximum Vibe Limit")
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                }
+                                FactTextField {
+                                    Layout.preferredWidth:  _valueFieldWidth
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                    fact:                   _vibeMaxThreshold
+
+                                    property Fact _vibeMaxThreshold :  QGroundControl.settingsManager.flyViewSettings.vibeMaxThreshold
+                                }
+                                QGCLabel {
+                                    text:                   qsTr("Maximum Tilt Limit")
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                }
+                                FactTextField {
+                                    Layout.preferredWidth:  _valueFieldWidth
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                    fact:                   _tiltMaxThreshold
+
+                                    property Fact _tiltMaxThreshold :  QGroundControl.settingsManager.flyViewSettings.tiltMaxThreshold
+                                }
 
                                 QGCLabel {
                                     text:                   qsTr("Guided Minimum Altitude")
