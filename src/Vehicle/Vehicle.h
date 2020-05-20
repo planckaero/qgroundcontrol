@@ -1016,9 +1016,10 @@ public:
     ///     @param component Component to send to
     ///     @param command MAV_CMD to send
     ///     @param showError true: Display error to user if command failed, false:  no error shown
+    ///     @param sendAsCopilotMessage true: pack into a Parrot Copiloting message
     /// Signals: mavCommandResult on success or failure
-    void sendMavCommand(int component, MAV_CMD command, bool showError, float param1 = 0.0f, float param2 = 0.0f, float param3 = 0.0f, float param4 = 0.0f, float param5 = 0.0f, float param6 = 0.0f, float param7 = 0.0f);
-    void sendMavCommandInt(int component, MAV_CMD command, MAV_FRAME frame, bool showError, float param1, float param2, float param3, float param4, double param5, double param6, float param7);
+    void sendMavCommand(int component, MAV_CMD command, bool showError, float param1 = 0.0f, float param2 = 0.0f, float param3 = 0.0f, float param4 = 0.0f, float param5 = 0.0f, float param6 = 0.0f, float param7 = 0.0f, bool sendAsCopilotMessage = false);
+    void sendMavCommandInt(int component, MAV_CMD command, MAV_FRAME frame, bool showError, float param1, float param2, float param3, float param4, double param5, double param6, float param7, bool sendAsCopilotMessage = false);
 
     /// Same as sendMavCommand but available from Qml.
     Q_INVOKABLE void sendCommand(int component, int command, bool showError, double param1 = 0.0, double param2 = 0.0, double param3 = 0.0, double param4 = 0.0, double param5 = 0.0, double param6 = 0.0, double param7 = 0.0)
@@ -1428,6 +1429,7 @@ private:
         MAV_FRAME   frame;
         double      rgParam[7];
         bool        showError;
+        bool        copilotMessage;
     } MavCommandQueueEntry_t;
 
     QList<MavCommandQueueEntry_t>   _mavCommandQueue;
