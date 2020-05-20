@@ -3266,7 +3266,7 @@ void Vehicle::setCurrentMissionSequence(int seq)
     sendMessageOnLink(priorityLink(), msg);
 }
 
-void Vehicle::sendMavCommand(int component, MAV_CMD command, bool showError, float param1, float param2, float param3, float param4, float param5, float param6, float param7)
+void Vehicle::sendMavCommand(int component, MAV_CMD command, bool showError, float param1, float param2, float param3, float param4, float param5, float param6, float param7, bool sendAsCopilotMessage)
 {
     MavCommandQueueEntry_t entry;
 
@@ -3281,6 +3281,7 @@ void Vehicle::sendMavCommand(int component, MAV_CMD command, bool showError, flo
     entry.rgParam[4] = static_cast<double>(param5);
     entry.rgParam[5] = static_cast<double>(param6);
     entry.rgParam[6] = static_cast<double>(param7);
+    entry.copilotMessage = sendAsCopilotMessage;
 
     _mavCommandQueue.append(entry);
 
@@ -3290,7 +3291,7 @@ void Vehicle::sendMavCommand(int component, MAV_CMD command, bool showError, flo
     }
 }
 
-void Vehicle::sendMavCommandInt(int component, MAV_CMD command, MAV_FRAME frame, bool showError, float param1, float param2, float param3, float param4, double param5, double param6, float param7)
+void Vehicle::sendMavCommandInt(int component, MAV_CMD command, MAV_FRAME frame, bool showError, float param1, float param2, float param3, float param4, double param5, double param6, float param7, bool sendAsCopilotMessage)
 {
     MavCommandQueueEntry_t entry;
 
@@ -3306,6 +3307,7 @@ void Vehicle::sendMavCommandInt(int component, MAV_CMD command, MAV_FRAME frame,
     entry.rgParam[4] = param5;
     entry.rgParam[5] = param6;
     entry.rgParam[6] = static_cast<double>(param7);
+    entry.copilotMessage = sendAsCopilotMessage;
 
     _mavCommandQueue.append(entry);
 
@@ -3374,11 +3376,30 @@ void Vehicle::_sendMavCommandAgain()
         cmd.x =                 queuedCommand.rgParam[4] * qPow(10.0, 7.0);
         cmd.y =                 queuedCommand.rgParam[5] * qPow(10.0, 7.0);
         cmd.z =                 queuedCommand.rgParam[6];
-        mavlink_msg_command_int_encode_chan(_mavlink->getSystemId(),
-                                            _mavlink->getComponentId(),
-                                            priorityLink()->mavlinkChannel(),
-                                            &msg,
-                                            &cmd);
+        if(queuedCommand.copilotMessage) {
+            mavlink_message_t cmd_int_msg;
+            mavlink_msg_command_int_encode(_mavlink->getSystemId(),
+                                                _mavlink->getComponentId(),
+                                                &cmd_int_msg,
+                                                &cmd);
+            uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+            int msglen = mavlink_msg_to_send_buffer(buf,&cmd_int_msg);
+
+            mavlink_copiloting_custom_t copilot_msg;
+            memcpy(copilot_msg.data, buf, msglen);
+            copilot_msg.len = msglen;
+            mavlink_msg_copiloting_custom_encode_chan(_mavlink->getSystemId(),
+                                                      _mavlink->getComponentId(),
+                                                      priorityLink()->mavlinkChannel(),
+                                                      &msg,
+                                                      &copilot_msg);
+        } else {
+            mavlink_msg_command_int_encode_chan(_mavlink->getSystemId(),
+                                                _mavlink->getComponentId(),
+                                                priorityLink()->mavlinkChannel(),
+                                                &msg,
+                                                &cmd);
+        }
     } else {
         mavlink_command_long_t  cmd;
 
@@ -3394,11 +3415,30 @@ void Vehicle::_sendMavCommandAgain()
         cmd.param5 =            queuedCommand.rgParam[4];
         cmd.param6 =            queuedCommand.rgParam[5];
         cmd.param7 =            queuedCommand.rgParam[6];
-        mavlink_msg_command_long_encode_chan(_mavlink->getSystemId(),
-                                             _mavlink->getComponentId(),
-                                             priorityLink()->mavlinkChannel(),
-                                             &msg,
-                                             &cmd);
+        if(queuedCommand.copilotMessage) {
+            mavlink_message_t cmd_long_msg;
+            mavlink_msg_command_long_encode(_mavlink->getSystemId(),
+                                                _mavlink->getComponentId(),
+                                                &cmd_long_msg,
+                                                &cmd);
+            uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+            int msglen = mavlink_msg_to_send_buffer(buf,&cmd_long_msg);
+
+            mavlink_copiloting_custom_t copilot_msg;
+            memcpy(copilot_msg.data, buf, msglen);
+            copilot_msg.len = msglen;
+            mavlink_msg_copiloting_custom_encode_chan(_mavlink->getSystemId(),
+                                                      _mavlink->getComponentId(),
+                                                      priorityLink()->mavlinkChannel(),
+                                                      &msg,
+                                                      &copilot_msg);
+        } else {
+          mavlink_msg_command_long_encode_chan(_mavlink->getSystemId(),
+                                               _mavlink->getComponentId(),
+                                               priorityLink()->mavlinkChannel(),
+                                               &msg,
+                                               &cmd);
+        }
     }
 
     sendMessageOnLink(priorityLink(), msg);
