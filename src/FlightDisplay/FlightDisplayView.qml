@@ -750,39 +750,42 @@ Item {
 
             Repeater {
                 id: annunciatorRepeater
-                readonly property double    ekfLowThresh:   0.5
                 readonly property double    ekfHighThresh:  0.8
-                readonly property double    vibeLowThresh:  30
-                readonly property double    vibeHighThresh: 50
-                readonly property double    tiltLowThresh:  15
-                readonly property double    tiltHighThresh: 30
+                readonly property double    vibeHighThresh: QGroundControl.settingsManager.flyViewSettings.vibeMaxThreshold.rawValue
+                readonly property double    tiltHighThresh: QGroundControl.settingsManager.flyViewSettings.tiltMaxThreshold.rawValue
 
-                function getColor(value, lowThresh, highThresh) {
-                    if(value > highThresh)      return qgcPal.colorRed
-                    else if(value > lowThresh)  return qgcPal.colorOrange
-                    else                        return qgcPal.colorGreen
+                function clamp(value, min, max) {
+                    return Math.min(max, Math.max(min, value))
+                }
+
+                //Linearly scale red & green up to the max.
+                //At max/2, both red and green are 1 to make yellow
+                function getColor(value, max) {
+                    var redVal = Math.abs(value)/(max/2)
+                    var greenVal = (-Math.abs(value)/(max/2)) + 2
+                    return Qt.rgba(clamp(redVal,0,1), clamp(greenVal,0,1), 0, 1)
                 }
 
                 function getEKFColor(value) {
-                    return getColor(value, ekfLowThresh, ekfHighThresh)
+                    return getColor(value, ekfHighThresh)
                 }
 
-                function getLargestOf(v1, v2, v3) {
+                function getAbsLargestOf(v1, v2, v3) {
                     return Math.max(Math.abs(v1),Math.abs(v2),Math.abs(v3))
                 }
 
                 function getEKFVelColor() {
-                    if(!activeVehicle.estimatorStatus.goodHorizVelEstimate.value) return qgcPal.colorGrey
+                    if(!activeVehicle.estimatorStatus.goodHorizVelEstimate.value)       return qgcPal.colorGrey
                     return getEKFColor(activeVehicle.estimatorStatus.velRatio.value)
                 }
 
                 function getEKFHPOSColor() {
-                    if(!activeVehicle.estimatorStatus.goodHorizPosAbsEstimate.value) return qgcPal.colorGrey
+                    if(!activeVehicle.estimatorStatus.goodHorizPosAbsEstimate.value)    return qgcPal.colorGrey
                     return getEKFColor(activeVehicle.estimatorStatus.horizPosRatio.value)
                 }
 
                 function getEKFVPOSColor() {
-                    if(!activeVehicle.estimatorStatus.goodVertPosAbsEstimate.value) return qgcPal.colorGrey
+                    if(!activeVehicle.estimatorStatus.goodVertPosAbsEstimate.value)     return qgcPal.colorGrey
                     return getEKFColor(activeVehicle.estimatorStatus.vertPosRatio.value)
                 }
 
@@ -791,56 +794,56 @@ Item {
                 }
 
                 function getEKFTerrColor() {
-                    if(!activeVehicle.estimatorStatus.goodVertPosAGLEstimate.value) return qgcPal.colorGrey
+                    if(!activeVehicle.estimatorStatus.goodVertPosAGLEstimate.value)     return qgcPal.colorGrey
                     return getEKFColor(activeVehicle.estimatorStatus.haglRatio.value)
                 }
 
                 function getVibeColor() {
                     return getColor(
-                                getLargestOf(
+                                getAbsLargestOf(
                                     activeVehicle.vibration.xAxis.value,
                                     activeVehicle.vibration.yAxis.value,
                                     activeVehicle.vibration.zAxis.value),
-                                vibeLowThresh, vibeHighThresh)
+                                vibeHighThresh)
                 }
 
                 function getTiltColor() {
                     return getColor(
-                                getLargestOf(
+                                getAbsLargestOf(
                                     activeVehicle.roll.value,
                                     activeVehicle.pitch.value,
                                     0),
-                                tiltLowThresh, tiltHighThresh)
+                                tiltHighThresh)
                 }
 
                 model: [
                     {
                         text: qsTr("EKF\nVEL"),
-                        color: activeVehicle ? getEKFVelColor() : qgcPal.colorGrey
+                        color: activeVehicle ? getEKFVelColor()     : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("EKF\nHPOS"),
-                        color: activeVehicle ? getEKFHPOSColor() : qgcPal.colorGrey
+                        color: activeVehicle ? getEKFHPOSColor()    : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("EKF\nVPOS"),
-                        color: activeVehicle ? getEKFVPOSColor() : qgcPal.colorGrey
+                        color: activeVehicle ? getEKFVPOSColor()    : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("EKF\nMAG"),
-                        color: activeVehicle ? getEKFMAGColor() : qgcPal.colorGrey
+                        color: activeVehicle ? getEKFMAGColor()     : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("EKF\nTERR"),
-                        color: activeVehicle ? getEKFTerrColor() : qgcPal.colorGrey
+                        color: activeVehicle ? getEKFTerrColor()    : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("VIBE"),
-                        color: activeVehicle ? getVibeColor() : qgcPal.colorGrey
+                        color: activeVehicle ? getVibeColor()       : qgcPal.colorGrey
                     },
                     {
                         text: qsTr("TILT"),
-                        color: activeVehicle ? getTiltColor() : qgcPal.colorGrey
+                        color: activeVehicle ? getTiltColor()       : qgcPal.colorGrey
                     }
                 ]
 
