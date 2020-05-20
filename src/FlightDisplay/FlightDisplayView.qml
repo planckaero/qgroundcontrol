@@ -736,7 +736,7 @@ Item {
         anchors.horizontalCenter:   parent.horizontalCenter
         anchors.topMargin:          _toolsMargin
         anchors.top:                parent.top
-        z:                          _mapAndVideo.z + 4
+        z:                          _mapAndVideo.z + 1
         color:                      qgcPal.globalTheme === QGCPalette.Light ? QGroundControl.corePlugin.options.toolbarBackgroundLight : QGroundControl.corePlugin.options.toolbarBackgroundDark
         radius:                     ScreenTools.defaultFontPixelWidth / 2
         width:                      annunciatorRow.width + _toolsMargin * 2
@@ -750,10 +750,12 @@ Item {
 
             Repeater {
                 id: annunciatorRepeater
-                property var ekfLowThresh: 0.5
-                property var ekfHighThresh: 0.8
-                property var vibeLowThresh: 30
-                property var vibeHighThresh: 50
+                readonly property double    ekfLowThresh:   0.5
+                readonly property double    ekfHighThresh:  0.8
+                readonly property double    vibeLowThresh:  30
+                readonly property double    vibeHighThresh: 50
+                readonly property double    tiltLowThresh:  15
+                readonly property double    tiltHighThresh: 30
 
                 function getColor(value, lowThresh, highThresh) {
                     if(value > highThresh)      return qgcPal.colorRed
@@ -803,7 +805,12 @@ Item {
                 }
 
                 function getTiltColor() {
-                    return getColor(getLargestOf(activeVehicle.roll.value, activeVehicle.pitch.value, 0), 15, 30)
+                    return getColor(
+                                getLargestOf(
+                                    activeVehicle.roll.value,
+                                    activeVehicle.pitch.value,
+                                    0),
+                                tiltLowThresh, tiltHighThresh)
                 }
 
                 model: [
