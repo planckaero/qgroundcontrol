@@ -399,6 +399,15 @@ double PX4FirmwarePlugin::minimumTakeoffAltitude(Vehicle* vehicle)
     }
 }
 
+void PX4FirmwarePlugin::guidedModeStartWingman(Vehicle *vehicle, double north_offset, double east_offset, double altitude)
+{
+    vehicle->sendMavCommand(vehicle->defaultComponentId(),
+                            MAV_CMD_NAV_PLANCK_WINGMAN,
+                            true, // show error
+                            north_offset, east_offset, altitude, 0.0f, 0.0f, 0.0f, 0.0f,
+                            true); //copiloting
+}
+
 void PX4FirmwarePlugin::guidedModeTakeoff(Vehicle* vehicle, double takeoffAltRel)
 {
     double vehicleAltitudeAMSL = vehicle->altitudeAMSL()->rawValue().toDouble();
