@@ -347,12 +347,22 @@ void PX4FirmwarePlugin::pauseVehicle(Vehicle* vehicle)
 void PX4FirmwarePlugin::guidedModeRTL(Vehicle* vehicle, bool smartRTL)
 {
     Q_UNUSED(smartRTL);
-    _setFlightModeAndValidate(vehicle, _rtlFlightMode);
+    vehicle->sendMavCommand(
+        vehicle->defaultComponentId(),
+        MAV_CMD_NAV_PLANCK_RTB,
+        true,                                   // show error if fails
+        0,0,0,0,0,0,0,                          // No params
+        true);                                  // Copiloting message
 }
 
 void PX4FirmwarePlugin::guidedModeLand(Vehicle* vehicle)
 {
-    _setFlightModeAndValidate(vehicle, _landingFlightMode);
+    vehicle->sendMavCommand(
+        vehicle->defaultComponentId(),
+        MAV_CMD_NAV_PLANCK_LAND,
+        true,                                   // show error if fails
+        0,0,0,0,0,0,0,                          // No params
+        true);                                  // Copiloting message
 }
 
 void PX4FirmwarePlugin::_mavCommandResult(int vehicleId, int component, int command, int result, bool noReponseFromVehicle)
@@ -405,12 +415,13 @@ void PX4FirmwarePlugin::guidedModeTakeoff(Vehicle* vehicle, double takeoffAltRel
     connect(vehicle, &Vehicle::mavCommandResult, this, &PX4FirmwarePlugin::_mavCommandResult);
     vehicle->sendMavCommand(
         vehicle->defaultComponentId(),
-        MAV_CMD_NAV_TAKEOFF,
+        MAV_CMD_NAV_PLANCK_TAKEOFF,
         true,                                   // show error is fails
         -1,                                     // No pitch requested
         0, 0,                                   // param 2-4 unused
         NAN, NAN, NAN,                          // No yaw, lat, lon
-        static_cast<float>(takeoffAltAMSL));    // AMSL altitude
+        static_cast<float>(takeoffAltAMSL),     // AMSL altitude
+        true);                                  // Copiloting message
 }
 
 void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoordinate& gotoCoord)
