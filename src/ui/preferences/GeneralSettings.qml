@@ -565,7 +565,7 @@ Rectangle {
                                 property Fact _maxGoToLocationDistance: QGroundControl.settingsManager.flyViewSettings.maxGoToLocationDistance
 
                                 QGCLabel {
-                                    text:                   qsTr("Maximum Vibe Limit")
+                                    text:                   qsTr("Annunciator Vibe Limit")
                                     visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
                                 }
                                 FactTextField {
@@ -576,7 +576,7 @@ Rectangle {
                                     property Fact _vibeMaxThreshold :  QGroundControl.settingsManager.flyViewSettings.vibeMaxThreshold
                                 }
                                 QGCLabel {
-                                    text:                   qsTr("Maximum Tilt Limit")
+                                    text:                   qsTr("Annunciator Tilt Limit")
                                     visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
                                 }
                                 FactTextField {
