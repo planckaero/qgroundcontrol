@@ -3211,6 +3211,16 @@ void Vehicle::stopGuidedModeROI()
     }
 }
 
+void Vehicle::planckTrack()
+{
+    sendMavCommand(
+                defaultComponentId(),
+                MAV_CMD_NAV_PLANCK_TRACK,
+                true,
+                0,0,0,0,0,0,0,
+                true); //copiloting
+}
+
 void Vehicle::pauseVehicle()
 {
     if (!pauseVehicleSupported()) {

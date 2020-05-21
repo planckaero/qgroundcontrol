@@ -53,6 +53,7 @@ Item {
     readonly property string gotoTitle:                     qsTr("Go To Location")
     readonly property string vtolTransitionTitle:           qsTr("VTOL Transition")
     readonly property string roiTitle:                      qsTr("ROI")
+    readonly property string planckTrackTitle:              qsTr("Planck Track")
 
     readonly property string armMessage:                        qsTr("Arm the vehicle.")
     readonly property string disarmMessage:                     qsTr("Disarm the vehicle")
@@ -74,6 +75,7 @@ Item {
     readonly property string vtolTransitionFwdMessage:          qsTr("Transition VTOL to fixed wing flight.")
     readonly property string vtolTransitionMRMessage:           qsTr("Transition VTOL to multi-rotor flight.")
     readonly property string roiMessage:                        qsTr("Make the specified location a Region Of Interest.")
+    readonly property string planckTrackMessage:                qsTr("Start Planck Track.")
 
     readonly property int actionRTL:                        1
     readonly property int actionLand:                       2
@@ -98,6 +100,7 @@ Item {
     readonly property int actionVtolTransitionToMRFlight:   21
     readonly property int actionROI:                        22
     readonly property int actionWingman:                    23
+    readonly property int actionPlanckTrack:                24
 
     property bool   _useChecklist:              QGroundControl.settingsManager.appSettings.useChecklist.rawValue && QGroundControl.corePlugin.options.preFlightChecklistUrl.toString().length
     property bool   _enforceChecklist:          _useChecklist && QGroundControl.settingsManager.appSettings.enforceChecklist.rawValue
@@ -118,6 +121,7 @@ Item {
     property bool showROI:              _guidedActionsEnabled && _vehicleFlying && __roiSupported && !_missionActive
     property bool showLandAbort:        _guidedActionsEnabled && _vehicleFlying && _fixedWingOnApproach
     property bool showGotoLocation:     _guidedActionsEnabled && _vehicleFlying
+    property bool showPlanckTrack:      _guidedActionsEnabled && _vehicleFlying && activeVehicle.guidedModeSupported && _vehicleArmed && !_missionActive
 
     // Note: The '_missionItemCount - 2' is a hack to not trigger resume mission when a mission ends with an RTL item
     property bool showResumeMission:    activeVehicle && !_vehicleArmed && _vehicleWasFlying && _missionAvailable && _resumeMissionIndex > 0 && (_resumeMissionIndex < _missionItemCount - 2)
@@ -403,6 +407,11 @@ Item {
             confirmDialog.message = roiMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showROI })
             break;
+        case actionPlanckTrack:
+            confirmDialog.title = planckTrackTitle
+            confirmDialog.message = planckTrackMessage
+            confirmDialog.hideTrigger = Qt.binding(function() { return !showPlanckTrack })
+            break;
         default:
             console.warn("Unknown actionCode", actionCode)
             return
@@ -483,6 +492,9 @@ Item {
             break
         case actionROI:
             activeVehicle.guidedModeROI(actionData)
+            break
+        case actionPlanckTrack:
+            activeVehicle.planckTrack()
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)

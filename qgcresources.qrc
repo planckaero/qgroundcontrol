@@ -53,6 +53,7 @@
         <file alias="PlanckIcon">resources/Planck-Logo.svg</file>
         <file>resources/icons/planck_icon.ico</file>
         <file>resources/icons/planck.icns</file>
+        <file alias="yacht.svg">resources/yacht.svg</file>
     </qresource>
     <qresource prefix="/res/firmware">
         <file alias="3drradio.png">resources/firmware/3drradio.png</file>

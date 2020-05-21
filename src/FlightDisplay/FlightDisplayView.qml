@@ -636,6 +636,13 @@ Item {
                     action:             _guidedController.actionPause
                 },
                 {
+                    name:               _guidedController.planckTrackTitle,
+                    iconSource:         "/res/yacht.svg",
+                    buttonVisible:      _guidedController.showLand,
+                    buttonEnabled:      _guidedController.showLand,
+                    action:             _guidedController.actionPlanckTrack
+                },
+                {
                     name:               qsTr("Action"),
                     iconSource:         "/res/action.svg",
                     buttonVisible:      _anyActionAvailable,
