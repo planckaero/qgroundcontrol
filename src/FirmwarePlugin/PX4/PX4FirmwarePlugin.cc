@@ -531,9 +531,35 @@ bool PX4FirmwarePlugin::adjustIncomingMavlinkMessage(Vehicle* vehicle, mavlink_m
     case MAVLINK_MSG_ID_AUTOPILOT_VERSION:
         _handleAutopilotVersion(vehicle, message);
         break;
+    case MAVLINK_MSG_ID_COPILOTING_CUSTOM:
+        _handleCopilotingCustom(vehicle, message);
+        break;
     }
 
     return true;
+}
+
+void PX4FirmwarePlugin::_handleCopilotingCustom(Vehicle* vehicle, mavlink_message_t* message)
+{
+    Q_UNUSED(vehicle);
+    mavlink_copiloting_custom_t co_msg;
+    mavlink_msg_copiloting_custom_decode(message, &co_msg);
+
+    //Turn the payload into a mavlink message, forward it along
+    if(co_msg.len > MAVLINK_MAX_PACKET_LEN)
+        return;
+
+    uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+    memcpy(buf, co_msg.data, co_msg.len);
+
+    mavlink_message_t payload_message;
+    mavlink_status_t mav_status;
+    for(int i=0; i<(int)co_msg.len; ++i) {
+        if(mavlink_parse_char(0, buf[i], &payload_message, &mav_status) == MAVLINK_FRAMING_OK) {
+            *message = payload_message;
+            return;
+        }
+    }
 }
 
 void PX4FirmwarePlugin::_handleAutopilotVersion(Vehicle* vehicle, mavlink_message_t* message)

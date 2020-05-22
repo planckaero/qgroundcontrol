@@ -112,6 +112,7 @@ private slots:
 
 private:
     void _handleAutopilotVersion(Vehicle* vehicle, mavlink_message_t* message);
+    void _handleCopilotingCustom(Vehicle* vehicle, mavlink_message_t* message);
     QString _getLatestVersionFileUrl(Vehicle* vehicle) override;
     QString _versionRegex() override;
 
