@@ -679,6 +679,27 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
         }
     }
 
+    //Unpack a COPILOTING_CUSTOM message, if this is one
+    if(message.msgid == MAVLINK_MSG_ID_COPILOTING_CUSTOM) {
+        mavlink_copiloting_custom_t co_msg;
+        mavlink_msg_copiloting_custom_decode(&message, &co_msg);
+
+        //Turn the payload into a mavlink message
+        if(co_msg.len <= MAVLINK_MAX_PACKET_LEN) {
+            uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+            memcpy(buf, co_msg.data, co_msg.len);
+
+            mavlink_message_t payload_message;
+            mavlink_status_t mav_status;
+            for(int i=0; i<(int)co_msg.len; ++i) {
+                if(mavlink_parse_char(0, buf[i], &payload_message, &mav_status) == MAVLINK_FRAMING_OK) {
+                    message = payload_message;
+                    break;
+                }
+            }
+        }
+    }
+
     // Give the plugin a change to adjust the message contents
     if (!_firmwarePlugin->adjustIncomingMavlinkMessage(this, &message)) {
         return;
