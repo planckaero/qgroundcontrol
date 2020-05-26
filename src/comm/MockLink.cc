@@ -533,8 +533,32 @@ void MockLink::_handleIncomingMavlinkBytes(const uint8_t* bytes, int cBytes)
             _handleLogRequestData(msg);
             break;
 
+        case MAVLINK_MSG_ID_COPILOTING_CUSTOM:
+            _handleCopilotingCustom(msg);
+            break;
+
         default:
             break;
+        }
+    }
+}
+
+void MockLink::_handleCopilotingCustom(const mavlink_message_t& msg)
+{
+    //Extract
+    mavlink_copiloting_custom_t co_msg;
+    mavlink_msg_copiloting_custom_decode(&msg, &co_msg);
+    mavlink_message_t packed_msg;
+    mavlink_status_t status;
+    for(int i=0; i<(int)co_msg.len; ++i) {
+        if(mavlink_parse_char(0,co_msg.data[i],&packed_msg,&status) == MAVLINK_FRAMING_OK) {
+            switch(packed_msg.msgid) {
+            case MAVLINK_MSG_ID_PLANCK_LANDING_PLATFORM_STATE: {
+                mavlink_planck_landing_platform_state_t lp_state;
+                mavlink_msg_planck_landing_platform_state_decode(&packed_msg, &lp_state);
+                qCDebug(MockLinkLog) << "LP state: " << lp_state.latitude << "," << lp_state.longitude;
+            }
+            }
         }
     }
 }
