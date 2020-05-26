@@ -211,7 +211,35 @@ void MockLink::_run10HzTasks(void)
         } else {
             _sendGpsRawInt();
         }
+        _sendPlanckStatusCopiloting();
     }
+}
+
+void MockLink::_sendPlanckStatusCopiloting(void)
+{
+    mavlink_planck_status_t status;
+    mavlink_copiloting_custom_t copiloting_custom;
+
+    status.failsafe = 0;
+    status.status = 0x03;
+    status.land_ready = false;
+    status.takeoff_ready = false;
+    status.takeoff_complete = false;
+    status.at_location = false;
+    status.target_system = 0;
+    status.target_component = 0;
+
+    mavlink_message_t status_msg;
+    mavlink_msg_planck_status_encode(1,90,&status_msg,&status);
+    copiloting_custom.len = mavlink_msg_to_send_buffer(copiloting_custom.data, &status_msg);
+
+    mavlink_message_t copiloting_custom_msg;
+    mavlink_msg_copiloting_custom_encode_chan(_vehicleSystemId,
+                                            _vehicleComponentId,
+                                            _mavlinkChannel,
+                                            &copiloting_custom_msg,
+                                            &copiloting_custom);
+    respondWithMavlinkMessage(copiloting_custom_msg);
 }
 
 void MockLink::_run500HzTasks(void)
