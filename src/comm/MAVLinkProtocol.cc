@@ -349,6 +349,24 @@ void MAVLinkProtocol::receiveBytes(LinkInterface* link, QByteArray b)
                 emit mavlinkMessageStatus(_message.sysid, totalSent, totalReceiveCounter[mavlinkChannel], totalLossCounter[mavlinkChannel], receiveLossPercent);
             }
 
+            //Extract copiloting custom messages if necessary
+            if(_message.msgid == MAVLINK_MSG_ID_COPILOTING_CUSTOM)
+            {
+                mavlink_copiloting_custom_t co_msg;
+                mavlink_msg_copiloting_custom_decode(&_message, &co_msg);
+
+                //Turn the payload into a mavlink message
+                if(co_msg.len <= MAVLINK_MAX_PACKET_LEN) {
+                    mavlink_message_t payload_message;
+                    mavlink_status_t mav_status;
+                    for(int i=0; i<(int)co_msg.len; ++i) {
+                        if(mavlink_parse_char(0, co_msg.data[i], &payload_message, &mav_status) == MAVLINK_FRAMING_OK) {
+                            _message = payload_message;
+                        }
+                    }
+                }
+            }
+
             // The packet is emitted as a whole, as it is only 255 - 261 bytes short
             // kind of inefficient, but no issue for a groundstation pc.
             // It buys as reentrancy for the whole code over all threads
