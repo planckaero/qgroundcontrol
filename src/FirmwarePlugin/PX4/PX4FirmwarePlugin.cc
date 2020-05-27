@@ -421,6 +421,12 @@ void PX4FirmwarePlugin::guidedModeTakeoff(Vehicle* vehicle, double takeoffAltRel
 
     qDebug() << takeoffAltRel << takeoffAltRelFromVehicle << takeoffAltAMSL << vehicleAltitudeAMSL;
 
+    //Arm the aircraft first
+    if (!_armVehicleAndValidate(vehicle)) {
+        qgcApp()->showMessage(tr("Unable to command Planck Takeoff: Vehicle rejected arming."));
+        return;
+    }
+
     connect(vehicle, &Vehicle::mavCommandResult, this, &PX4FirmwarePlugin::_mavCommandResult);
     vehicle->sendMavCommand(
         vehicle->defaultComponentId(),
