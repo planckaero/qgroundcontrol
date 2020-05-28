@@ -1,15 +1,31 @@
 #include "PositionHistory.h"
+#include "PositionManager.h"
+#include "QGCApplication.h"
+#include <QMutexLocker>
 
-PositionHistory::PositionHistory(int max_length, double min_distance_between_points, double min_seconds_between_points) :
-    _max_length(max_length),
-    _min_dist(min_distance_between_points),
-    _min_secs(min_seconds_between_points)
+PositionHistory::PositionHistory(QGCApplication* app, QGCToolbox* toolbox)
+    : QGCTool(app, toolbox),
+      _max_length(100),
+      _min_dist(50.),
+      _min_secs(30)
 {
+}
 
+void PositionHistory::setToolbox(QGCToolbox* toolbox)
+{
+    QGCTool::setToolbox(toolbox);
+    connect(toolbox->qgcPositionManager(), &QGCPositionManager::positionInfoUpdated, this, &PositionHistory::push_position);
 }
 
 void PositionHistory::push_position(QGeoPositionInfo position)
 {
+    //Don't use bad data
+    if(!position.isValid() ||
+       (qAbs(position.coordinate().latitude()) <= 0.001 && qAbs(position.coordinate().longitude() <= 0.001))) {
+        return;
+    }
+
+    QMutexLocker lock(&_track_history_mutex);
     if(_track_history.length() > 0)
     {
         //If this position is older than the latest position, reset the list
@@ -38,15 +54,29 @@ void PositionHistory::push_position(QGeoPositionInfo position)
 
 QList <QGeoPositionInfo> PositionHistory::get_full_history()
 {
+    QMutexLocker lock(&_track_history_mutex);
     return _track_history;
 }
 
 QList<QGeoPositionInfo> PositionHistory::get_history_until(QDateTime oldest)
 {
-
+    QMutexLocker lock(&_track_history_mutex);
+    QList<QGeoPositionInfo> new_list;
+    for(auto pos : _track_history) {
+        if(pos.timestamp() >= oldest) {
+            new_list.push_back(pos);
+        }
+    }
+    return new_list;
 }
 
-QList<QGeoPositionInfo> PositionHistory::get_history_until(double max_age_seconds)
+QList<QGeoPositionInfo> PositionHistory::get_history_until(int max_age_seconds)
 {
+    return get_history_until(QDateTime::currentDateTime().addSecs(-max_age_seconds));
+}
 
+void PositionHistory::reset_history()
+{
+    QMutexLocker lock(&_track_history_mutex);
+    _track_history.clear();
 }

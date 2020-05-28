@@ -17,6 +17,7 @@
 #include "QGCToolbox.h"
 #include "SimulatedPosition.h"
 #include "LandingPadPosition.h"
+#include "PositionHistory.h"
 
 class QGCPositionManager : public QGCTool {
     Q_OBJECT

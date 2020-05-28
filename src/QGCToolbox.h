@@ -36,6 +36,7 @@ class AirspaceManager;
 class ADSBVehicleManager;
 class LandingPadPosition;
 class PlanckListener;
+class PositionHistory;
 #if defined(QGC_ENABLE_PAIRING)
 class PairingManager;
 #endif
@@ -73,6 +74,7 @@ public:
     ADSBVehicleManager*         adsbVehicleManager      () { return _adsbVehicleManager; }
     LandingPadPosition*         landingPadManager       () { return _landingPadManager; }
     PlanckListener*             planckListener          () { return _planckListener; }
+    PositionHistory*            positionHistory         () { return _positionHistory; }
 #if defined(QGC_ENABLE_PAIRING)
     PairingManager*             pairingManager          () { return _pairingManager; }
 #endif
@@ -115,6 +117,7 @@ private:
     ADSBVehicleManager*         _adsbVehicleManager     = nullptr;
     LandingPadPosition*         _landingPadManager      = nullptr;
     PlanckListener*             _planckListener         = nullptr;
+    PositionHistory*            _positionHistory        = nullptr;
 #if defined(QGC_ENABLE_PAIRING)
     PairingManager*             _pairingManager         = nullptr;
 #endif

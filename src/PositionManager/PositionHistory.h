@@ -1,21 +1,36 @@
 #pragma once
 #include <QList>
 #include <QtPositioning/qgeopositioninfosource.h>
+#include <QMutex>
+#include "QGCToolbox.h"
 
-class PositionHistory
-{
+class PositionHistory : public QGCTool {
+    Q_OBJECT
+
 public:
-    PositionHistory(int max_length = 100, double min_distance_between_points = 50., double min_seconds_between_points = 30.);
+    //Constructor
+    PositionHistory(QGCApplication* app, QGCToolbox* toolbox);
 
-    void push_position(QGeoPositionInfo position);
-
+    //Get the full history of positions
     QList<QGeoPositionInfo> get_full_history(void);
 
+    //Get the history of positions until a certain time in the past or
+    //maximum age in seconds
     QList<QGeoPositionInfo> get_history_until(QDateTime oldest);
-    QList<QGeoPositionInfo> get_history_until(double max_age_seconds);
+    QList<QGeoPositionInfo> get_history_until(int max_age_seconds);
+
+    //Clear the history
+    void reset_history();
+
+    void setToolbox(QGCToolbox* toolbox) override;
+
+private slots:
+    //Push a new position into the queue
+    void push_position(QGeoPositionInfo position);
 
 private:
    QList<QGeoPositionInfo> _track_history;
+   QMutex _track_history_mutex;
    int _max_length;
    double _min_dist;
    double _min_secs;
