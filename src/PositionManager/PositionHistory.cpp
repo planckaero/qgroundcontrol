@@ -28,7 +28,9 @@ void PositionHistory::push_position(QGeoPositionInfo position)
     QMutexLocker lock(&_track_history_mutex);
     if(_track_history.length() > 0)
     {
-        //If this position is older than the latest position, reset the list
+        //If this position is older than the latest position, reset the list.
+        //This should't be possible but the list is required to be chronologically
+        //monotonically increasing
         auto latest_timestamp = _track_history.last().timestamp();
         if(position.timestamp() <= latest_timestamp)
         {
@@ -38,7 +40,7 @@ void PositionHistory::push_position(QGeoPositionInfo position)
         else
         {
             //Verify that the new position isn't too soon
-            if(_track_history.last().timestamp().secsTo(position.timestamp()) < _min_secs) return;
+            if(latest_timestamp.secsTo(position.timestamp()) < _min_secs) return;
 
             //Verify that the position isn't too close
             if(_track_history.last().coordinate().distanceTo(position.coordinate()) < _min_dist) return;
@@ -61,13 +63,14 @@ QList <QGeoPositionInfo> PositionHistory::get_full_history()
 QList<QGeoPositionInfo> PositionHistory::get_history_until(QDateTime oldest)
 {
     QMutexLocker lock(&_track_history_mutex);
-    QList<QGeoPositionInfo> new_list;
-    for(auto pos : _track_history) {
-        if(pos.timestamp() >= oldest) {
-            new_list.push_back(pos);
-        }
-    }
-    return new_list;
+    QList<QGeoPositionInfo> ret;
+    std::copy_if(_track_history.begin(),
+                 _track_history.end(),
+                 std::back_inserter(ret),
+                 [oldest] (const QGeoPositionInfo& entry) -> bool {
+                    return entry.timestamp() >= oldest;
+                 });
+    return ret;
 }
 
 QList<QGeoPositionInfo> PositionHistory::get_history_until(int max_age_seconds)
