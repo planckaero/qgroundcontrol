@@ -211,14 +211,9 @@ void QGCPositionManager::sendMessageToVehicle()
                                               &message,
                                               &msg);
         //Pack this into a copiloting custom
-        mavlink_copiloting_custom_t copiloting_custom;
-        copiloting_custom.len = mavlink_msg_to_send_buffer(copiloting_custom.data, &message);
         mavlink_message_t copiloting_msg;
-        mavlink_msg_copiloting_custom_encode_chan(mavlinkProtocol->getSystemId(),
-                                                  mavlinkProtocol->getComponentId(),
-                                                  vehicle->priorityLink()->mavlinkChannel(),
-                                                  &copiloting_msg,
-                                                  &copiloting_custom);
-        vehicle->sendMessageOnLink(vehicle->priorityLink(), copiloting_msg);
+        if(mavlinkProtocol->copilotingCustomPackChan(message, copiloting_msg, vehicle->priorityLink()->mavlinkChannel())) {
+            vehicle->sendMessageOnLink(vehicle->priorityLink(), copiloting_msg);
+        }
     }
 }

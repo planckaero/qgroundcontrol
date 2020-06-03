@@ -3392,17 +3392,7 @@ void Vehicle::_sendMavCommandAgain()
                                                 _mavlink->getComponentId(),
                                                 &cmd_int_msg,
                                                 &cmd);
-            uint8_t buf[MAVLINK_MAX_PACKET_LEN];
-            int msglen = mavlink_msg_to_send_buffer(buf,&cmd_int_msg);
-
-            mavlink_copiloting_custom_t copilot_msg;
-            memcpy(copilot_msg.data, buf, msglen);
-            copilot_msg.len = msglen;
-            mavlink_msg_copiloting_custom_encode_chan(_mavlink->getSystemId(),
-                                                      _mavlink->getComponentId(),
-                                                      priorityLink()->mavlinkChannel(),
-                                                      &msg,
-                                                      &copilot_msg);
+            _mavlink->copilotingCustomPackChan(cmd_int_msg, msg, priorityLink()->mavlinkChannel());
         } else {
             mavlink_msg_command_int_encode_chan(_mavlink->getSystemId(),
                                                 _mavlink->getComponentId(),
@@ -3431,17 +3421,7 @@ void Vehicle::_sendMavCommandAgain()
                                                 _mavlink->getComponentId(),
                                                 &cmd_long_msg,
                                                 &cmd);
-            uint8_t buf[MAVLINK_MAX_PACKET_LEN];
-            int msglen = mavlink_msg_to_send_buffer(buf,&cmd_long_msg);
-
-            mavlink_copiloting_custom_t copilot_msg;
-            memcpy(copilot_msg.data, buf, msglen);
-            copilot_msg.len = msglen;
-            mavlink_msg_copiloting_custom_encode_chan(_mavlink->getSystemId(),
-                                                      _mavlink->getComponentId(),
-                                                      priorityLink()->mavlinkChannel(),
-                                                      &msg,
-                                                      &copilot_msg);
+            _mavlink->copilotingCustomPackChan(cmd_long_msg, msg, priorityLink()->mavlinkChannel());
         } else {
           mavlink_msg_command_long_encode_chan(_mavlink->getSystemId(),
                                                _mavlink->getComponentId(),

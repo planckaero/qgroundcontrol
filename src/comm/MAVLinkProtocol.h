@@ -77,6 +77,15 @@ public:
     // Override from QGCTool
     virtual void setToolbox(QGCToolbox *toolbox);
 
+    //packs a mavlink message into a copiloting custom message
+    bool copilotingCustomPack(mavlink_message_t &payload_msg, mavlink_copiloting_custom_t &co_msg);
+
+    //packs a mavlink message into a copiloting custom mavlink message with a channel
+    bool copilotingCustomPackChan(mavlink_message_t &payload_msg, mavlink_message_t &co_msg, uint8_t chan);
+
+    //unpacks a mavlink message from a copiloting custom message
+    bool copilotingCustomUnpack(mavlink_copiloting_custom_t &co_msg, mavlink_message_t &msg);
+
 public slots:
     /** @brief Receive bytes from a communication interface */
     void receiveBytes(LinkInterface* link, QByteArray b);
