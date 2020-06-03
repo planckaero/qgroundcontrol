@@ -78,13 +78,13 @@ public:
     virtual void setToolbox(QGCToolbox *toolbox);
 
     //packs a mavlink message into a copiloting custom message
-    bool copilotingCustomPack(mavlink_message_t &payload_msg, mavlink_copiloting_custom_t &co_msg);
+    bool copilotingCustomPack(mavlink_message_t &payload_msg, mavlink_copiloting_custom_t &co);
 
     //packs a mavlink message into a copiloting custom mavlink message with a channel
-    bool copilotingCustomPackChan(mavlink_message_t &payload_msg, mavlink_message_t &co_msg, uint8_t chan);
+    bool copilotingCustomPackChan(mavlink_message_t &payload_msg, mavlink_message_t &msg, uint8_t chan);
 
     //unpacks a mavlink message from a copiloting custom message
-    bool copilotingCustomUnpack(mavlink_copiloting_custom_t &co_msg, mavlink_message_t &msg);
+    bool copilotingCustomUnpack(mavlink_message_t &msg, mavlink_message_t &payload_msg);
 
 public slots:
     /** @brief Receive bytes from a communication interface */
