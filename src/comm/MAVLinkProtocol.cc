@@ -353,17 +353,9 @@ void MAVLinkProtocol::receiveBytes(LinkInterface* link, QByteArray b)
             if(_message.msgid == MAVLINK_MSG_ID_COPILOTING_CUSTOM)
             {
                 mavlink_copiloting_custom_t co_msg;
-                mavlink_msg_copiloting_custom_decode(&_message, &co_msg);
-
-                //Turn the payload into a mavlink message
-                if(co_msg.len <= MAVLINK_MAX_PACKET_LEN) {
-                    mavlink_message_t payload_message;
-                    mavlink_status_t mav_status;
-                    for(int i=0; i<(int)co_msg.len; ++i) {
-                        if(mavlink_parse_char(0, co_msg.data[i], &payload_message, &mav_status) == MAVLINK_FRAMING_OK) {
-                            _message = payload_message;
-                        }
-                    }
+                mavlink_message_t payload_message;
+                if(copilotingCustomUnpack(co_msg, payload_message)) {
+                    _message = payload_message;
                 }
             }
 
@@ -543,5 +535,41 @@ void MAVLinkProtocol::deleteTempLogFiles(void)
     for(const QFileInfo fileInfo: fileInfoList) {
         QFile::remove(fileInfo.filePath());
     }
+}
+
+bool MAVLinkProtocol::copilotingCustomPack(mavlink_message_t &payload_msg, mavlink_copiloting_custom_t &co_msg)
+{
+    uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+    int len = mavlink_msg_to_send_buffer(buf, &payload_msg);
+    if(len > MAVLINK_MAX_PAYLOAD_LEN) {
+        return false;
+    }
+    memcpy(co_msg.data, buf, len);
+    return true;
+}
+
+bool MAVLinkProtocol::copilotingCustomPackChan(mavlink_message_t &payload_msg, mavlink_message_t &co_msg, uint8_t chan) {
+    mavlink_copiloting_custom_t co;
+    if(!copilotingCustomPack(payload_msg,co)) {
+        return false;
+    }
+
+    mavlink_msg_copiloting_custom_encode_chan(getSystemId(),
+                                              getComponentId(),
+                                              chan,
+                                              &co_msg,
+                                              &co);
+    return true;
+}
+
+bool MAVLinkProtocol::copilotingCustomUnpack(mavlink_copiloting_custom_t &co_msg, mavlink_message_t &msg)
+{
+    mavlink_status_t status;
+    for(int i=0; i<(int)co_msg.len; ++i) {
+        if(mavlink_parse_char(0, co_msg.data[i], &msg, &status) == MAVLINK_FRAMING_OK) {
+            return true;
+        }
+    }
+    return false;
 }
 

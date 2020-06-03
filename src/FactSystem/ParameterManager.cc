@@ -526,7 +526,19 @@ void ParameterManager::refreshAllParameters(uint8_t componentId)
                                              &msg,
                                              _vehicle->id(),
                                              componentId);
-    _vehicle->sendMessageOnLink(_vehicle->priorityLink(), msg);
+
+    //If this is a broadcast request, send both COPILOTING_CUSTOM and regular request.
+    if(componentId == MAV_COMP_ID_ALL || componentId == PLANCK_CTRL_COMP_ID) {
+        mavlink_message_t co_msg;
+        if (mavlink->copilotingCustomPackChan(msg, co_msg, _vehicle->priorityLink()->mavlinkChannel())) {
+            _vehicle->sendMessageOnLink(_vehicle->priorityLink(), co_msg);
+        }
+    }
+
+    //Don't send the regular message if going to Planck
+    if(componentId != PLANCK_CTRL_COMP_ID) {
+        _vehicle->sendMessageOnLink(_vehicle->priorityLink(), msg);
+    }
 
     QString what = (componentId == MAV_COMP_ID_ALL) ? "MAV_COMP_ID_ALL" : QString::number(componentId);
     qCDebug(ParameterManagerLog) << _logVehiclePrefix(-1) << "Request to refresh all parameters for component ID:" << what;
@@ -831,6 +843,15 @@ void ParameterManager::_readParameterRaw(int componentId, const QString& paramNa
                                              componentId,                    // Target component id
                                              fixedParamName,                 // Named parameter being requested
                                              paramIndex);                    // Parameter index being requested, -1 for named
+
+    //Convert this to a copiloting message if being sent to Planck
+    if(componentId == PLANCK_CTRL_COMP_ID) {
+        mavlink_message_t co_msg;
+        if (_mavlink->copilotingCustomPackChan(msg, co_msg, _vehicle->priorityLink()->mavlinkChannel())) {
+            msg = co_msg;
+        }
+    }
+
     _vehicle->sendMessageOnLink(_vehicle->priorityLink(), msg);
 }
 
@@ -890,6 +911,15 @@ void ParameterManager::_writeParameterRaw(int componentId, const QString& paramN
                                       _vehicle->priorityLink()->mavlinkChannel(),
                                       &msg,
                                       &p);
+
+    //Convert this to a copiloting message if being sent to Planck
+    if(componentId == PLANCK_CTRL_COMP_ID) {
+        mavlink_message_t co_msg;
+        if (_mavlink->copilotingCustomPackChan(msg, co_msg, _vehicle->priorityLink()->mavlinkChannel())) {
+            msg = co_msg;
+        }
+    }
+
     _vehicle->sendMessageOnLink(_vehicle->priorityLink(), msg);
 }
 
@@ -997,6 +1027,15 @@ void ParameterManager::_tryCacheHashLoad(int vehicleId, int componentId, QVarian
                                           _vehicle->priorityLink()->mavlinkChannel(),
                                           &msg,
                                           &p);
+
+        //Convert this to a copiloting message if being sent to Planck
+        if(componentId == PLANCK_CTRL_COMP_ID) {
+            mavlink_message_t co_msg;
+            if (_mavlink->copilotingCustomPackChan(msg, co_msg, _vehicle->priorityLink()->mavlinkChannel())) {
+                msg = co_msg;
+            }
+        }
+
         _vehicle->sendMessageOnLink(_vehicle->priorityLink(), msg);
 
         // Give the user some feedback things loaded properly
