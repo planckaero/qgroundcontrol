@@ -1102,6 +1102,19 @@
                 "default":          0
             }
         },
+        {
+            "id": 9004,
+            "rawName":      "MAV_CMD_NAV_PLANCK_FINDANDLAND",
+            "friendlyName": "Planck FindAndLand",
+            "description":  "Planck FindAndLand command",
+            "category":     "Basic",
+            "param1": {
+                "label":            "min_alt",
+                "default":          5.0,
+                "decimalPlaces":    2,
+                "units":   "m"
+            }
+        },
         { "id": 30001, "rawName": "MAV_CMD_PAYLOAD_PREPARE_DEPLOY", "friendlyName": "Payload prepare deploy" },
         { "id": 30002, "rawName": "MAV_CMD_PAYLOAD_CONTROL_DEPLOY", "friendlyName": "Payload control deploy" }
     ]
