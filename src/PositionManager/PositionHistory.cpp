@@ -21,7 +21,7 @@ void PositionHistory::push_position(QGeoPositionInfo position)
 {
     //Don't use bad data
     if(!position.isValid() ||
-       (qAbs(position.coordinate().latitude()) <= 0.001 && qAbs(position.coordinate().longitude() <= 0.001))) {
+       (qAbs(position.coordinate().latitude()) <= 0.001 && qAbs(position.coordinate().longitude()) <= 0.001)) {
         return;
     }
 
