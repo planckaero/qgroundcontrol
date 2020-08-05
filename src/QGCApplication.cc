@@ -69,6 +69,7 @@
 #include "FlightMapSettings.h"
 #include "CoordinateVector.h"
 #include "PlanMasterController.h"
+#include "PositionHistoryController.h"
 #include "VideoManager.h"
 #include "VideoReceiver.h"
 #include "LogDownloadController.h"
@@ -534,6 +535,7 @@ void QGCApplication::_initCommon()
     qmlRegisterType<LogDownloadController>          (kQGCControllers,                       1, 0, "LogDownloadController");
     qmlRegisterType<SyslinkComponentController>     (kQGCControllers,                       1, 0, "SyslinkComponentController");
     qmlRegisterType<EditPositionDialogController>   (kQGCControllers,                       1, 0, "EditPositionDialogController");
+    qmlRegisterType<PositionHistoryController>      (kQGCControllers,                       1, 0, "PositionHistoryController");
 
 #ifndef __mobile__
 #ifndef NO_SERIAL_LINK

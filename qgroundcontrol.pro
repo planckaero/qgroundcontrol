@@ -603,6 +603,7 @@ HEADERS += \
     src/MissionManager/PlanCreator.h \
     src/MissionManager/PlanManager.h \
     src/MissionManager/PlanMasterController.h \
+    src/MissionManager/PositionHistoryController.h \
     src/MissionManager/QGCFenceCircle.h \
     src/MissionManager/QGCFencePolygon.h \
     src/MissionManager/QGCMapCircle.h \
@@ -809,6 +810,7 @@ SOURCES += \
     src/MissionManager/PlanCreator.cc \
     src/MissionManager/PlanManager.cc \
     src/MissionManager/PlanMasterController.cc \
+    src/MissionManager/PositionHistoryController.cc \
     src/MissionManager/QGCFenceCircle.cc \
     src/MissionManager/QGCFencePolygon.cc \
     src/MissionManager/QGCMapCircle.cc \

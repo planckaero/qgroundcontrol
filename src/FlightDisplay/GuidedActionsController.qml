@@ -28,6 +28,7 @@ Item {
     id: _root
 
     property var missionController
+    property var positionHistoryController
     property var confirmDialog
     property var actionList
     property var altitudeSlider
@@ -466,6 +467,7 @@ Item {
             break
         case actionSendTrack:
             console.info("Send track history mission to vehicle")
+            positionHistoryController.send_mission()
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)

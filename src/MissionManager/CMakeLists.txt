@@ -90,6 +90,8 @@ add_library(MissionManager
 	PlanManager.h
 	PlanMasterController.cc
 	PlanMasterController.h
+        PositionHistoryController.cc
+        PositionHistoryController.h
 	QGCFenceCircle.cc
 	QGCFenceCircle.h
 	QGCFencePolygon.cc

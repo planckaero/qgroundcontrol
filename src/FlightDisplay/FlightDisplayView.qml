@@ -669,13 +669,20 @@ Item {
             }
         }
 
-        GuidedActionsController {
-            id:                 guidedActionsController
+        PositionHistoryController {
+            id:                 _positionHistoryController
             missionController:  _missionController
-            confirmDialog:      guidedActionConfirm
-            actionList:         guidedActionList
-            altitudeSlider:     _altitudeSlider
-            z:                  _flightVideoPipControl.z + 1
+            altitude:           30.0
+        }
+
+        GuidedActionsController {
+            id:                         guidedActionsController
+            missionController:          _missionController
+            positionHistoryController:  _positionHistoryController
+            confirmDialog:              guidedActionConfirm
+            actionList:                 guidedActionList
+            altitudeSlider:             _altitudeSlider
+            z:                          _flightVideoPipControl.z + 1
 
             onShowStartMissionChanged: {
                 if (showStartMission) {
