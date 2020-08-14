@@ -467,7 +467,7 @@ Item {
             break
         case actionSendTrack:
             console.info("Send track history mission to vehicle")
-            positionHistoryController.send_mission()
+            positionHistoryController.send_mission(activeVehicle.coordinate)
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)

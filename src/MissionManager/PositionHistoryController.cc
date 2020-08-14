@@ -13,9 +13,10 @@ void PositionHistoryController::set_mission_controller(MissionController* contro
   _missionController = controller;
 }
 
-void PositionHistoryController::send_mission()
+void PositionHistoryController::send_mission(const QGeoCoordinate& takeoff)
 {
   QList<QGeoPositionInfo> positions = _positionHistory->get_full_history();
+  _missionController->insertTakeoffItem(takeoff, -1);
   for(auto& pos : positions) {
     _missionController->insertSimpleMissionItem(pos.coordinate(), -1);
   }
