@@ -672,7 +672,6 @@ Item {
         PositionHistoryController {
             id:                 _positionHistoryController
             missionController:  _missionController
-            altitude:           30.0
         }
 
         GuidedActionsController {
