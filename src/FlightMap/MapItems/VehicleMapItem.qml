@@ -73,14 +73,6 @@ MapQuickItem {
                 angle:          _adsbVehicle ? 0 : (isNaN(heading) ? 0 : heading)
             }
         }
-        ColorOverlay{
-            visible:            vehicleIcon.visible && _adsbVehicle
-            anchors.fill:       vehicleIcon
-            source:             vehicleIcon
-            color:              "red"
-            transform:          rotation
-            antialiasing:       true
-        }
 
         QGCMapLabel {
             id:                         vehicleLabel
