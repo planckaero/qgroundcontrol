@@ -52,7 +52,7 @@ MapQuickItem {
         }
         DropShadow {
             anchors.fill:       vehicleShadow
-            visible:            vehicleIcon.visible && _adsbVehicle
+            visible:            false //vehicleIcon.visible && _adsbVehicle
             horizontalOffset:   4
             verticalOffset:     4
             radius:             32.0
@@ -70,8 +70,16 @@ MapQuickItem {
             transform: Rotation {
                 origin.x:       vehicleIcon.width  / 2
                 origin.y:       vehicleIcon.height / 2
-                angle:          isNaN(heading) ? 0 : heading
+                angle:          _adsbVehicle ? 0 : (isNaN(heading) ? 0 : heading)
             }
+        }
+        ColorOverlay{
+            visible:            vehicleIcon.visible && _adsbVehicle
+            anchors.fill:       vehicleIcon
+            source:             vehicleIcon
+            color:              "red"
+            transform:          rotation
+            antialiasing:       true
         }
 
         QGCMapLabel {
