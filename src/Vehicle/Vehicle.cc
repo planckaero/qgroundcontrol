@@ -4300,6 +4300,11 @@ void Vehicle::updateFlightDistance(double distance)
     _flightDistanceFact.setRawValue(_flightDistanceFact.rawValue().toDouble() + distance);
 }
 
+void Vehicle::requestControl(bool request)
+{
+    //Sends an operator control request message
+}
+
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 

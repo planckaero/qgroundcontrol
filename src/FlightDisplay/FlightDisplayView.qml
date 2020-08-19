@@ -30,7 +30,6 @@ import QGroundControl.Vehicle       1.0
 
 /// Flight Display View
 Item {
-
     PlanMasterController {
         id: _planController
         Component.onCompleted: {
@@ -657,6 +656,54 @@ Item {
                     }
                 }
 
+            }
+        }
+
+        Rectangle {
+            id: controlReq
+            anchors.topMargin:          _toolsMargin
+            anchors.leftMargin:         _toolsMargin
+            anchors.top:                parent.top
+            anchors.left:               toolStrip.right
+            z:                          _mapAndVideo.z + 1
+            radius:                     ScreenTools.defaultFontPixelWidth / 2
+            width: ScreenTools.defaultFontPixelWidth * 30
+            height: ScreenTools.defaultFontPixelHeight * 3
+            color: activeVehicle ? "green" : "gray"
+            border { width: 1; color: "black" }
+
+            property bool paramsReady: activeVehicle ? activeVehicle.parameterManager.parametersReady : false
+            property bool paramExists: paramsReady ? activeVehicle.parameterManager.parameterExists(-1, "SYSID_MYGCS") : false
+            property Fact idFact: activeVehicle ? (paramExists ? activeVehicle.parameterManager.getParameter(-1, "SYSID_MYGCS") : null) : null
+            property string paramValue: idFact ? idFact.valueString : "N/A"
+
+            onParamValueChanged: {
+                controlReqText.text = paramValue
+            }
+
+            Text {
+                id: controlReqText
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "white"
+                font.pointSize: ScreenTools.defaultFontPointSize
+                text: parent.paramValue
+            }
+            MouseArea {
+                id: mouseAreaPad
+                anchors.fill: parent
+                preventStealing: true
+                enabled: activeVehicle
+                onPressed:
+                {
+                    parent.color = "green"
+                }
+                onReleased:
+                {
+                    //Do something
+                    activeVehicle.requestControl(1)
+                    parent.color = "black"
+                }
             }
         }
 
