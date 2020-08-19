@@ -669,7 +669,7 @@ Item {
             radius:                     ScreenTools.defaultFontPixelWidth / 2
             width: ScreenTools.defaultFontPixelWidth * 30
             height: ScreenTools.defaultFontPixelHeight * 3
-            color: activeVehicle ? "green" : "gray"
+            color: activeVehicle ? qgcPal.colorGreen : qgcPal.colorGrey
             border { width: 1; color: "black" }
 
             property bool paramsReady: activeVehicle ? activeVehicle.parameterManager.parametersReady : false
@@ -681,7 +681,7 @@ Item {
             function updateValues() {
                 var inControl = thisQGCSysID === paramValue
                 controlReqText.text = (inControl ? "IN CONTROL" : "NOT IN CONTROL") + "\nMy ID: " + thisQGCSysID + " / Control ID: " + paramValue
-                color = inControl ? "green" : "red"
+                color = inControl ? qgcPal.colorGreen : qgcPal.colorRed
             }
 
             onThisQGCSysIDChanged: updateValues()
