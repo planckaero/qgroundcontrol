@@ -693,7 +693,7 @@ Item {
                 id: controlReqText
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: "white"
+                color: "black"
                 font.pointSize: ScreenTools.defaultFontPointSize
                 text: parent.paramValue
                 horizontalAlignment: Text.AlignHCenter
@@ -703,12 +703,9 @@ Item {
                 anchors.fill: parent
                 preventStealing: true
                 enabled: activeVehicle
-                onPressed: parent.color = "white"
                 onReleased:
                 {
                     activeVehicle.requestControl(parent.locked ? (parent.thisQGCSysID !== parent.paramValue) : true)
-                    parent.color = "yellow"
-                    controlReqText.color = "black"
                 }
             }
         }
