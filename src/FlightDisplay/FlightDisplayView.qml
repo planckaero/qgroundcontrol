@@ -681,8 +681,8 @@ Item {
 
             function updateValues() {
                 var inControl = thisQGCSysID === paramValue
-                controlReqText.text = (inControl ? "IN CONTROL" : "NOT IN CONTROL") + "\nMy ID: " + thisQGCSysID + " / Control ID: " + paramValue
-                color = locked ? (inControl ? qgcPal.colorGreen : qgcPal.colorRed) : "yellow"
+                controlReqText.text = (inControl ? "IN CONTROL" : "NOT IN CONTROL") + (locked ? " (LOCKED)" : " (UNLOCKED)") + "\nMy ID: " + thisQGCSysID + " / Control ID: " + paramValue
+                color = activeVehicle ? locked ? (inControl ? qgcPal.colorGreen : qgcPal.colorRed) : "yellow" : qgcPal.colorGrey
             }
 
             onThisQGCSysIDChanged: updateValues()
