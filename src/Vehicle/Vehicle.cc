@@ -4300,9 +4300,38 @@ void Vehicle::updateFlightDistance(double distance)
     _flightDistanceFact.setRawValue(_flightDistanceFact.rawValue().toDouble() + distance);
 }
 
-void Vehicle::requestControl(bool request)
+void Vehicle::requestControl(bool request_or_release)
 {
     //Sends an operator control request message
+    mavlink_change_operator_control_t ctrl;
+    mavlink_message_t msg;
+
+    ctrl.target_system = id();
+    ctrl.control_request = request_or_release ? 0 : 1;
+    memset(ctrl.passkey, 0, MAVLINK_MSG_CHANGE_OPERATOR_CONTROL_FIELD_PASSKEY_LEN);
+    ctrl.version = 0;
+
+    mavlink_msg_change_operator_control_encode_chan(_mavlink->getSystemId(),
+                                                    _mavlink->getComponentId(),
+                                                    priorityLink()->mavlinkChannel(),
+                                                    &msg,
+                                                    &ctrl);
+    sendMessageOnLink(priorityLink(), msg);
+
+    //Also send a param request to get the latest MYGCS value
+    mavlink_param_request_read_t req;
+    memset(req.param_id, 0, MAVLINK_MSG_PARAM_REQUEST_READ_FIELD_PARAM_ID_LEN);
+    sprintf(req.param_id,"SYSID_MYGCS");
+    req.param_index = -1;
+    req.target_system = id();
+    req.target_component = _defaultComponentId;
+
+    mavlink_msg_param_request_read_encode_chan(_mavlink->getSystemId(),
+                                               _mavlink->getComponentId(),
+                                               priorityLink()->mavlinkChannel(),
+                                               &msg,
+                                               &req);
+    sendMessageOnLink(priorityLink(), msg);
 }
 
 //-----------------------------------------------------------------------------

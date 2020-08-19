@@ -676,10 +676,16 @@ Item {
             property bool paramExists: paramsReady ? activeVehicle.parameterManager.parameterExists(-1, "SYSID_MYGCS") : false
             property Fact idFact: activeVehicle ? (paramExists ? activeVehicle.parameterManager.getParameter(-1, "SYSID_MYGCS") : null) : null
             property string paramValue: idFact ? idFact.valueString : "N/A"
+            property string thisQGCSysID: QGroundControl.mavlinkSystemID.toString()
 
-            onParamValueChanged: {
-                controlReqText.text = paramValue
+            function updateValues() {
+                var inControl = thisQGCSysID === paramValue
+                controlReqText.text = (inControl ? "IN CONTROL" : "NOT IN CONTROL") + "\nMy ID: " + thisQGCSysID + " / Control ID: " + paramValue
+                color = inControl ? "green" : "red"
             }
+
+            onThisQGCSysIDChanged: updateValues()
+            onParamValueChanged: updateValues()
 
             Text {
                 id: controlReqText
@@ -688,21 +694,19 @@ Item {
                 color: "white"
                 font.pointSize: ScreenTools.defaultFontPointSize
                 text: parent.paramValue
+                horizontalAlignment: Text.AlignHCenter
             }
             MouseArea {
                 id: mouseAreaPad
                 anchors.fill: parent
                 preventStealing: true
                 enabled: activeVehicle
-                onPressed:
-                {
-                    parent.color = "green"
-                }
+                onPressed: parent.color = "white"
                 onReleased:
                 {
-                    //Do something
-                    activeVehicle.requestControl(1)
-                    parent.color = "black"
+                    activeVehicle.requestControl((parent.thisQGCSysID !== parent.paramValue))
+                    parent.color = "yellow"
+                    controlReqText.color = "black"
                 }
             }
         }

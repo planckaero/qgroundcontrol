@@ -784,7 +784,7 @@ public:
     Q_INVOKABLE void flashBootloader();
 #endif
 
-    Q_INVOKABLE void requestControl(bool request);
+    Q_INVOKABLE void requestControl(bool request_or_release);
 
     bool    guidedModeSupported     () const;
     bool    pauseVehicleSupported   () const;
