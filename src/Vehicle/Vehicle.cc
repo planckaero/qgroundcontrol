@@ -980,6 +980,16 @@ void Vehicle::_handleStatusText(mavlink_message_t& message, bool longVersion)
             qgcApp()->toolbox()->audioOutput()->say(messageText);
         }
     }
+
+    //Look for incoming messages regarding the control locked state
+    if(messageText.startsWith("Control unlocked")) {
+        _controlLocked = false;
+        emit controlLockChanged(_controlLocked);
+    } else if(messageText.startsWith("Control locked")) {
+       _controlLocked = true;
+        emit controlLockChanged(_controlLocked);
+    }
+
     emit textMessageReceived(id(), message.compid, severity, messageText);
 }
 

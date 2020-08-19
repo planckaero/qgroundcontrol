@@ -677,15 +677,17 @@ Item {
             property Fact idFact: activeVehicle ? (paramExists ? activeVehicle.parameterManager.getParameter(-1, "SYSID_MYGCS") : null) : null
             property string paramValue: idFact ? idFact.valueString : "N/A"
             property string thisQGCSysID: QGroundControl.mavlinkSystemID.toString()
+            property bool locked: activeVehicle ? activeVehicle.controlLocked : false
 
             function updateValues() {
                 var inControl = thisQGCSysID === paramValue
                 controlReqText.text = (inControl ? "IN CONTROL" : "NOT IN CONTROL") + "\nMy ID: " + thisQGCSysID + " / Control ID: " + paramValue
-                color = inControl ? qgcPal.colorGreen : qgcPal.colorRed
+                color = locked ? (inControl ? qgcPal.colorGreen : qgcPal.colorRed) : "yellow"
             }
 
             onThisQGCSysIDChanged: updateValues()
             onParamValueChanged: updateValues()
+            onLockedChanged: updateValues()
 
             Text {
                 id: controlReqText
@@ -704,7 +706,7 @@ Item {
                 onPressed: parent.color = "white"
                 onReleased:
                 {
-                    activeVehicle.requestControl((parent.thisQGCSysID !== parent.paramValue))
+                    activeVehicle.requestControl(parent.locked ? (parent.thisQGCSysID !== parent.paramValue) : true)
                     parent.color = "yellow"
                     controlReqText.color = "black"
                 }

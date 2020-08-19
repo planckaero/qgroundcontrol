@@ -785,6 +785,8 @@ public:
 #endif
 
     Q_INVOKABLE void requestControl(bool request_or_release);
+    bool controlLocked() { return _controlLocked; }
+    Q_PROPERTY(bool controlLocked READ controlLocked NOTIFY controlLockChanged);
 
     bool    guidedModeSupported     () const;
     bool    pauseVehicleSupported   () const;
@@ -1240,6 +1242,8 @@ signals:
     void gimbalDataChanged              ();
     void isROIEnabledChanged            ();
 
+    void controlLockChanged (bool locked);
+
 private slots:
     void _mavlinkMessageReceived        (LinkInterface* link, mavlink_message_t message);
     void _linkInactiveOrDeleted         (LinkInterface* link);
@@ -1357,6 +1361,8 @@ private:
     int     _defaultComponentId;
     bool    _active;
     bool    _offlineEditingVehicle; ///< This Vehicle is a "disconnected" vehicle for ui use while offline editing
+
+    bool _controlLocked = false;
 
     MAV_AUTOPILOT       _firmwareType;
     MAV_TYPE            _vehicleType;
