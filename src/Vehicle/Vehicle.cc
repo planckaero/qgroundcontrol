@@ -3950,6 +3950,11 @@ void Vehicle::_handleADSBVehicle(const mavlink_message_t& message)
             vehicleInfo.availableFlags |= ADSBVehicle::HeadingAvailable;
         }
 
+        if(adsbVehicleMsg.flags & ADSB_FLAGS_VALID_SQUAWK) {
+            vehicleInfo.availableFlags |= ADSBVehicle::AlertAvailable;
+            vehicleInfo.alert = (bool)adsbVehicleMsg.squawk;
+        }
+
         _toolbox->adsbVehicleManager()->adsbVehicleUpdate(vehicleInfo);
     }
 }
