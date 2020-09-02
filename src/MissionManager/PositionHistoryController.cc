@@ -1,6 +1,6 @@
 #include "PositionHistoryController.h"
 #include "QGCApplication.h"
-#include "VisualMissionItem.h"
+#include "SimpleMissionItem.h"
 
 PositionHistoryController::PositionHistoryController(QObject* parent)
   : QObject(parent),
@@ -13,10 +13,11 @@ void PositionHistoryController::set_mission_controller(MissionController* contro
   _missionController = controller;
 }
 
-void PositionHistoryController::send_mission(const QGeoCoordinate& takeoff)
+void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt)
 {
   QList<QGeoPositionInfo> positions = _positionHistory->get_full_history();
-  _missionController->insertTakeoffItem(takeoff, -1);
+  SimpleMissionItem* item = qobject_cast<SimpleMissionItem*>(_missionController->insertTakeoffItem(takeoffCoord, -1));
+  item->missionItem().setParam1(takeoffAlt);
   for(auto& pos : positions) {
     _missionController->insertSimpleMissionItem(pos.coordinate(), -1);
   }

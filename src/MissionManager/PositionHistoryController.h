@@ -16,7 +16,7 @@ public:
 
   void set_mission_controller(MissionController* controller);
 
-  Q_INVOKABLE void send_mission(const QGeoCoordinate& takeoff);
+  Q_INVOKABLE void send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt);
 private:
   PositionHistory* _positionHistory;
   MissionController* _missionController;

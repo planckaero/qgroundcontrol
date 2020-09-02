@@ -383,6 +383,8 @@ Item {
             confirmDialog.title = sendTrackTitle
             confirmDialog.message = sendTrackMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showSendTrack })
+            altitudeSlider.setToMinimumTakeoff()
+            altitudeSlider.visible = true
             break;
         default:
             console.warn("Unknown actionCode", actionCode)
@@ -467,7 +469,7 @@ Item {
             break
         case actionSendTrack:
             console.info("Send track history mission to vehicle")
-            positionHistoryController.send_mission(activeVehicle.coordinate)
+            positionHistoryController.send_mission(activeVehicle.coordinate, actionAltitudeChange)
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)
