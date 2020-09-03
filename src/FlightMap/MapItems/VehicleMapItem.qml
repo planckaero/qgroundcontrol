@@ -70,7 +70,7 @@ MapQuickItem {
             transform: Rotation {
                 origin.x:       vehicleIcon.width  / 2
                 origin.y:       vehicleIcon.height / 2
-                angle:          _adsbVehicle ? 0 : (isNaN(heading) ? 0 : heading)
+                angle:          isNaN(heading) ? 0 : heading
             }
         }
 
@@ -81,11 +81,10 @@ MapQuickItem {
             map:                        _map
             text:                       vehicleLabelText
             font.pointSize:             _adsbVehicle ? ScreenTools.defaultFontPointSize : ScreenTools.smallFontPointSize
-            visible:                    _adsbVehicle ? !isNaN(altitude) : _multiVehicle
+            visible:                    _adsbVehicle ? true : _multiVehicle
             property string vehicleLabelText: visible ?
                                                   (_adsbVehicle ?
-                                                       callsign + " " +
-                                                       QGroundControl.metersToAppSettingsDistanceUnits(altitude).toFixed(0) + " " + QGroundControl.appSettingsDistanceUnitsString :
+                                                       callsign + " " + (isNaN(altitude) ? "" : (QGroundControl.metersToAppSettingsDistanceUnits(altitude).toFixed(0) + " " + QGroundControl.appSettingsDistanceUnitsString)) :
                                                        (_multiVehicle ? qsTr("Vehicle %1").arg(vehicle.id) : "")) :
                                                   ""
 
