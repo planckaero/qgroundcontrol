@@ -36,6 +36,7 @@ public:
         double          heading;
         bool            alert;
         uint32_t        availableFlags;
+        int             tslc;
     } VehicleInfo_t;
 
     ADSBVehicle(const VehicleInfo_t& vehicleInfo, QObject* parent);

@@ -3924,10 +3924,9 @@ bool Vehicle::autoDisarm()
 void Vehicle::_handleADSBVehicle(const mavlink_message_t& message)
 {
     mavlink_adsb_vehicle_t adsbVehicleMsg;
-    static const int maxTimeSinceLastSeen = 15;
 
     mavlink_msg_adsb_vehicle_decode(&message, &adsbVehicleMsg);
-    if (adsbVehicleMsg.flags | ADSB_FLAGS_VALID_COORDS && adsbVehicleMsg.tslc <= maxTimeSinceLastSeen) {
+    if (adsbVehicleMsg.flags | ADSB_FLAGS_VALID_COORDS) {
         ADSBVehicle::VehicleInfo_t vehicleInfo;
 
         vehicleInfo.availableFlags = 0;
@@ -3954,6 +3953,8 @@ void Vehicle::_handleADSBVehicle(const mavlink_message_t& message)
             vehicleInfo.availableFlags |= ADSBVehicle::AlertAvailable;
             vehicleInfo.alert = (bool)adsbVehicleMsg.squawk;
         }
+
+        vehicleInfo.tslc = adsbVehicleMsg.tslc;
 
         _toolbox->adsbVehicleManager()->adsbVehicleUpdate(vehicleInfo);
     }

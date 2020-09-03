@@ -59,10 +59,19 @@ void ADSBVehicle::update(const VehicleInfo_t& vehicleInfo)
             emit alertChanged();
         }
     }
-    _lastUpdateTimer.restart();
+
+    if(vehicleInfo.tslc > 120) {
+        _lastUpdateTimer.invalidate(); //This will cause expired() to return true
+    } else {
+        if(_lastUpdateTimer.isValid()) {
+            _lastUpdateTimer.restart();
+        } else {
+            _lastUpdateTimer.start();
+        }
+   }
 }
 
 bool ADSBVehicle::expired()
 {
-    return _lastUpdateTimer.hasExpired(expirationTimeoutMs);
+    return _lastUpdateTimer.isValid() ? _lastUpdateTimer.hasExpired(expirationTimeoutMs) : true;
 }
