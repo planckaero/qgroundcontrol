@@ -25,6 +25,17 @@ ADSBVehicle::ADSBVehicle(const VehicleInfo_t& vehicleInfo, QObject* parent)
 
 void ADSBVehicle::update(const VehicleInfo_t& vehicleInfo)
 {
+     if(vehicleInfo.tslc > 120) {
+         _lastUpdateTimer.invalidate(); //This will cause expired() to return true
+         return;
+     } else {
+         if(_lastUpdateTimer.isValid()) {
+             _lastUpdateTimer.restart();
+         } else {
+             _lastUpdateTimer.start();
+         }
+    }
+
     if (_icaoAddress != vehicleInfo.icaoAddress) {
         qCWarning(ADSBVehicleManagerLog) << "ICAO address mismatch expected:actual" << _icaoAddress << vehicleInfo.icaoAddress;
         return;
@@ -59,16 +70,6 @@ void ADSBVehicle::update(const VehicleInfo_t& vehicleInfo)
             emit alertChanged();
         }
     }
-
-    if(vehicleInfo.tslc > 120) {
-        _lastUpdateTimer.invalidate(); //This will cause expired() to return true
-    } else {
-        if(_lastUpdateTimer.isValid()) {
-            _lastUpdateTimer.restart();
-        } else {
-            _lastUpdateTimer.start();
-        }
-   }
 }
 
 bool ADSBVehicle::expired()
