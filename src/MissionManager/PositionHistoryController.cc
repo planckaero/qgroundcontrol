@@ -21,5 +21,6 @@ void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord,
   for(auto& pos : positions) {
     _missionController->insertSimpleMissionItem(pos.coordinate(), -1);
   }
+  _missionController->insertLandItem(positions.back().coordinate(), -1);
   _missionController->sendToVehicle();
 }
