@@ -638,11 +638,11 @@ Item {
                     action:             _guidedController.actionPause
                 },
                 {
-                    name:               qsTr("Track"), // transmit track to vehicle
+                    name:               qsTr("Search"), // transmit track to vehicle
                     iconSource:         "/qmlimages/MapAddMission.svg",
                     buttonVisible:      true,
-                    buttonEnabled:      _guidedController.showSendTrack,
-                    action:             _guidedController.actionSendTrack
+                    buttonEnabled:      _guidedController.showSendSearch,
+                    action:             _guidedController.actionSendSearch
                 },
                 {
                     name:               qsTr("Action"),
