@@ -6,7 +6,14 @@ PositionHistoryController::PositionHistoryController(QObject* parent)
   : QObject(parent),
     _positionHistory(qgcApp()->toolbox()->positionHistory()),
     _missionController(nullptr)
-{ }
+{
+    connect(_positionHistory, &PositionHistory::position_added, this, &PositionHistoryController::convert_position_for_map);
+}
+
+void PositionHistoryController::convert_position_for_map(QGeoPositionInfo pos)
+{
+    emit newPositionAvailable(pos.coordinate());
+}
 
 void PositionHistoryController::set_mission_controller(MissionController* controller)
 {

@@ -17,6 +17,15 @@ public:
   void set_mission_controller(MissionController* controller);
 
   Q_INVOKABLE void send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt);
+
+signals:
+  // Used to connect with flight map QML
+  void newPositionAvailable(QGeoCoordinate pos);
+
+private slots:
+  // Takes position info and converts to coordinate object
+  void convert_position_for_map(QGeoPositionInfo pos);
+
 private:
   PositionHistory* _positionHistory;
   MissionController* _missionController;

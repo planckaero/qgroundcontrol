@@ -23,6 +23,9 @@ public:
     void reset_history();
 
     void setToolbox(QGCToolbox* toolbox) override;
+signals:
+    //Signal that a new position has been pushed
+    void position_added(QGeoPositionInfo position);
 
 private slots:
     //Push a new position into the queue

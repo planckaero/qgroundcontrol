@@ -52,6 +52,7 @@ void PositionHistory::push_position(QGeoPositionInfo position)
         _track_history.removeFirst();
     }
     _track_history.push_back(position);
+    emit position_added(position);
 }
 
 QList <QGeoPositionInfo> PositionHistory::get_full_history()
