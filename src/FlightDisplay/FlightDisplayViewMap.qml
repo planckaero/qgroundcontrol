@@ -41,6 +41,7 @@ FlightMap {
     property var    rightPanelWidth
     property var    multiVehicleView                    ///< true: multi-vehicle view, false: single vehicle view
     property var    missionController:          null
+    property var    positionHistoryController:  null
 
     property rect   centerViewport:             Qt.rect(0, 0, width, height)
 
@@ -319,6 +320,16 @@ FlightMap {
             toCoord:        object ? object.coordinate2 : undefined
             arrowPosition:  2
             z:              QGroundControl.zOrderWaypointLines
+        }
+    }
+
+    // Add position history map points
+    Connections {
+        target: _positionHistoryController
+
+        onNewPositionAvailable: {
+            // TODO: render queued coordinate on the flight map
+            // console.info(pos) // shows coordinate
         }
     }
 

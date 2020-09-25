@@ -336,6 +336,7 @@ Item {
                 anchors.fill:               parent
                 guidedActionsController:    _guidedController
                 missionController:          _planController
+                positionHistoryController:  _positionHistoryController
                 flightWidgets:              flightDisplayViewWidgets
                 rightPanelWidth:            ScreenTools.defaultFontPixelHeight * 9
                 multiVehicleView:           !singleVehicleView.checked
