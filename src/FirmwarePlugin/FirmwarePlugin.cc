@@ -80,8 +80,8 @@ QString FirmwarePlugin::flightMode(uint8_t base_mode, uint32_t custom_mode) cons
     static const struct Bit2Name rgBit2Name[] = {
     { MAV_MODE_FLAG_MANUAL_INPUT_ENABLED,   "Manual" },
     { MAV_MODE_FLAG_STABILIZE_ENABLED,      "Stabilize" },
-    { MAV_MODE_FLAG_GUIDED_ENABLED,         "Guided" },
-    { MAV_MODE_FLAG_AUTO_ENABLED,           "Auto" },
+    { MAV_MODE_FLAG_GUIDED_ENABLED,         "Control: Guided" },
+    { MAV_MODE_FLAG_AUTO_ENABLED,           "Control: Mission" },
     { MAV_MODE_FLAG_TEST_ENABLED,           "Test" },
 };
 

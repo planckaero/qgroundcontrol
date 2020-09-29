@@ -847,7 +847,7 @@ QObject* APMFirmwarePlugin::loadParameterMetaData(const QString& metaDataFile)
 
 bool APMFirmwarePlugin::isGuidedMode(const Vehicle* vehicle) const
 {
-    return vehicle->flightMode() == "Guided";
+    return vehicle->flightMode() == "Control: Guided";
 }
 
 void APMFirmwarePlugin::_soloVideoHandshake(Vehicle* vehicle, bool originalSoloFirmware)
@@ -940,7 +940,7 @@ QString APMFirmwarePlugin::internalParameterMetaDataFile(Vehicle* vehicle)
 void APMFirmwarePlugin::setGuidedMode(Vehicle* vehicle, bool guidedMode)
 {
     if (guidedMode) {
-        _setFlightModeAndValidate(vehicle, "Guided");
+        _setFlightModeAndValidate(vehicle, "Control: Guided");
     } else {
         pauseVehicle(vehicle);
     }
@@ -983,7 +983,7 @@ void APMFirmwarePlugin::guidedModeChangeAltitude(Vehicle* vehicle, double altitu
         return;
     }
 
-    if(vehicle->flightMode() != "Planck Track" && vehicle->flightMode() != "Planck Wingman")
+    if(vehicle->flightMode() != "LaunchVeh: Planck Track" && vehicle->flightMode() != "Planck Wingman")
     {
         setGuidedMode(vehicle, true);
     }
@@ -1061,7 +1061,7 @@ bool APMFirmwarePlugin::_guidedModeTakeoff(Vehicle* vehicle, double altitudeRel)
         takeoffAltRel = altitudeRel;
     }
 
-    if (!_setFlightModeAndValidate(vehicle, "Planck Track")) {
+    if (!_setFlightModeAndValidate(vehicle, "LaunchVeh: Planck Track")) {
         qgcApp()->showMessage(tr("Unable to takeoff: Vehicle failed to change to Guided mode."));
         return false;
     }
@@ -1084,7 +1084,7 @@ void APMFirmwarePlugin::startMission(Vehicle* vehicle)
 {
     if (vehicle->flying()) {
         // Vehicle already in the air, we just need to switch to auto
-        if (!_setFlightModeAndValidate(vehicle, "Auto")) {
+        if (!_setFlightModeAndValidate(vehicle, "Control: Mission")) {
             qgcApp()->showMessage(tr("Unable to start mission: Vehicle failed to change to Auto mode."));
         }
         return;
@@ -1092,7 +1092,7 @@ void APMFirmwarePlugin::startMission(Vehicle* vehicle)
 
     if (!vehicle->armed()) {
         // First switch to flight mode we can arm from
-        if (!_setFlightModeAndValidate(vehicle, "Guided")) {
+        if (!_setFlightModeAndValidate(vehicle, "Control: Guided")) {
             qgcApp()->showMessage(tr("Unable to start mission: Vehicle failed to change to Guided mode."));
             return;
         }

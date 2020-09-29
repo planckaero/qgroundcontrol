@@ -85,10 +85,10 @@ public:
     QString             flightMode                      (uint8_t base_mode, uint32_t custom_mode) const override;
     bool                setFlightMode                   (const QString& flightMode, uint8_t* base_mode, uint32_t* custom_mode) override;
     bool                isGuidedMode                    (const Vehicle* vehicle) const override;
-    QString             gotoFlightMode                  (void) const override { return QStringLiteral("Guided"); }
-    QString             rtlFlightMode                   (void) const override { return QString("Planck RTB"); }
+    QString             gotoFlightMode                  (void) const override { return QStringLiteral("Control: Guided"); }
+    QString             rtlFlightMode                   (void) const override { return QString("RecoverVeh: Planck RTB"); }
     QString             smartRTLFlightMode              (void) const override { return QString("Smart RTL"); }
-    QString             missionFlightMode               (void) const override { return QString("Auto"); }
+    QString             missionFlightMode               (void) const override { return QString("Control: Mission"); }
     void                pauseVehicle                    (Vehicle* vehicle) override;
     void                guidedModeRTL                   (Vehicle* vehicle, bool smartRTL) override;
     void                guidedModeChangeAltitude        (Vehicle* vehicle, double altitudeChange) override;

@@ -129,7 +129,7 @@ int ArduCopterFirmwarePlugin::remapParamNameHigestMinorVersionNumber(int majorVe
 
 void ArduCopterFirmwarePlugin::guidedModeLand(Vehicle* vehicle)
 {
-    _setFlightModeAndValidate(vehicle, "Planck Land");
+    _setFlightModeAndValidate(vehicle, "RecoverVeh*: Planck Land");
 }
 
 bool ArduCopterFirmwarePlugin::multiRotorCoaxialMotors(Vehicle* vehicle)

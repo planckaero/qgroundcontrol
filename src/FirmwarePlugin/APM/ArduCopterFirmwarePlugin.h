@@ -74,8 +74,8 @@ public:
     bool    multiRotorXConfig                   (Vehicle* vehicle) final;
     QString offlineEditingParamFile             (Vehicle* vehicle) final { Q_UNUSED(vehicle); return QStringLiteral(":/FirmwarePlugin/APM/Copter.OfflineEditing.params"); }
     QString pauseFlightMode                     (void) const override { return QStringLiteral("Brake"); }
-    QString landFlightMode                      (void) const override { return QStringLiteral("Planck Land"); }
-    QString takeControlFlightMode               (void) const override { return QStringLiteral("Loiter"); }
+    QString landFlightMode                      (void) const override { return QStringLiteral("RecoverVeh*: Planck Land"); }
+    QString takeControlFlightMode               (void) const override { return QStringLiteral("Control: Loiter"); }
     QString followFlightMode                    (void) const override { return QStringLiteral("Follow"); }
     bool    vehicleYawsToNextWaypointInMission  (const Vehicle* vehicle) const override;
     QString autoDisarmParameter                 (Vehicle* vehicle) override { Q_UNUSED(vehicle); return QStringLiteral("DISARM_DELAY"); }
