@@ -345,10 +345,12 @@ FlightMap {
 
             MapQuickItem {
                 sourceItem:   Rectangle {
-                                  color:         "white"
+                                  color:         "yellow"
                                   width:         11
                                   height:        11
                                   radius:        5.5
+                                  border.width:  1
+                                  border.color: "black"
                               }
                 opacity:      1.0
                 anchorPoint:  Qt.point(sourceItem.width/2, sourceItem.height/2)
