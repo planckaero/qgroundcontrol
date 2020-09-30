@@ -323,13 +323,55 @@ FlightMap {
         }
     }
 
-    // Add position history map points
-    Connections {
-        target: _positionHistoryController
+    // Plot position history
+    MapPolyline {
+        id:         positionHistoryPath
+        line.width: 3
+        line.color: "white"
+        z:          QGroundControl.zOrderTrajectoryLines-1
+        visible:    mainIsMap
+    }
 
-        onNewPositionAvailable: {
-            // TODO: render queued coordinate on the flight map
-            // console.info(pos) // shows coordinate
+    Item {
+        id:       _positionHistoryDisplay
+        visible:  mainIsMap;
+
+        property var _maxLength:  100;
+        property var _points:     [];
+
+        // Map point appearance
+        Component {
+            id: _pointComponent
+
+            MapQuickItem {
+                sourceItem:   Rectangle {
+                                  color:         "white"
+                                  width:         11
+                                  height:        11
+                                  radius:        5.5
+                              }
+                opacity:      1.0
+                anchorPoint:  Qt.point(sourceItem.width/2, sourceItem.height/2)
+            }
+        }
+
+        Connections {
+            target: _positionHistoryController
+
+            onNewPositionAvailable: {
+                positionHistoryPath.addCoordinate(pos);
+                let newPositionPoint = _pointComponent.createObject(flightMap)
+                newPositionPoint.coordinate = pos
+                flightMap.addMapItem(newPositionPoint)
+                _positionHistoryDisplay._points.push(newPositionPoint)
+
+                if (_positionHistoryDisplay._points.length > _positionHistoryDisplay._maxLength) {
+                    positionHistoryPath.removeCoordinate(0);
+                    let startPoint = _positionHistoryDisplay._points[0]
+                    flightMap.removeMapItem(startPoint)
+                    _positionHistoryDisplay._points.shift()
+                }
+            }
         }
     }
 
