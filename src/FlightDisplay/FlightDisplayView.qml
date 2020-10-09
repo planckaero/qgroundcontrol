@@ -670,6 +670,72 @@ Item {
             }
         }
 
+        Rectangle {
+            id: _followTrack
+            anchors.topMargin:          _toolsMargin
+            anchors.leftMargin:         _toolsMargin
+            anchors.top:                parent.top
+            anchors.left:               toolStrip.right
+            z:                          _mapAndVideo.z + 1
+            radius:                     ScreenTools.defaultFontPixelWidth / 2
+            width: ScreenTools.defaultFontPixelWidth * 30
+            height: ScreenTools.defaultFontPixelHeight * 3
+            color: activeVehicle ? qgcPal.red : qgcPal.colorGrey
+            border { width: 1; color: "black" }
+
+            property bool following: false;
+            property bool trackAvailable: false;
+            property string previousMode;
+
+            function startFollowing()  {
+                if(!following) {
+                    previousMode = activeVehicle.flightMode
+                    activeVehicle.flightMode = activeVehicle.followFlightMode
+                    following = activeVehicle.flightMode ===  activeVehicle.followFlightMode
+                }
+            }
+
+            function stopFollowing() {
+                if(following) {
+                    activeVehicle.flightMode = previousMode
+                }
+            }
+
+            function updateValues() {
+                _followTrackText.text = following ? "Following (Press to Stop)" : (trackAvailable ? "Follow" : "No Track")
+                color = activeVehicle ? (trackAvailable ? (following ? qgcPal.colorGreen : qgcPal.colorRed) : "yellow") : qgcPal.colorGrey
+            }
+
+            Text {
+                id: _followTrackText
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "black"
+                font.pointSize: ScreenTools.defaultFontPointSize
+                text: "No Track"
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            MouseArea {
+                id: mouseAreaPad
+                anchors.fill: parent
+                preventStealing: true
+                enabled: activeVehicle && trackAvailable
+                onReleased: {
+                    if (following) {
+                        stopFollowing()
+                    }
+                    else {
+                        startFollowing()
+                    }
+                }
+            }
+
+            Component.onCompleted: {
+               updateValue()
+            }
+        }
+
         PositionHistoryController {
             id:                 _positionHistoryController
             missionController:  _missionController
