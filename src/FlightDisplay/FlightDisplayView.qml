@@ -697,21 +697,14 @@ Item {
                 }
             }
 
-            onFollowingChanged: {
-                console.info("onFollowingChanged")
-                updateValues()
-            }
-            onTrackAvailableChanged: {
-                console.info("onTrackAvailableChanged")
-                updateValues()
-            }
+            onFollowingChanged: updateValues()
+            onTrackAvailableChanged:  updateValues()
 
             function updateValues() {
-                var displayText = trackAvailable ? (activeVehicle ? (following ? "Following" : "Start Follow") : "Follow Disabled") : "No Vehicle"
+                var displayText = activeVehicle ? (trackAvailable ? (following ? "Following" : "Start Follow") : "Following Disabled") : "No Vehicle";
                 displayText += "\n" + (trackAvailable ? "Tracking" : "No Track")
                 _followTrackText.text = displayText;
                 color = activeVehicle ? (trackAvailable ? (following ? qgcPal.colorGreen : "yellow") : qgcPal.colorRed) : qgcPal.colorGrey
-                console.info('Track Available: '+trackAvailable)
             }
 
             Text {

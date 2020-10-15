@@ -3,8 +3,6 @@
 #include "MAVLinkProtocol.h"
 #include "MultiVehicleManager.h"
 
-#include <iostream>
-
 FollowTargetMonitor::FollowTargetMonitor(QGCApplication* app, QGCToolbox* toolbox)
     : QGCTool(app, toolbox),
       target_available(false),
