@@ -438,6 +438,7 @@ HEADERS += \
     src/api/QGCOptions.h \
     src/api/QGCSettings.h \
     src/api/QmlComponentInfo.h \
+    src/comm/FollowTargetMonitor.h \
     src/comm/MavlinkMessagesTimer.h \
     src/GPS/Drivers/src/base_station.h \
     src/comm/PlanckListener.h \
@@ -454,6 +455,7 @@ SOURCES += \
     src/api/QGCOptions.cc \
     src/api/QGCSettings.cc \
     src/api/QmlComponentInfo.cc \
+    src/comm/FollowTargetMonitor.cc \
     src/comm/MavlinkMessagesTimer.cc \
     src/comm/PlanckListener.cc \
 

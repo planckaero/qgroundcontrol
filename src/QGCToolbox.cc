@@ -30,6 +30,7 @@
 #include "QGCOptions.h"
 #include "SettingsManager.h"
 #include "PlanckListener.h"
+#include "FollowTargetMonitor.h"
 #include "QGCApplication.h"
 #include "ADSBVehicleManager.h"
 #if defined(QGC_ENABLE_PAIRING)
@@ -80,6 +81,7 @@ QGCToolbox::QGCToolbox(QGCApplication* app)
     _pairingManager         = new PairingManager            (app, this);
 #endif
     _planckListener =           new PlanckListener          (app, this);
+    _followTargetMonitor =      new FollowTargetMonitor     (app, this);
     _landingPadManager =        new LandingPadPosition      ();
     _positionHistory =          new PositionHistory         (app, this);
     //-- Airmap Manager
@@ -124,6 +126,7 @@ void QGCToolbox::setChildToolboxes(void)
     _airspaceManager->setToolbox(this);
     _adsbVehicleManager->setToolbox(this);
     _planckListener->setToolbox(this);
+    _followTargetMonitor->setToolbox(this);
     _positionHistory->setToolbox(this);
 #if defined(QGC_GST_TAISYNC_ENABLED)
     _taisyncManager->setToolbox(this);
