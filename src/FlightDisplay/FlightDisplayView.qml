@@ -680,30 +680,38 @@ Item {
             radius:                     ScreenTools.defaultFontPixelWidth / 2
             width: ScreenTools.defaultFontPixelWidth * 30
             height: ScreenTools.defaultFontPixelHeight * 3
-            color: activeVehicle ? qgcPal.red : qgcPal.colorGrey
+            color: qgcPal.colorGrey
             border { width: 1; color: "black" }
 
-            property bool following: false;
-            property bool trackAvailable: false;
+            property bool following: activeVehicle ? (activeVehicle.flightMode === activeVehicle.followFlightMode) : false;
+            property bool trackAvailable: QGroundControl.followTargetMonitor.target_available;
             property string previousMode;
 
-            function startFollowing()  {
+            function toggleFollowing()  {
                 if(!following) {
                     previousMode = activeVehicle.flightMode
                     activeVehicle.flightMode = activeVehicle.followFlightMode
-                    following = activeVehicle.flightMode ===  activeVehicle.followFlightMode
                 }
-            }
-
-            function stopFollowing() {
-                if(following) {
+                else {
                     activeVehicle.flightMode = previousMode
                 }
             }
 
+            onFollowingChanged: {
+                console.info("onFollowingChanged")
+                updateValues()
+            }
+            onTrackAvailableChanged: {
+                console.info("onTrackAvailableChanged")
+                updateValues()
+            }
+
             function updateValues() {
-                _followTrackText.text = following ? "Following (Press to Stop)" : (trackAvailable ? "Follow" : "No Track")
-                color = activeVehicle ? (trackAvailable ? (following ? qgcPal.colorGreen : qgcPal.colorRed) : "yellow") : qgcPal.colorGrey
+                var displayText = trackAvailable ? (activeVehicle ? (following ? "Following" : "Start Follow") : "Follow Disabled") : "No Vehicle"
+                displayText += "\n" + (trackAvailable ? "Tracking" : "No Track")
+                _followTrackText.text = displayText;
+                color = activeVehicle ? (trackAvailable ? (following ? qgcPal.colorGreen : "yellow") : qgcPal.colorRed) : qgcPal.colorGrey
+                console.info('Track Available: '+trackAvailable)
             }
 
             Text {
@@ -720,19 +728,15 @@ Item {
                 id: mouseAreaPad
                 anchors.fill: parent
                 preventStealing: true
-                enabled: activeVehicle && trackAvailable
+                enabled: activeVehicle && _followTrack.trackAvailable
                 onReleased: {
-                    if (following) {
-                        stopFollowing()
-                    }
-                    else {
-                        startFollowing()
-                    }
+                    toggleFollowing();
                 }
             }
 
-            Component.onCompleted: {
-               updateValue()
+            Connections {
+                target:                 QGroundControl.multiVehicleManager
+                onActiveVehicleChanged: _followTrack.updateValues()
             }
         }
 
