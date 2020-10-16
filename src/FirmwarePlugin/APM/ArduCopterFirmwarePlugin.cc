@@ -43,7 +43,7 @@ APMCopterMode::APMCopterMode(uint32_t mode, bool settable) :
         { GUIDED_NOGPS, "Guided No GPS"},
         { SMART_RTL,    "Smart RTL"},
         { FLOWHOLD,     "Flow Hold" },
-#if 0
+#if 1
     // Follow me not ready for Stable
         { FOLLOW,       "Follow" },
 #endif
@@ -78,7 +78,7 @@ ArduCopterFirmwarePlugin::ArduCopterFirmwarePlugin(void)
         APMCopterMode(APMCopterMode::GUIDED_NOGPS,  true),
         APMCopterMode(APMCopterMode::SMART_RTL,     true),
         APMCopterMode(APMCopterMode::FLOWHOLD,      true),
-#if 0
+#if 1
     // Follow me not ready for Stable
         APMCopterMode(APMCopterMode::FOLLOW,        true),
 #endif
