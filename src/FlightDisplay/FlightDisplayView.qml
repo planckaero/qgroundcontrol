@@ -688,8 +688,12 @@ Item {
 
             // Parameters for tracking parameter following
             property bool paramsReady: activeVehicle ? activeVehicle.parameterManager.parametersReady : false
-            property bool paramExists: paramsReady ? activeVehicle.parameterManager.parameterExists(-1, "FOLL_OFS_Z") : false
-            property Fact offsetZFact: activeVehicle ? (paramExists ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Z") : null) : null
+            property bool offsetXExists: paramsReady ? activeVehicle.parameterManager.parameterExists(-1, "FOLL_OFS_X") : false
+            property Fact offsetXFact: activeVehicle ? (offsetXExists ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_X") : null) : null
+            property bool offsetYExists: paramsReady ? activeVehicle.parameterManager.parameterExists(-1, "FOLL_OFS_Y") : false
+            property Fact offsetYFact: activeVehicle ? (offsetYExists ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Y") : null) : null
+            property bool offsetZExists: paramsReady ? activeVehicle.parameterManager.parameterExists(-1, "FOLL_OFS_Z") : false
+            property Fact offsetZFact: activeVehicle ? (offsetZExists ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Z") : null) : null
 
             function toggleFollowing()  {
                 if(!following) {
@@ -755,7 +759,7 @@ Item {
             z:                          _mapAndVideo.z + 1
             radius:                     ScreenTools.defaultFontPixelWidth / 2
             width:  ScreenTools.defaultFontPixelWidth * 10
-            height: ScreenTools.defaultFontPixelHeight * 2
+            height: ScreenTools.defaultFontPixelHeight * 3
             color:  qgcPal.colorGrey
             visible: _followTrack.following
             border { width: 1; color: "black" }
@@ -774,7 +778,7 @@ Item {
                 id: _followAscendMouseArea
                 anchors.fill: parent
                 preventStealing: true
-                enabled: _followTrack.following && _followTrack.paramExists
+                enabled: _followTrack.following && _followTrack.offsetZExists
                 onReleased: {
                     // Ascend by 2 meters (assume North-East-Down)
                     _followTrack.offsetZFact.value = _followTrack.offsetZFact.value - 2
@@ -791,7 +795,7 @@ Item {
             z:                          _mapAndVideo.z + 1
             radius:                     ScreenTools.defaultFontPixelWidth / 2
             width: ScreenTools.defaultFontPixelWidth * 10
-            height: ScreenTools.defaultFontPixelHeight * 2
+            height: ScreenTools.defaultFontPixelHeight * 3
             color:  qgcPal.colorGrey
             visible: _followTrack.following
             border { width: 1; color: "black" }
@@ -810,11 +814,59 @@ Item {
                 id: _followDescendMouseArea
                 anchors.fill: parent
                 preventStealing: true
-                enabled: _followTrack.following && _followTrack.paramExists
+                enabled: _followTrack.following && _followTrack.offsetZExists
                 onReleased: {
                     // Descend by 2 meters (assume North-East-Down) until 2 meters away
                     if(_followTrack.offsetZFact.value < -4) {
                         _followTrack.offsetZFact.value = _followTrack.offsetZFact.value + 2
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            id: _followOffset
+            anchors.topMargin:          _toolsMargin
+            anchors.leftMargin:         _toolsMargin
+            anchors.top:                parent.top
+            anchors.left:               _followTrack.right
+            z:                          _mapAndVideo.z + 1
+            radius:                     ScreenTools.defaultFontPixelWidth / 2
+            width: ScreenTools.defaultFontPixelWidth * 10
+            height: ScreenTools.defaultFontPixelHeight * 3
+            color:  qgcPal.colorGrey
+            visible: _followTrack.following
+            border { width: 1; color: "black" }
+
+            property bool offsetEnabled: false
+            property int _xOffset: 5
+            property int _yOffset: 5
+
+            Text {
+                id: _followOffsetText
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "black"
+                font.pointSize: ScreenTools.defaultFontPointSize
+                text: "Offset"
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            MouseArea {
+                id: _followOffsetMouseArea
+                anchors.fill: parent
+                preventStealing: true
+                enabled: _followTrack.following && _followTrack.offsetXExists && _followTrack.offsetYExists
+                onReleased: {
+                    if (!_followOffset.offsetEnabled) {
+                        _followOffset.offsetEnabled = true;
+                       _followTrack.offsetXFact.value = _followOffset._xOffset;
+                       _followTrack.offsetYFact.value = _followOffset._yOffset;
+                    }
+                    else {
+                        _followOffset.offsetEnabled = false;
+                        _followTrack.offsetXFact.value = 0;
+                        _followTrack.offsetYFact.value = 0;
                     }
                 }
             }
