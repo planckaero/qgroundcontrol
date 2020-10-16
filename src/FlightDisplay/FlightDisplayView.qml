@@ -686,6 +686,11 @@ Item {
             property bool following: activeVehicle ? (activeVehicle.flightMode === activeVehicle.followFlightMode) : false;
             property bool trackAvailable: QGroundControl.followTargetMonitor.target_available;
 
+            // Parameters for tracking parameter following
+            property bool paramsReady: activeVehicle ? activeVehicle.parameterManager.parametersReady : false
+            property bool paramExists: paramsReady ? activeVehicle.parameterManager.parameterExists(-1, "FOLL_OFS_Z") : false
+            property Fact offsetZFact: activeVehicle ? (paramExists ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Z") : null) : null
+
             function toggleFollowing()  {
                 if(!following) {
                     activeVehicle.flightMode = activeVehicle.followFlightMode
@@ -726,7 +731,7 @@ Item {
             }
 
             MouseArea {
-                id: mouseAreaPad
+                id: _followTrackMouseArea
                 anchors.fill: parent
                 preventStealing: true
                 enabled: activeVehicle && (_followTrack.trackAvailable || _followTrack.following)
@@ -738,6 +743,80 @@ Item {
             Connections {
                 target:                 QGroundControl.multiVehicleManager
                 onActiveVehicleChanged: _followTrack.updateValues()
+            }
+        }
+
+        Rectangle {
+            id: _followAscend
+            anchors.topMargin:          _toolsMargin
+            anchors.leftMargin:         _toolsMargin
+            anchors.top:                _followTrack.bottom
+            anchors.left:               toolStrip.right
+            z:                          _mapAndVideo.z + 1
+            radius:                     ScreenTools.defaultFontPixelWidth / 2
+            width:  ScreenTools.defaultFontPixelWidth * 10
+            height: ScreenTools.defaultFontPixelHeight * 2
+            color:  qgcPal.colorGrey
+            visible: _followTrack.following
+            border { width: 1; color: "black" }
+
+            Text {
+                id: _followAscendText
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "black"
+                font.pointSize: ScreenTools.defaultFontPointSize
+                text: "Up"
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            MouseArea {
+                id: _followAscendMouseArea
+                anchors.fill: parent
+                preventStealing: true
+                enabled: _followTrack.following && _followTrack.paramExists
+                onReleased: {
+                    // Ascend by 2 meters (assume North-East-Down)
+                    _followTrack.offsetZFact.value = _followTrack.offsetZFact.value - 2
+                }
+            }
+        }
+
+        Rectangle {
+            id: _followDescend
+            anchors.topMargin:          _toolsMargin
+            anchors.leftMargin:         _toolsMargin
+            anchors.top:                _followAscend.bottom
+            anchors.left:               toolStrip.right
+            z:                          _mapAndVideo.z + 1
+            radius:                     ScreenTools.defaultFontPixelWidth / 2
+            width: ScreenTools.defaultFontPixelWidth * 10
+            height: ScreenTools.defaultFontPixelHeight * 2
+            color:  qgcPal.colorGrey
+            visible: _followTrack.following
+            border { width: 1; color: "black" }
+
+            Text {
+                id: _followDescendText
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "black"
+                font.pointSize: ScreenTools.defaultFontPointSize
+                text: "Down"
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            MouseArea {
+                id: _followDescendMouseArea
+                anchors.fill: parent
+                preventStealing: true
+                enabled: _followTrack.following && _followTrack.paramExists
+                onReleased: {
+                    // Descend by 2 meters (assume North-East-Down) until 2 meters away
+                    if(_followTrack.offsetZFact.value < -4) {
+                        _followTrack.offsetZFact.value = _followTrack.offsetZFact.value + 2
+                    }
+                }
             }
         }
 
