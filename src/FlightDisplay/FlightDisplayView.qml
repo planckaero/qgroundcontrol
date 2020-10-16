@@ -712,7 +712,7 @@ Item {
                 _followTrackText.text = displayText;
 
                 // Grey - No Active Vehicle, Red - Not Tracking, Yellow - Not Following, Green - Following
-                color = activeVehicle ? (trackAvailable ? (following ? qgcPal.colorGreen : "yellow") : qgcPal.colorRed) : qgcPal.colorGrey
+                color = activeVehicle ? (trackAvailable ? (following ? qgcPal.colorGreen : "yellow") : (following ? "orange" : qgcPal.colorRed)) : qgcPal.colorGrey
             }
 
             Text {
@@ -729,7 +729,7 @@ Item {
                 id: mouseAreaPad
                 anchors.fill: parent
                 preventStealing: true
-                enabled: activeVehicle && _followTrack.trackAvailable
+                enabled: activeVehicle && (_followTrack.trackAvailable || _followTrack.following)
                 onReleased: {
                     _followTrack.toggleFollowing();
                 }
