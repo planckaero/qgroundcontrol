@@ -694,6 +694,7 @@ Item {
             property bool following: activeVehicle && followEnabled() ? (activeVehicle.flightMode === activeVehicle.followFlightMode) : false;
             property bool trackAvailable: QGroundControl.followTargetMonitor.target_available;
             property bool vehicleArmed: activeVehicle ? activeVehicle.armed : false;
+            property double minFollowAlt: 4
 
             function toggleFollowing()  {
                 if(!following) {
@@ -706,7 +707,7 @@ Item {
 
             function followEnabled() {
                if(followEnable !== null) {
-                   return followEnable.rawValue === 1;
+                   return followEnable.rawValue === 1
                }
                return false;
             }
@@ -716,13 +717,13 @@ Item {
             onVehicleArmedChanged: {
                 if(vehicleArmed) {
                     if(_followTrack.offsetXFact !== null) {
-                        _followTrack.offsetXFact.rawValue = 0;
+                        _followTrack.offsetXFact.rawValue = 0
                     }
                     if(_followTrack.offsetYFact !== null) {
-                        _followTrack.offsetYFact.rawValue = 0;
+                        _followTrack.offsetYFact.rawValue = 0
                     }
                     if(_followTrack.offsetZFact !== null) {
-                        _followTrack.offsetZFact.rawValue = 0;
+                        _followTrack.offsetZFact.rawValue = 0
                     }
                 }
             }
@@ -789,7 +790,7 @@ Item {
             radius:                     ScreenTools.defaultFontPixelWidth / 2
             width:  ScreenTools.defaultFontPixelWidth * 10
             height: ScreenTools.defaultFontPixelHeight * 3
-            color:  qgcPal.colorGrey
+            color:  "white"
             visible: _followTrack.following
             border { width: 1; color: "black" }
 
@@ -799,7 +800,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "black"
                 font.pointSize: ScreenTools.defaultFontPointSize
-                text: "Up"
+                text: "Ascend"
                 horizontalAlignment: Text.AlignHCenter
             }
 
@@ -810,7 +811,18 @@ Item {
                 enabled: _followTrack.following && _followTrack.offsetZFact !== null
                 onReleased: {
                     // Ascend by 2 meters (assume North-East-Down)
-                    _followTrack.offsetZFact.rawValue = _followTrack.offsetZFact.rawValue - 2
+                    if(_followTrack.offsetZFact.rawValue === 0) {
+                        let relAlt = activeVehicle.altitudeRelative.rawValue
+                        let setAlt = -(relAlt+2)
+                        // Use minimum follow alt if relative altitude+2
+                        if((relAlt+2) < _followTrack.minFollowAlt)  {
+                            setAlt = -_followTrack.minFollowAlt
+                        }
+                        _followTrack.offsetZFact.rawValue = setAlt
+                    }
+                    else {
+                        _followTrack.offsetZFact.rawValue = _followTrack.offsetZFact.rawValue - 2
+                    }
                 }
             }
         }
@@ -825,7 +837,7 @@ Item {
             radius:                     ScreenTools.defaultFontPixelWidth / 2
             width: ScreenTools.defaultFontPixelWidth * 10
             height: ScreenTools.defaultFontPixelHeight * 3
-            color:  qgcPal.colorGrey
+            color:  "white"
             visible: _followTrack.following
             border { width: 1; color: "black" }
 
@@ -835,7 +847,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "black"
                 font.pointSize: ScreenTools.defaultFontPointSize
-                text: "Down"
+                text: "Descend"
                 horizontalAlignment: Text.AlignHCenter
             }
 
@@ -845,12 +857,24 @@ Item {
                 preventStealing: true
                 enabled: _followTrack.following && _followTrack.offsetZ !== null
                 onReleased: {
-                    // Descend by 2 meters (assume North-East-Down) until 4 meters away
-                    if((_followTrack.offsetZFact.rawValue + 2) < -4) {
+                    let minAlt = _followTrack.minFollowAlt
+
+                    // Descend by 2 meters (assume North-East-Down) until minAlt meters away
+                    if(_followTrack.offsetZFact.rawValue === 0) {
+                        // Check relative altitude minus 2, if it is less than the minAlt, set to minAlt
+                        let relAlt = activeVehicle.altitudeRelative.rawValue
+                        let setAlt = -(relAlt-2)
+                        if (relAlt < (minAlt+2)) {
+                            setAlt = -minAlt
+                        }
+                        console.info("Descend: " + relAlt + " to " + -setAlt)
+                        _followTrack.offsetZFact.rawValue = setAlt
+                    }
+                    else if((_followTrack.offsetZFact.rawValue+2) < -minAlt) {
                         _followTrack.offsetZFact.rawValue = _followTrack.offsetZFact.rawValue + 2
                     }
                     else {
-                        _followTrack.offsetZFact.rawValue = -4
+                        _followTrack.offsetZFact.rawValue = -minAlt
                     }
                 }
             }
