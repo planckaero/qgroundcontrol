@@ -693,6 +693,7 @@ Item {
             // Additional UI states
             property bool following: activeVehicle && followEnabled() ? (activeVehicle.flightMode === activeVehicle.followFlightMode) : false;
             property bool trackAvailable: QGroundControl.followTargetMonitor.target_available;
+            property bool vehicleArmed: activeVehicle ? activeVehicle.armed : false;
 
             function toggleFollowing()  {
                 if(!following) {
@@ -712,6 +713,19 @@ Item {
 
             onFollowingChanged: updateValues()
             onTrackAvailableChanged:  updateValues()
+            onVehicleArmedChanged: {
+                if(vehicleArmed) {
+                    if(_followTrack.offsetXFact !== null) {
+                        _followTrack.offsetXFact.rawValue = 0;
+                    }
+                    if(_followTrack.offsetYFact !== null) {
+                        _followTrack.offsetYFact.rawValue = 0;
+                    }
+                    if(_followTrack.offsetZFact !== null) {
+                        _followTrack.offsetZFact.rawValue = 0;
+                    }
+                }
+            }
 
             function updateValues() {
                 // Show following and vehicle availability
@@ -859,6 +873,15 @@ Item {
             property bool offsetEnabled: false
             property int _xOffset: 3
             property int _yOffset: 3
+
+            onOffsetEnabledChanged: {
+                if (offsetEnabled) {
+                    color = "white"
+                }
+                else {
+                    color = qgcPal.colorGrey
+                }
+            }
 
             Text {
                 id: _followOffsetText
