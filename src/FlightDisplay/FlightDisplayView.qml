@@ -683,17 +683,16 @@ Item {
             color: qgcPal.colorGrey
             border { width: 1; color: "black" }
 
-            property bool following: activeVehicle ? (activeVehicle.flightMode === activeVehicle.followFlightMode) : false;
-            property bool trackAvailable: QGroundControl.followTargetMonitor.target_available;
-
-            // Parameters for tracking parameter following
+            // Follow mode parameters
             property bool paramsReady: activeVehicle ? activeVehicle.parameterManager.parametersReady : false
-            property bool offsetXExists: paramsReady ? activeVehicle.parameterManager.parameterExists(-1, "FOLL_OFS_X") : false
-            property Fact offsetXFact: activeVehicle ? (offsetXExists ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_X") : null) : null
-            property bool offsetYExists: paramsReady ? activeVehicle.parameterManager.parameterExists(-1, "FOLL_OFS_Y") : false
-            property Fact offsetYFact: activeVehicle ? (offsetYExists ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Y") : null) : null
-            property bool offsetZExists: paramsReady ? activeVehicle.parameterManager.parameterExists(-1, "FOLL_OFS_Z") : false
-            property Fact offsetZFact: activeVehicle ? (offsetZExists ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Z") : null) : null
+            property Fact followEnable: paramsReady ?  activeVehicle.parameterManager.getParameter(-1, "FOLL_ENABLE") : null
+            property Fact offsetXFact: paramsReady ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_X") : null
+            property Fact offsetYFact: paramsReady ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Y") : null
+            property Fact offsetZFact: paramsReady ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Z") : null
+
+            // Additional UI states
+            property bool following: activeVehicle && followEnabled() ? (activeVehicle.flightMode === activeVehicle.followFlightMode) : false;
+            property bool trackAvailable: QGroundControl.followTargetMonitor.target_available;
 
             function toggleFollowing()  {
                 if(!following) {
@@ -704,24 +703,40 @@ Item {
                 }
             }
 
+            function followEnabled() {
+               if(followEnable !== null) {
+                   return followEnable.rawValue === 1;
+               }
+               return false;
+            }
+
             onFollowingChanged: updateValues()
             onTrackAvailableChanged:  updateValues()
 
             function updateValues() {
                 // Show following and vehicle availability
-                var displayText = activeVehicle ? (following ? "Follow Engaged" : "Start Follow") : "No Vehicle";
+                var displayText = activeVehicle ? (following ? "Follow Engaged" : "Start Follow") : "No Vehicle"
 
-                // If track is not available and not already following, show following is disabled
-                if (!following && !trackAvailable && activeVehicle) {
-                    displayText = "Follow Disabled";
+                // If track is not available or FOLL_ENABLE is not true and not already following, show following is disabled
+                if(!following && (!trackAvailable || !followEnabled()) && activeVehicle) {
+                    displayText = "Follow Disabled"
                 }
 
                 // Tracking status indicator
                 displayText += "\n" + (trackAvailable ? "Tracking" : "No Track")
-                _followTrackText.text = displayText;
+                _followTrackText.text = displayText
 
                 // Grey - No Active Vehicle, Red - Not Tracking, Yellow - Not Following, Green - Following
-                color = activeVehicle ? (trackAvailable ? (following ? qgcPal.colorGreen : "yellow") : (following ? "orange" : qgcPal.colorRed)) : qgcPal.colorGrey
+                let displayColor = qgcPal.colorGrey
+                if(activeVehicle) {
+                    if(trackAvailable) {
+                        displayColor =  followEnabled() ? (following ? qgcPal.colorGreen : "yellow") : "orange"
+                    }
+                    else {
+                        displayColor = following ? "orange" : qgcPal.colorRed
+                    }
+                }
+                color = displayColor
             }
 
             Text {
@@ -778,10 +793,10 @@ Item {
                 id: _followAscendMouseArea
                 anchors.fill: parent
                 preventStealing: true
-                enabled: _followTrack.following && _followTrack.offsetZExists
+                enabled: _followTrack.following && _followTrack.offsetZFact !== null
                 onReleased: {
                     // Ascend by 2 meters (assume North-East-Down)
-                    _followTrack.offsetZFact.value = _followTrack.offsetZFact.value - 2
+                    _followTrack.offsetZFact.rawValue = _followTrack.offsetZFact.rawValue - 2
                 }
             }
         }
@@ -814,11 +829,14 @@ Item {
                 id: _followDescendMouseArea
                 anchors.fill: parent
                 preventStealing: true
-                enabled: _followTrack.following && _followTrack.offsetZExists
+                enabled: _followTrack.following && _followTrack.offsetZ !== null
                 onReleased: {
-                    // Descend by 2 meters (assume North-East-Down) until 2 meters away
-                    if(_followTrack.offsetZFact.value < -4) {
-                        _followTrack.offsetZFact.value = _followTrack.offsetZFact.value + 2
+                    // Descend by 2 meters (assume North-East-Down) until 4 meters away
+                    if((_followTrack.offsetZFact.rawValue + 2) < -4) {
+                        _followTrack.offsetZFact.rawValue = _followTrack.offsetZFact.rawValue + 2
+                    }
+                    else {
+                        _followTrack.offsetZFact.rawValue = -4
                     }
                 }
             }
@@ -839,8 +857,8 @@ Item {
             border { width: 1; color: "black" }
 
             property bool offsetEnabled: false
-            property int _xOffset: 5
-            property int _yOffset: 5
+            property int _xOffset: 3
+            property int _yOffset: 3
 
             Text {
                 id: _followOffsetText
@@ -856,17 +874,17 @@ Item {
                 id: _followOffsetMouseArea
                 anchors.fill: parent
                 preventStealing: true
-                enabled: _followTrack.following && _followTrack.offsetXExists && _followTrack.offsetYExists
+                enabled: _followTrack.following && _followTrack.offsetXFact !== null && _followTrack.offsetYFact !== null
                 onReleased: {
                     if (!_followOffset.offsetEnabled) {
                         _followOffset.offsetEnabled = true;
-                       _followTrack.offsetXFact.value = _followOffset._xOffset;
-                       _followTrack.offsetYFact.value = _followOffset._yOffset;
+                       _followTrack.offsetXFact.rawValue = _followOffset._xOffset;
+                       _followTrack.offsetYFact.rawValue = _followOffset._yOffset;
                     }
                     else {
                         _followOffset.offsetEnabled = false;
-                        _followTrack.offsetXFact.value = 0;
-                        _followTrack.offsetYFact.value = 0;
+                        _followTrack.offsetXFact.rawValue = 0;
+                        _followTrack.offsetYFact.rawValue = 0;
                     }
                 }
             }
