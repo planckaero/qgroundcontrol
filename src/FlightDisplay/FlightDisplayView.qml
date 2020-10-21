@@ -691,9 +691,10 @@ Item {
             property Fact offsetZFact: paramsReady ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Z") : null
 
             // Additional UI states
-            property bool following: activeVehicle && followEnabled() ? (activeVehicle.flightMode === activeVehicle.followFlightMode) : false;
-            property bool trackAvailable: QGroundControl.followTargetMonitor.target_available;
-            property bool vehicleArmed: activeVehicle ? activeVehicle.armed : false;
+            property bool following: activeVehicle && followEnabled() ? (activeVehicle.flightMode === activeVehicle.followFlightMode) : false
+            property bool trackAvailable: QGroundControl.followTargetMonitor.target_available
+            property var trackPosition: QGroundControl.followTargetMonitor.target_position
+            property bool vehicleArmed: activeVehicle ? activeVehicle.armed : false
             property double minFollowAlt: 4
 
             function toggleFollowing()  {
@@ -812,10 +813,14 @@ Item {
                 onReleased: {
                     // Ascend by 2 meters (assume North-East-Down)
                     if(_followTrack.offsetZFact.rawValue === 0) {
-                        let relAlt = activeVehicle.altitudeRelative.rawValue
-                        let setAlt = -(relAlt+2)
-                        // Use minimum follow alt if relative altitude+2
-                        if((relAlt+2) < _followTrack.minFollowAlt)  {
+                        let targetAlt = activeVehicle.altitudeRelative.rawValue
+                        if(_followTrack.trackPosition.isValid) {
+                            targetAlt = activeVehicle.altitudeAMSL.rawValue - _followTrack.trackPosition.altitude
+                        }
+
+                        let setAlt = -(targetAlt+2)
+                        // Use minimum follow alt if target altitude + 2 is less
+                        if((targetAlt+2) < _followTrack.minFollowAlt)  {
                             setAlt = -_followTrack.minFollowAlt
                         }
                         _followTrack.offsetZFact.rawValue = setAlt
@@ -861,13 +866,16 @@ Item {
 
                     // Descend by 2 meters (assume North-East-Down) until minAlt meters away
                     if(_followTrack.offsetZFact.rawValue === 0) {
-                        // Check relative altitude minus 2, if it is less than the minAlt, set to minAlt
-                        let relAlt = activeVehicle.altitudeRelative.rawValue
-                        let setAlt = -(relAlt-2)
-                        if (relAlt < (minAlt+2)) {
+                        // Set altitude form target to relative altitude as a default
+                        let targetAlt = activeVehicle.altitudeRelative.rawValue
+                        if(_followTrack.trackPosition.isValid) {
+                            targetAlt = activeVehicle.altitudeAMSL.rawValue - _followTrack.trackPosition.altitude
+                        }
+
+                        let setAlt = -(targetAlt-2)
+                        if (targetAlt < (minAlt+2)) {
                             setAlt = -minAlt
                         }
-                        console.info("Descend: " + relAlt + " to " + -setAlt)
                         _followTrack.offsetZFact.rawValue = setAlt
                     }
                     else if((_followTrack.offsetZFact.rawValue+2) < -minAlt) {
@@ -884,8 +892,8 @@ Item {
             id: _followOffset
             anchors.topMargin:          _toolsMargin
             anchors.leftMargin:         _toolsMargin
-            anchors.top:                parent.top
-            anchors.left:               _followTrack.right
+            anchors.top:                _followTrack.top
+            anchors.left:               _followAscend.right
             z:                          _mapAndVideo.z + 1
             radius:                     ScreenTools.defaultFontPixelWidth / 2
             width: ScreenTools.defaultFontPixelWidth * 10
