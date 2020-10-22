@@ -834,8 +834,13 @@ Item {
                 }
 
                 if(_followTrack.trackPosition.isValid && activeVehicle) {
-                    let displayN = (_followTrack.trackPosition.latitude - activeVehicle.latitude)*111111.0
-                    let displayE = (_followTrack.trackPosition.longitude - activeVehicle.longitude)*111111.0
+                    let displayN = (_followTrack.trackPosition.latitude - activeVehicle.latitude)*111319.9
+
+                    // Scale longitude based on latitude
+                    let scale = Math.cos(_followTrack.trackPosition.latitude*Math.PI/180.0)
+                    scale = Math.min(Math.max(0.1, scale), 1.0) // 0.1 < scale < 1.0
+                    let displayE = (_followTrack.trackPosition.longitude - activeVehicle.longitude)*111319.9*scale
+
                     // TODO: use track altitude
                     //let displayD = activeVehicle.altitudeAMSL.rawValue - _followTrack.trackPosition.altitude
                     let displayD = activeVehicle.altitudeRelative.rawValue
