@@ -678,20 +678,21 @@ Item {
             anchors.left:               toolStrip.right
             z:                          _mapAndVideo.z + 1
             radius:                     ScreenTools.defaultFontPixelWidth / 2
-            width: ScreenTools.defaultFontPixelWidth * 20
+            width: ScreenTools.defaultFontPixelWidth * 19
             height: ScreenTools.defaultFontPixelHeight * 3
             color: qgcPal.colorGrey
             border { width: 1; color: "black" }
 
             // Follow mode parameters
             property bool paramsReady: activeVehicle ? activeVehicle.parameterManager.parametersReady : false
-            property Fact followEnable: paramsReady ?  activeVehicle.parameterManager.getParameter(-1, "FOLL_ENABLE") : null
+            property Fact followEnableFact: paramsReady ?  activeVehicle.parameterManager.getParameter(-1, "FOLL_ENABLE") : null
             property Fact offsetXFact: paramsReady ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_X") : null
             property Fact offsetYFact: paramsReady ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Y") : null
             property Fact offsetZFact: paramsReady ? activeVehicle.parameterManager.getParameter(-1, "FOLL_OFS_Z") : null
 
             // Additional UI states
-            property bool following: activeVehicle && followEnabled() ? (activeVehicle.flightMode === activeVehicle.followFlightMode) : false
+            property bool followEnabled: (followEnableFact !== null) ? followEnableFact.rawValue : false;
+            property bool following: activeVehicle && followEnabled ? (activeVehicle.flightMode === activeVehicle.followFlightMode) : false
             property bool trackAvailable: QGroundControl.followTargetMonitor.target_available
             property var trackPosition: QGroundControl.followTargetMonitor.target_position
             property bool vehicleArmed: activeVehicle ? activeVehicle.armed : false
@@ -706,14 +707,17 @@ Item {
                 }
             }
 
-            function followEnabled() {
-               if(followEnable !== null) {
-                   return followEnable.rawValue === 1
-               }
-               return false;
+            onFollowEnabledChanged: updateValues()
+            onFollowingChanged: {
+                // Set Z offset to current track offset if it is enabled by FOLL_OFS_* equal to 0
+                if(following && offsetZFact !== null && offsetZFact.rawValue === 0) {
+                    // TODO: use track altitude
+                    //let currentOffset = activeVehicle.altitudeAMSL.rawValue - trackPosition.altitude
+                    let currentOffset = activeVehicle.altitudeRelative.rawValue
+                    offsetZFact.rawValue = -currentOffset
+                }
+                updateValues()
             }
-
-            onFollowingChanged: updateValues()
             onTrackAvailableChanged:  updateValues()
             onVehicleArmedChanged: {
                 if(vehicleArmed) {
@@ -734,7 +738,7 @@ Item {
                 var displayText = activeVehicle ? (following ? "Follow Engaged" : "Start Follow") : "No Vehicle"
 
                 // If track is not available or FOLL_ENABLE is not true and not already following, show following is disabled
-                if(!following && (!trackAvailable || !followEnabled()) && activeVehicle) {
+                if(!following && (!trackAvailable || !followEnabled) && activeVehicle) {
                     displayText = "Follow Disabled"
                 }
 
@@ -746,7 +750,7 @@ Item {
                 let displayColor = qgcPal.colorGrey
                 if(activeVehicle) {
                     if(trackAvailable) {
-                        displayColor =  followEnabled() ? (following ? qgcPal.colorGreen : "yellow") : "orange"
+                        displayColor =  followEnabled ? (following ? qgcPal.colorGreen : "yellow") : "orange"
                     }
                     else {
                         displayColor = following ? "orange" : qgcPal.colorRed
@@ -782,14 +786,66 @@ Item {
         }
 
         Rectangle {
+            id: _followVector
+            anchors.topMargin:          _toolsMargin
+            anchors.leftMargin:         _toolsMargin
+            anchors.top:               	parent.top
+            anchors.left:               _followTrack.right
+            z:                          _mapAndVideo.z + 1
+            width: ScreenTools.defaultFontPixelWidth * 20
+            height: ScreenTools.defaultFontPixelHeight * 6
+            color: qgcPal.colorGrey
+            border { width: 1; color: "black" }
+
+            Text {
+                id: _followVectorTitle
+                anchors.topMargin:         _toolsMargin
+                anchors.top:               parent.top
+                anchors.horizontalCenter:  parent.horizontalCenter
+                color: "                   black"
+                font.pointSize:            ScreenTools.defaultFontPointSize
+                text:                      "TRACK VECTOR"
+                horizontalAlignment:       Text.AlignHCenter
+            }
+
+            Text {
+                id: _followVectorText
+                anchors.topMargin:         _toolsMargin
+                anchors.top:               _followVectorTitle.bottom
+                anchors.horizontalCenter:  parent.horizontalCenter
+                color:                     "black"
+                font.pointSize:            ScreenTools.mediumFontPointSize
+                text:                      "N: - \nE: - \nD: -"
+                horizontalAlignment:       Text.AlignHCenter
+            }
+
+            function update() {
+                _followVector.color = _followTrack.trackAvailable ? "white" : qgcPal.colorGrey
+                if(_followTrack.trackPosition.isValid && activeVehicle) {
+                    let displayN = (_followTrack.trackPosition.latitude - activeVehicle.latitude)*111111.0
+                    let displayE = (_followTrack.trackPosition.longitude - activeVehicle.longitude)*111111.0
+                    // TODO: use track altitude
+                    //let displayD = activeVehicle.altitudeAMSL.rawValue - _followTrack.trackPosition.altitude
+                    let displayD = activeVehicle.altitudeRelative.rawValue
+                    _followVectorText.text = `N: ${displayN.toFixed(2)} \nE: ${displayE.toFixed(2)} \nD: ${displayD.toFixed(2)}`
+                }
+            }
+
+            Connections {
+                target:  _followTrack
+                onTrackAvailableChanged: _followVector.update()
+                onTrackPositionChanged:  _followVector.update()
+            }
+        }
+
+        Rectangle {
             id: _followAscend
             anchors.topMargin:          _toolsMargin
             anchors.leftMargin:         _toolsMargin
             anchors.top:                _followTrack.bottom
             anchors.left:               toolStrip.right
             z:                          _mapAndVideo.z + 1
-            radius:                     ScreenTools.defaultFontPixelWidth / 2
-            width:  ScreenTools.defaultFontPixelWidth * 10
+            width:  ScreenTools.defaultFontPixelWidth * 9
             height: ScreenTools.defaultFontPixelHeight * 3
             color:  "white"
             visible: _followTrack.following
@@ -801,7 +857,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "black"
                 font.pointSize: ScreenTools.defaultFontPointSize
-                text: "Ascend"
+                text: "ASCEND"
                 horizontalAlignment: Text.AlignHCenter
             }
 
@@ -812,11 +868,11 @@ Item {
                 enabled: _followTrack.following && _followTrack.offsetZFact !== null
                 onReleased: {
                     // Ascend by 2 meters (assume North-East-Down)
-                    if(_followTrack.offsetZFact.rawValue === 0) {
+                    if(activeVehicle && _followTrack.offsetZFact.rawValue === 0) {
                         let targetAlt = activeVehicle.altitudeRelative.rawValue
-                        if(_followTrack.trackPosition.isValid) {
-                            targetAlt = activeVehicle.altitudeAMSL.rawValue - _followTrack.trackPosition.altitude
-                        }
+                        //if(_followTrack.trackPosition.isValid) {
+                        //    targetAlt = activeVehicle.altitudeAMSL.rawValue - _followTrack.trackPosition.altitude
+                        //}
 
                         let setAlt = -(targetAlt+2)
                         // Use minimum follow alt if target altitude + 2 is less
@@ -839,8 +895,7 @@ Item {
             anchors.top:                _followAscend.bottom
             anchors.left:               toolStrip.right
             z:                          _mapAndVideo.z + 1
-            radius:                     ScreenTools.defaultFontPixelWidth / 2
-            width: ScreenTools.defaultFontPixelWidth * 10
+            width: ScreenTools.defaultFontPixelWidth * 9
             height: ScreenTools.defaultFontPixelHeight * 3
             color:  "white"
             visible: _followTrack.following
@@ -852,7 +907,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "black"
                 font.pointSize: ScreenTools.defaultFontPointSize
-                text: "Descend"
+                text: "DESCEND"
                 horizontalAlignment: Text.AlignHCenter
             }
 
@@ -865,12 +920,13 @@ Item {
                     let minAlt = _followTrack.minFollowAlt
 
                     // Descend by 2 meters (assume North-East-Down) until minAlt meters away
-                    if(_followTrack.offsetZFact.rawValue === 0) {
+                    if(activeVehicle && _followTrack.offsetZFact.rawValue === 0) {
                         // Set altitude form target to relative altitude as a default
                         let targetAlt = activeVehicle.altitudeRelative.rawValue
-                        if(_followTrack.trackPosition.isValid) {
-                            targetAlt = activeVehicle.altitudeAMSL.rawValue - _followTrack.trackPosition.altitude
-                        }
+                        // TODO: use track altitude
+                        //if(_followTrack.trackPosition.isValid) {
+                        //    targetAlt = activeVehicle.altitudeAMSL.rawValue - _followTrack.trackPosition.altitude
+                        //}
 
                         let setAlt = -(targetAlt-2)
                         if (targetAlt < (minAlt+2)) {
@@ -892,11 +948,10 @@ Item {
             id: _followOffset
             anchors.topMargin:          _toolsMargin
             anchors.leftMargin:         _toolsMargin
-            anchors.top:                _followTrack.top
+            anchors.top:                _followTrack.bottom
             anchors.left:               _followAscend.right
             z:                          _mapAndVideo.z + 1
-            radius:                     ScreenTools.defaultFontPixelWidth / 2
-            width: ScreenTools.defaultFontPixelWidth * 10
+            width: ScreenTools.defaultFontPixelWidth * 9
             height: ScreenTools.defaultFontPixelHeight * 3
             color:  qgcPal.colorGrey
             visible: _followTrack.following
@@ -921,7 +976,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "black"
                 font.pointSize: ScreenTools.defaultFontPointSize
-                text: "Offset"
+                text: "OFFSET"
                 horizontalAlignment: Text.AlignHCenter
             }
 
