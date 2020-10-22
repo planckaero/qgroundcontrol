@@ -710,11 +710,17 @@ Item {
             onFollowEnabledChanged: updateValues()
             onFollowingChanged: {
                 // Set Z offset to current track offset if it is enabled by FOLL_OFS_* equal to 0
-                if(following && offsetZFact !== null && offsetZFact.rawValue === 0) {
+                if(following && offsetZFact !== null) {
                     // TODO: use track altitude
                     //let currentOffset = activeVehicle.altitudeAMSL.rawValue - trackPosition.altitude
                     let currentOffset = activeVehicle.altitudeRelative.rawValue
                     offsetZFact.rawValue = -currentOffset
+                    if(offsetXFact !== null) {
+                       offsetXFact.rawValue = 0.1;
+                    }
+                    if(offsetYFact !== null) {
+                       offsetYFact.rawValue = 0.1;
+                    }
                 }
                 updateValues()
             }
@@ -821,6 +827,12 @@ Item {
 
             function update() {
                 _followVector.color = _followTrack.trackAvailable ? "white" : qgcPal.colorGrey
+                if(!_followTrack.following) {
+                    _followVector.color = qgcPal.colorGrey
+                    _followVectorText.text = "N: - \nE: - \nD: -"
+                    return
+                }
+
                 if(_followTrack.trackPosition.isValid && activeVehicle) {
                     let displayN = (_followTrack.trackPosition.latitude - activeVehicle.latitude)*111111.0
                     let displayE = (_followTrack.trackPosition.longitude - activeVehicle.longitude)*111111.0
@@ -833,6 +845,7 @@ Item {
 
             Connections {
                 target:  _followTrack
+                onFollowingChanged:      _followVector.update()
                 onTrackAvailableChanged: _followVector.update()
                 onTrackPositionChanged:  _followVector.update()
             }
@@ -958,7 +971,7 @@ Item {
             border { width: 1; color: "black" }
 
             property bool offsetEnabled: false
-            property int _xOffset: 3
+            property int _xOffset: 0
             property int _yOffset: 3
 
             onOffsetEnabledChanged: {
