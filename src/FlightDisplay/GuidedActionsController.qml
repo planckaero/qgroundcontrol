@@ -483,7 +483,8 @@ Item {
             break
         case actionReleaseRaft:
             console.info("Releasing raft from vehicle")
-            // TODO: Send MAV_CMD_DO_GRIPPER to autopilot
+            let servoNumber = 7
+            activeVehicle.operateGripper(servoNumber, false); // false sends a release command
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)
