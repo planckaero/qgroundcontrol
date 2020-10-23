@@ -53,6 +53,7 @@ Item {
     readonly property string gotoTitle:                     qsTr("Go To Location")
     readonly property string vtolTransitionTitle:           qsTr("VTOL Transition")
     readonly property string roiTitle:                      qsTr("ROI")
+             property string gripperTitle:                  qsTr("Gripper")
 
     readonly property string armMessage:                        qsTr("Arm the vehicle.")
     readonly property string disarmMessage:                     qsTr("Disarm the vehicle")
@@ -74,6 +75,7 @@ Item {
     readonly property string vtolTransitionFwdMessage:          qsTr("Transition VTOL to fixed wing flight.")
     readonly property string vtolTransitionMRMessage:           qsTr("Transition VTOL to multi-rotor flight.")
     readonly property string roiMessage:                        qsTr("Make the specified location a Region Of Interest.")
+             property string gripperMessage:                    qsTr("Release gripper.")
 
     readonly property int actionRTL:                        1
     readonly property int actionLand:                       2
@@ -98,6 +100,7 @@ Item {
     readonly property int actionVtolTransitionToMRFlight:   21
     readonly property int actionROI:                        22
     readonly property int actionWingman:                    23
+    readonly property int actionGripper:                    25
 
     property bool   _useChecklist:              QGroundControl.settingsManager.appSettings.useChecklist.rawValue && QGroundControl.corePlugin.options.preFlightChecklistUrl.toString().length
     property bool   _enforceChecklist:          _useChecklist && QGroundControl.settingsManager.appSettings.enforceChecklist.rawValue
@@ -118,6 +121,7 @@ Item {
     property bool showROI:              _guidedActionsEnabled && _vehicleFlying && __roiSupported && !_missionActive
     property bool showLandAbort:        _guidedActionsEnabled && _vehicleFlying && _fixedWingOnApproach
     property bool showGotoLocation:     _guidedActionsEnabled && _vehicleFlying
+    property bool showGripper:          _guidedActionsEnabled && activeVehicle.apmFirmware && _gripperAvailable
 
     // Note: The '_missionItemCount - 2' is a hack to not trigger resume mission when a mission ends with an RTL item
     property bool showResumeMission:    activeVehicle && !_vehicleArmed && _vehicleWasFlying && _missionAvailable && _resumeMissionIndex > 0 && (_resumeMissionIndex < _missionItemCount - 2)
@@ -146,6 +150,8 @@ Item {
     property bool   _vehicleWasFlying:      false
     property bool   _rcRSSIAvailable:       activeVehicle ? activeVehicle.rcRSSI > 0 && activeVehicle.rcRSSI <= 100 : false
     property bool   _fixedWingOnApproach:   activeVehicle ? activeVehicle.fixedWing && _vehicleLanding : false
+    property int    _gripperAvailable:      activeVehicle ? activeVehicle.gripperAvailable : false
+    property int    _gripperState:          activeVehicle ? activeVehicle.gripperState : false
 
     // You can turn on log output for GuidedActionsController by turning on GuidedActionsControllerLog category
     property bool __guidedModeSupported:    activeVehicle ? activeVehicle.guidedModeSupported : false
@@ -157,6 +163,19 @@ Item {
     function _outputState() {
         if (_corePlugin.guidedActionsControllerLogging()) {
             console.log(qsTr("activeVehicle(%1) _vehicleArmed(%2) guidedModeSupported(%3) _vehicleFlying(%4) _vehicleWasFlying(%5) _vehicleInRTLMode(%6) pauseVehicleSupported(%7) _vehiclePaused(%8) _flightMode(%9) _missionItemCount(%10) roiSupported(%11) orbitSupported(%12) _missionActive(%13) _hideROI(%14) _hideOrbit(%15)").arg(activeVehicle ? 1 : 0).arg(_vehicleArmed ? 1 : 0).arg(__guidedModeSupported ? 1 : 0).arg(_vehicleFlying ? 1 : 0).arg(_vehicleWasFlying ? 1 : 0).arg(_vehicleInRTLMode ? 1 : 0).arg(__pauseVehicleSupported ? 1 : 0).arg(_vehiclePaused ? 1 : 0).arg(_flightMode).arg(_missionItemCount).arg(__roiSupported).arg(__orbitSupported).arg(_missionActive).arg(_hideROI).arg(_hideOrbit))
+        }
+    }
+
+    function _updateGripperUi() {
+        if (_gripperState) {
+            // Gripper is in grab so next time show the release message
+            gripperTitle   = qsTr("Release")
+            gripperMessage = qsTr("Release gripper.")
+        }
+        else {
+            // Gripper is in release so next time show the grip message
+            gripperTitle   = qsTr("Grab")
+            gripperMessage = qsTr("Engage gripper.")
         }
     }
 
@@ -178,7 +197,8 @@ Item {
     on__OrbitSupportedChanged:          _outputState()
     on_MissionItemCountChanged:         _outputState()
     on_MissionActiveChanged:            _outputState()
-
+    on_GripperStateChanged:             _updateGripperUi()
+    on_GripperAvailableChanged:         _updateGripperUi()
     on_CurrentMissionIndexChanged: {
         if (_corePlugin.guidedActionsControllerLogging()) {
             console.log("_currentMissionIndex", _currentMissionIndex)
@@ -403,6 +423,11 @@ Item {
             confirmDialog.message = roiMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showROI })
             break;
+        case actionGripper:
+            confirmDialog.title = gripperTitle
+            confirmDialog.message = gripperMessage
+            confirmDialog.hideTrigger = Qt.binding(function() { return !showGripper })
+            break;
         default:
             console.warn("Unknown actionCode", actionCode)
             return
@@ -483,6 +508,9 @@ Item {
             break
         case actionROI:
             activeVehicle.guidedModeROI(actionData)
+            break
+        case actionGripper:
+            activeVehicle.operateGripper(!_gripperState)
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)

@@ -636,6 +636,13 @@ Item {
                     action:             _guidedController.actionPause
                 },
                 {
+                    name:               _guidedController.gripperTitle,
+                    iconSource:         "/res/gripper.svg",
+                    buttonVisible:      true,
+                    buttonEnabled:      _guidedController.showGripper,
+                    action:             _guidedController.actionGripper
+                },
+                {
                     name:               qsTr("Action"),
                     iconSource:         "/res/action.svg",
                     buttonVisible:      _anyActionAvailable,
