@@ -762,6 +762,11 @@ public:
     Q_INVOKABLE void triggerCamera();
     Q_INVOKABLE void sendPlan(QString planFile);
 
+    /// Command vehicle to gripper
+    /// @param gripperNumber gripper servo number
+    /// @param grip  flag that will indicate whether to grip or release
+    Q_INVOKABLE void operateGripper(int gripperNumber, bool grip);
+
     /// Used to check if running current version is equal or higher than the one being compared.
     //  returns 1 if current > compare, 0 if current == compare, -1 if current < compare
     Q_INVOKABLE int versionCompare(QString& compare);

@@ -3703,6 +3703,15 @@ void Vehicle::triggerCamera()
                    1.0);                            // test shot flag
 }
 
+void Vehicle::operateGripper(int gripperNumber, bool grip)
+{
+    sendMavCommand(_defaultComponentId,
+                   MAV_CMD_DO_GRIPPER,
+                   true,                 // show errors
+                   (float)gripperNumber, // gripper servo number
+                   (grip ? 1.0 : 0.0));  // grip (1) or release (0)
+}
+
 void Vehicle::setVtolInFwdFlight(bool vtolInFwdFlight)
 {
     if (_vtolInFwdFlight != vtolInFwdFlight) {
