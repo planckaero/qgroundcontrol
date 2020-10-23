@@ -55,7 +55,7 @@ Item {
     readonly property string vtolTransitionTitle:           qsTr("VTOL Transition")
     readonly property string roiTitle:                      qsTr("ROI")
     readonly property string sendSearchTitle:               qsTr("Search")
-    readonly property string releaseRaftTitle:              qsTr("Raft")
+    readonly property string raftTitle:                     qsTr("Raft")
 
     readonly property string armMessage:                        qsTr("Arm the vehicle.")
     readonly property string disarmMessage:                     qsTr("Disarm the vehicle")
@@ -78,7 +78,7 @@ Item {
     readonly property string vtolTransitionMRMessage:           qsTr("Transition VTOL to multi-rotor flight.")
     readonly property string roiMessage:                        qsTr("Make the specified location a Region Of Interest.")
     readonly property string sendSearchMessage:                 qsTr("Send search mission to vehicle.")
-    readonly property string releaseRaftMessage:                qsTr("Release life raft from vehicle.")
+             property string raftMessage:                       qsTr("Release life raft from vehicle.")
 
     readonly property int actionRTL:                        1
     readonly property int actionLand:                       2
@@ -104,7 +104,7 @@ Item {
     readonly property int actionROI:                        22
     readonly property int actionWingman:                    23
     readonly property int actionSendSearch:                 24
-    readonly property int actionReleaseRaft:                25
+    readonly property int actionRaft:                       25
 
     property bool   _useChecklist:              QGroundControl.settingsManager.appSettings.useChecklist.rawValue && QGroundControl.corePlugin.options.preFlightChecklistUrl.toString().length
     property bool   _enforceChecklist:          _useChecklist && QGroundControl.settingsManager.appSettings.enforceChecklist.rawValue
@@ -126,7 +126,7 @@ Item {
     property bool showLandAbort:        _guidedActionsEnabled && _vehicleFlying && _fixedWingOnApproach
     property bool showGotoLocation:     _guidedActionsEnabled && _vehicleFlying
     property bool showSendSearch:       _guidedActionsEnabled && _canArm && !_missionActive && !_missionAvailable
-    property bool showReleaseRaft:      _guidedActionsEnabled && _vehicleFollowing && activeVehicle.apmFirmware
+    property bool showRaft:             _guidedActionsEnabled && activeVehicle.apmFirmware
 
     // Note: The '_missionItemCount - 2' is a hack to not trigger resume mission when a mission ends with an RTL item
     property bool showResumeMission:    activeVehicle && !_vehicleArmed && _vehicleWasFlying && _missionAvailable && _resumeMissionIndex > 0 && (_resumeMissionIndex < _missionItemCount - 2)
@@ -141,7 +141,6 @@ Item {
     property bool   _vehicleArmed:          activeVehicle ? activeVehicle.armed  : false
     property bool   _vehicleFlying:         activeVehicle ? activeVehicle.flying  : false
     property bool   _vehicleLanding:        activeVehicle ? activeVehicle.landing  : false
-    property bool   _vehicleFollowing:      activeVehicle ? activeVehicle.flightMode === activeVehicle.followFlightMode : false
     property bool   _vehiclePaused:         false
     property bool   _vehicleInMissionMode:  false
     property bool   _vehicleInRTLMode:      false
@@ -155,6 +154,7 @@ Item {
     property bool   _vehicleWasFlying:      false
     property bool   _rcRSSIAvailable:       activeVehicle ? activeVehicle.rcRSSI > 0 && activeVehicle.rcRSSI <= 100 : false
     property bool   _fixedWingOnApproach:   activeVehicle ? activeVehicle.fixedWing && _vehicleLanding : false
+    property bool   _lastGripperState:      true // alternate this
 
     // You can turn on log output for GuidedActionsController by turning on GuidedActionsControllerLog category
     property bool __guidedModeSupported:    activeVehicle ? activeVehicle.guidedModeSupported : false
@@ -182,6 +182,14 @@ Item {
     on__GuidedModeSupportedChanged:     _outputState()
     on__PauseVehicleSupportedChanged:   _outputState()
     on_MissionItemCountChanged:         _outputState()
+    on_LastGripperStateChanged:         {
+        if (_lastGripperState) {
+            raftMessage = qsTr("Release life raft from vehicle.")
+        }
+        else {
+            raftMessage = qsTr("Engage life raft grip mechanism.")
+        }
+    }
 
     on_CurrentMissionIndexChanged: {
         if (_corePlugin.guidedActionsControllerLogging()) {
@@ -391,10 +399,10 @@ Item {
             altitudeSlider.setToMinimumTakeoff()
             altitudeSlider.visible = true
             break;
-        case actionReleaseRaft:
-            confirmDialog.title = releaseRaftTitle
-            confirmDialog.message = releaseRaftMessage
-            confirmDialog.hideTrigger = Qt.binding(function() { return !showReleaseRaft })
+        case actionRaft:
+            confirmDialog.title = raftTitle
+            confirmDialog.message = raftMessage
+            confirmDialog.hideTrigger = Qt.binding(function() { return !showRaft })
             break;
         default:
             console.warn("Unknown actionCode", actionCode)
@@ -481,10 +489,10 @@ Item {
             console.info("Send search mission to vehicle")
             positionHistoryController.send_mission(activeVehicle.coordinate, actionAltitudeChange)
             break
-        case actionReleaseRaft:
-            console.info("Releasing raft from vehicle")
+        case actionRaft:
             let servoNumber = 7
-            activeVehicle.operateGripper(servoNumber, false); // false sends a release command
+            activeVehicle.operateGripper(servoNumber, !_lastGripperState) // false sends a release command
+            _lastGripperState = !_lastGripperState
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)

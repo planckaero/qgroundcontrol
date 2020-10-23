@@ -646,11 +646,11 @@ Item {
                     action:             _guidedController.actionSendSearch
                 },
                 {
-                    name:               _guidedController.releaseRaftTitle,
+                    name:               _guidedController.raftTitle,
                     iconSource:         "/res/raft.svg",
-                    buttonVisible:      _guidedController.showReleaseRaft,
-                    buttonEnabled:      _guidedController.showReleaseRaft,
-                    action:             _guidedController.actionReleaseRaft
+                    buttonVisible:      _guidedController.showRaft,
+                    buttonEnabled:      _guidedController.showRaft,
+                    action:             _guidedController.actionRaft
                 },
                 {
                     name:               qsTr("Action"),
