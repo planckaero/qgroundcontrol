@@ -764,9 +764,6 @@ public:
     Q_INVOKABLE void triggerCamera();
     Q_INVOKABLE void sendPlan(QString planFile);
 
-    /// Gripper functions
-    Q_INVOKABLE bool gripperAvailable() { return _gripperNumber > 0; }
-
     /// Command vehicle to gripper
     /// @param gripperNumber gripper servo number
     /// @param grip  flag that will indicate whether to grip or release
@@ -805,6 +802,7 @@ public:
 
     QGeoCoordinate coordinate() { return _coordinate; }
     QGeoCoordinate armedPosition    () { return _armedPosition; }
+    bool gripperAvailable() { return _gripperAvailable; }
     bool gripperState() { return _gripperState; }
 
     typedef enum {
@@ -1434,9 +1432,11 @@ private:
     bool            _highLatencyLink;
     bool            _receivingAttitudeQuaternion;
     CheckList       _checkListState = CheckListNotSetup;
+    bool            _gripperAvailable = false;
     int             _gripperNumber = -1;
-    bool            _gripperState;
+    int             _gripGrab = -1;
     int             _gripRelease = -1;
+    bool            _gripperState = false;
 
     QGCCameraManager* _cameras;
 

@@ -648,7 +648,7 @@ Item {
                 {
                     name:               _guidedController.raftTitle,
                     iconSource:         "/res/raft.svg",
-                    buttonVisible:      _guidedController.showRaft,
+                    buttonVisible:      true,
                     buttonEnabled:      _guidedController.showRaft,
                     action:             _guidedController.actionRaft
                 },
