@@ -55,7 +55,7 @@ Item {
     readonly property string vtolTransitionTitle:           qsTr("VTOL Transition")
     readonly property string roiTitle:                      qsTr("ROI")
     readonly property string sendSearchTitle:               qsTr("Search")
-    readonly property string raftTitle:                     qsTr("Raft")
+             property string raftTitle:                     qsTr("Raft")
 
     readonly property string armMessage:                        qsTr("Arm the vehicle.")
     readonly property string disarmMessage:                     qsTr("Disarm the vehicle")
@@ -168,6 +168,19 @@ Item {
         }
     }
 
+    function _updateRaftUi() {
+        if (_gripperState) {
+            // Gripper is in grab so next time show the release message
+            raftTitle   = qsTr("Release")
+            raftMessage = qsTr("Release life raft from vehicle.")
+        }
+        else {
+            // Gripper is in release so next time show the grip message
+            raftTitle   = qsTr("Grab")
+            raftMessage = qsTr("Engage life raft grip mechanism.")
+        }
+    }
+
     Connections {
         target: mainWindow
         onActiveVehicleChanged: {
@@ -183,16 +196,8 @@ Item {
     on__GuidedModeSupportedChanged:     _outputState()
     on__PauseVehicleSupportedChanged:   _outputState()
     on_MissionItemCountChanged:         _outputState()
-    on_GripperStateChanged:             {
-        if (_gripperState) {
-            // Gripper is in grab so next time show the release message
-            raftMessage = qsTr("Release life raft from vehicle.")
-        }
-        else {
-            // Gripper is in release so next time show the grip message
-            raftMessage = qsTr("Engage life raft grip mechanism.")
-        }
-    }
+    on_GripperStateChanged:             _updateRaftUi()
+    on_GripperAvailableChanged:         _updateRaftUi()
     on_CurrentMissionIndexChanged: {
         if (_corePlugin.guidedActionsControllerLogging()) {
             console.log("_currentMissionIndex", _currentMissionIndex)
