@@ -772,6 +772,9 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
     case MAVLINK_MSG_ID_WIND_COV:
         _handleWindCov(message);
         break;
+    case MAVLINK_MSG_ID_SERVO_OUTPUT_RAW:
+        _handleServoOutputRaw(message);
+        break;
     case MAVLINK_MSG_ID_HIL_ACTUATOR_CONTROLS:
         _handleHilActuatorControls(message);
         break;
@@ -1565,6 +1568,70 @@ void Vehicle::_handleWind(mavlink_message_t& message)
     _windFactGroup.verticalSpeed()->setRawValue(wind.speed_z);
 }
 #endif
+
+void Vehicle::_handleServoOutputRaw(const mavlink_message_t& message)
+{
+    if(_gripperNumber > 0 && _gripRelease >= 1000) {
+        mavlink_servo_output_raw_t output;
+        mavlink_msg_servo_output_raw_decode(&message, &output);
+        bool currGripperState = _gripperState;
+        switch(_gripperNumber) {
+        case 1:
+            currGripperState = output.servo1_raw != _gripRelease;
+            break;
+        case 2:
+            currGripperState = output.servo2_raw != _gripRelease;
+            break;
+        case 3:
+            currGripperState = output.servo3_raw != _gripRelease;
+            break;
+        case 4:
+            currGripperState = output.servo4_raw != _gripRelease;
+            break;
+        case 5:
+            currGripperState = output.servo5_raw != _gripRelease;
+            break;
+        case 6:
+            currGripperState = output.servo6_raw != _gripRelease;
+            break;
+        case 7:
+            currGripperState = output.servo7_raw != _gripRelease;
+            break;
+        case 8:
+            currGripperState = output.servo8_raw != _gripRelease;
+            break;
+        case 9:
+            currGripperState = output.servo9_raw != _gripRelease;
+            break;
+        case 10:
+            currGripperState = output.servo10_raw != _gripRelease;
+            break;
+        case 11:
+            currGripperState = output.servo11_raw != _gripRelease;
+            break;
+        case 12:
+            currGripperState = output.servo12_raw != _gripRelease;
+            break;
+        case 13:
+            currGripperState = output.servo13_raw != _gripRelease;
+            break;
+        case 14:
+            currGripperState = output.servo14_raw != _gripRelease;
+            break;
+        case 15:
+            currGripperState = output.servo15_raw != _gripRelease;
+            break;
+        case 16:
+            currGripperState = output.servo16_raw != _gripRelease;
+            break;
+        }
+
+        if (currGripperState != _gripperState) {
+            _gripperState = currGripperState;
+            emit gripperStateChanged();
+        }
+    }
+}
 
 bool Vehicle::_apmArmingNotRequired()
 {
@@ -2717,6 +2784,7 @@ void Vehicle::_parametersReady(bool parametersReady)
     if (parametersReady) {
         _setupAutoDisarmSignalling();
         _startPlanRequest();
+        _setupGripperInfo();
     }
 }
 
@@ -3703,13 +3771,15 @@ void Vehicle::triggerCamera()
                    1.0);                            // test shot flag
 }
 
-void Vehicle::operateGripper(int gripperNumber, bool grip)
+void Vehicle::operateGripper(bool grip)
 {
-    sendMavCommand(_defaultComponentId,
-                   MAV_CMD_DO_GRIPPER,
-                   true,                 // show errors
-                   (float)gripperNumber, // gripper servo number
-                   (grip ? 1.0 : 0.0));  // grip (1) or release (0)
+    if(_gripperNumber >= 0) {
+        sendMavCommand(_defaultComponentId,
+                       MAV_CMD_DO_GRIPPER,
+                       true,                  // show errors
+                       (float)_gripperNumber, // gripper servo number
+                       (grip ? 1.0 : 0.0));   // grip (1) or release (0)
+    }
 }
 
 void Vehicle::setVtolInFwdFlight(bool vtolInFwdFlight)
@@ -4306,6 +4376,49 @@ void Vehicle::_handleObstacleDistance(const mavlink_message_t& message)
 void Vehicle::updateFlightDistance(double distance)
 {
     _flightDistanceFact.setRawValue(_flightDistanceFact.rawValue().toDouble() + distance);
+}
+
+void Vehicle::_setupGripperInfo()
+{
+    auto paramExists = [this](QString param) -> bool {
+        return this->_parameterManager->parameterExists(this->defaultComponentId(), param);
+    };
+
+    if(!paramExists("GRIP_ENABLE")) {
+        return;
+    }
+    if(!paramExists("GRIP_RELEASE")) {
+        return;
+    }
+    for (int i = 1; i < 16; ++i) {
+        std::ostringstream oss;
+        oss << "SERVO" << i << "_FUNCTION";
+        if(!paramExists(oss.str().c_str())) {
+            return;
+        }
+    }
+
+    auto getParam = [this](QString param) -> Fact* {
+        return this->_parameterManager->getParameter(this->defaultComponentId(), param);
+    };
+
+    Fact* gripEnable = getParam("GRIP_ENABLE");
+    if(gripEnable->rawValue().toBool()) {
+        Fact* gripRelease = getParam("GRIP_RELEASE");
+        _gripRelease = gripRelease->rawValue().toInt();
+    }
+
+    // Find gripper number
+    for(int i = 1; i < 16; ++i) {
+        std::ostringstream oss;
+        oss << "SERVO" << i << "_FUNCTION";
+        Fact* servoFunction = getParam(oss.str().c_str());
+        if(servoFunction->rawValue() == 28) {
+            _gripperNumber = i;
+            emit gripperAvailableChanged();
+            return;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
