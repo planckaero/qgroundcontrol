@@ -634,6 +634,8 @@ public:
     Q_PROPERTY(bool                 gimbalData              READ gimbalData                                             NOTIFY gimbalDataChanged)
     Q_PROPERTY(bool                 isROIEnabled            READ isROIEnabled                                           NOTIFY isROIEnabledChanged)
     Q_PROPERTY(CheckList            checkListState          READ checkListState         WRITE setCheckListState         NOTIFY checkListStateChanged)
+    Q_PROPERTY(bool                 gripperAvailable        READ gripperAvailable                                       NOTIFY gripperAvailableChanged)
+    Q_PROPERTY(bool                 gripperState            READ gripperState                                           NOTIFY gripperStateChanged)
 
     // The following properties relate to Orbit status
     Q_PROPERTY(bool             orbitActive     READ orbitActive        NOTIFY orbitActiveChanged)
@@ -762,10 +764,13 @@ public:
     Q_INVOKABLE void triggerCamera();
     Q_INVOKABLE void sendPlan(QString planFile);
 
+    /// Gripper functions
+    Q_INVOKABLE bool gripperAvailable() { return _gripperNumber > 0; }
+
     /// Command vehicle to gripper
     /// @param gripperNumber gripper servo number
     /// @param grip  flag that will indicate whether to grip or release
-    Q_INVOKABLE void operateGripper(int gripperNumber, bool grip);
+    Q_INVOKABLE void operateGripper(bool grip);
 
     /// Used to check if running current version is equal or higher than the one being compared.
     //  returns 1 if current > compare, 0 if current == compare, -1 if current < compare
@@ -800,6 +805,7 @@ public:
 
     QGeoCoordinate coordinate() { return _coordinate; }
     QGeoCoordinate armedPosition    () { return _armedPosition; }
+    bool gripperState() { return _gripperState; }
 
     typedef enum {
         JoystickModeRC,         ///< Joystick emulates an RC Transmitter
@@ -1168,6 +1174,8 @@ signals:
     void linksPropertiesChanged         ();
     void textMessageReceived            (int uasid, int componentid, int severity, QString text);
     void checkListStateChanged          ();
+    void gripperStateChanged            ();
+    void gripperAvailableChanged        ();
 
     void messagesReceivedChanged        ();
     void messagesSentChanged            ();
@@ -1330,6 +1338,7 @@ private:
 #endif
     void _handleCameraImageCaptured     (const mavlink_message_t& message);
     void _handleADSBVehicle             (const mavlink_message_t& message);
+    void _handleServoOutputRaw          (const mavlink_message_t& message);
     void _missionManagerError           (int errorCode, const QString& errorMsg);
     void _geoFenceManagerError          (int errorCode, const QString& errorMsg);
     void _rallyPointManagerError        (int errorCode, const QString& errorMsg);
@@ -1355,6 +1364,7 @@ private:
     void _flightTimerStart              ();
     void _flightTimerStop               ();
     void _batteryStatusWorker           (int batteryId, double voltage, double current, double batteryRemainingPct);
+    void _setupGripperInfo              ();
 
     int     _id;                    ///< Mavlink system id
     int     _defaultComponentId;
@@ -1424,6 +1434,9 @@ private:
     bool            _highLatencyLink;
     bool            _receivingAttitudeQuaternion;
     CheckList       _checkListState = CheckListNotSetup;
+    int             _gripperNumber = -1;
+    bool            _gripperState;
+    int             _gripRelease = -1;
 
     QGCCameraManager* _cameras;
 

@@ -126,7 +126,7 @@ Item {
     property bool showLandAbort:        _guidedActionsEnabled && _vehicleFlying && _fixedWingOnApproach
     property bool showGotoLocation:     _guidedActionsEnabled && _vehicleFlying
     property bool showSendSearch:       _guidedActionsEnabled && _canArm && !_missionActive && !_missionAvailable
-    property bool showRaft:             _guidedActionsEnabled && activeVehicle.apmFirmware
+    property bool showRaft:             _guidedActionsEnabled && activeVehicle.apmFirmware && _gripperAvailable
 
     // Note: The '_missionItemCount - 2' is a hack to not trigger resume mission when a mission ends with an RTL item
     property bool showResumeMission:    activeVehicle && !_vehicleArmed && _vehicleWasFlying && _missionAvailable && _resumeMissionIndex > 0 && (_resumeMissionIndex < _missionItemCount - 2)
@@ -154,7 +154,8 @@ Item {
     property bool   _vehicleWasFlying:      false
     property bool   _rcRSSIAvailable:       activeVehicle ? activeVehicle.rcRSSI > 0 && activeVehicle.rcRSSI <= 100 : false
     property bool   _fixedWingOnApproach:   activeVehicle ? activeVehicle.fixedWing && _vehicleLanding : false
-    property bool   _lastGripperState:      true // alternate this
+    property int    _gripperAvailable:      activeVehicle ? activeVehicle.gripperAvailable : false
+    property int    _gripperState:          activeVehicle ? activeVehicle.gripperState : false
 
     // You can turn on log output for GuidedActionsController by turning on GuidedActionsControllerLog category
     property bool __guidedModeSupported:    activeVehicle ? activeVehicle.guidedModeSupported : false
@@ -182,15 +183,16 @@ Item {
     on__GuidedModeSupportedChanged:     _outputState()
     on__PauseVehicleSupportedChanged:   _outputState()
     on_MissionItemCountChanged:         _outputState()
-    on_LastGripperStateChanged:         {
-        if (_lastGripperState) {
+    on_GripperStateChanged:             {
+        if (_gripperState) {
+            // Gripper is in grab so next time show the release message
             raftMessage = qsTr("Release life raft from vehicle.")
         }
         else {
+            // Gripper is in release so next time show the grip message
             raftMessage = qsTr("Engage life raft grip mechanism.")
         }
     }
-
     on_CurrentMissionIndexChanged: {
         if (_corePlugin.guidedActionsControllerLogging()) {
             console.log("_currentMissionIndex", _currentMissionIndex)
@@ -490,9 +492,7 @@ Item {
             positionHistoryController.send_mission(activeVehicle.coordinate, actionAltitudeChange)
             break
         case actionRaft:
-            let servoNumber = 7
-            activeVehicle.operateGripper(servoNumber, !_lastGripperState) // false sends a release command
-            _lastGripperState = !_lastGripperState
+            activeVehicle.operateGripper(!_gripperState)
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)
