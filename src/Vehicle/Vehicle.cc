@@ -1573,7 +1573,7 @@ void Vehicle::_handleWind(mavlink_message_t& message)
 
 void Vehicle::_handleServoOutputRaw(const mavlink_message_t& message)
 {
-    if(_gripperNumber > 0 && _gripRelease >= 1000 && _gripGrab >= 1000) {
+    if(_gripperNumber > 0 && _gripRelease >= 0 && _gripGrab >= 0) {
         mavlink_servo_output_raw_t output;
         mavlink_msg_servo_output_raw_decode(&message, &output);
         uint16_t servoOutput = 0;
@@ -3791,7 +3791,7 @@ void Vehicle::operateGripper(bool grip)
         sendMavCommand(_defaultComponentId,
                        MAV_CMD_DO_GRIPPER,
                        true,                  // show errors
-                       (float)_gripperNumber, // gripper servo number
+                       1.0,
                        (grip ? 1.0 : 0.0));   // grip (1) or release (0)
     }
 }
