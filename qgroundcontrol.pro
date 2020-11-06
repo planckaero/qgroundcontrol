@@ -778,6 +778,8 @@ SOURCES += \
     src/Camera/QGCCameraControl.cc \
     src/Camera/QGCCameraIO.cc \
     src/Camera/QGCCameraManager.cc \
+    src/COTServer/COTProtocol.cpp \
+    src/COTServer/COTServer.cpp \
     src/CmdLineOptParser.cc \
     src/FlightMap/Widgets/ValuesWidgetController.cc \
     src/FollowMe/FollowMe.cc \
