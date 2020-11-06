@@ -81,6 +81,7 @@
 #include "SimulatedPosition.h"
 #include "PositionManager.h"
 #include "PlanckListener.h"
+#include "COTServer/COTServer.h"
 #include "FollowMe.h"
 #include "MissionCommandTree.h"
 #include "QGCMapPolygon.h"
@@ -519,6 +520,7 @@ void QGCApplication::_initCommon()
     qmlRegisterUncreatableType<Joystick>            ("QGroundControl.JoystickManager",      1, 0, "Joystick",                   kRefOnly);
     qmlRegisterUncreatableType<QGCPositionManager>  ("QGroundControl.QGCPositionManager",   1, 0, "QGCPositionManager",         kRefOnly);
     qmlRegisterUncreatableType<PlanckListener>      ("QGroundControl.PlanckListener",       1, 0, "PlanckListener",             kRefOnly);
+    qmlRegisterUncreatableType<COTServer>           ("QGroundControl.COTServer",            1, 0, "COTServer",                  kRefOnly);
     qmlRegisterUncreatableType<FactValueSliderListModel>("QGroundControl.FactControls",     1, 0, "FactValueSliderListModel",   kRefOnly);
 
     qmlRegisterUncreatableType<QGCMapPolygon>       ("QGroundControl.FlightMap",            1, 0, "QGCMapPolygon",              kRefOnly);
