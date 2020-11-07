@@ -433,6 +433,7 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 #
 
 HEADERS += \
+    src/COTTranslator/COTTranslator.h \
     src/PositionManager/LandingPadPosition.h \
     src/api/QGCCorePlugin.h \
     src/api/QGCOptions.h \
@@ -441,6 +442,7 @@ HEADERS += \
     src/comm/MavlinkMessagesTimer.h \
     src/GPS/Drivers/src/base_station.h \
     src/comm/PlanckListener.h \
+    src/COTTranslator/COTProtocol.h \
 
 contains (DEFINES, QGC_ENABLE_PAIRING) {
     HEADERS += \
@@ -448,6 +450,7 @@ contains (DEFINES, QGC_ENABLE_PAIRING) {
 }
 
 SOURCES += \
+    src/COTTranslator/COTTranslator.cpp \
     src/PositionManager/LandingPadPosition.cc \
     src/api/QGCCorePlugin.cc \
     src/api/QGCOptions.cc \
@@ -455,6 +458,7 @@ SOURCES += \
     src/api/QmlComponentInfo.cc \
     src/comm/MavlinkMessagesTimer.cc \
     src/comm/PlanckListener.cc \
+    src/COTTranslator/COTProtocol.cpp \
 
 contains (DEFINES, QGC_ENABLE_PAIRING) {
     SOURCES += \
@@ -778,8 +782,6 @@ SOURCES += \
     src/Camera/QGCCameraControl.cc \
     src/Camera/QGCCameraIO.cc \
     src/Camera/QGCCameraManager.cc \
-    src/COTServer/COTProtocol.cpp \
-    src/COTServer/COTServer.cpp \
     src/CmdLineOptParser.cc \
     src/FlightMap/Widgets/ValuesWidgetController.cc \
     src/FollowMe/FollowMe.cc \
