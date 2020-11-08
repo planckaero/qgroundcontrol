@@ -38,6 +38,7 @@ bool COTProtocol::Parse(const void* data, int length)
   catch(std::exception)
   {
     std::cerr << "Parse exception." << std::endl;
+    std::cerr << "Message: " << std::string((char*)data,length) << std::endl;
     return false;
   }
   return true;
@@ -97,7 +98,7 @@ bool COTProtocol::IsPingMessage()
     if(str_type=="t-x-c-t")
     {
       return true;
-      std::cout << "Ping message detected." << std::endl;
+      //std::cout << "Ping message detected." << std::endl;
     }
   }
   return false;
@@ -212,7 +213,7 @@ std::string COTProtocol::CreateDronePositionMessage(double lat, double lon, doub
   std::string time = CreateTimeString(30);
 
   std::string ret = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-    "<event version=\"2.0\" uid=\"PLANCK-SHEARWATER\" type=\"a-f-A-C-C\" "+time+" how=\"m-g\">"
+    "<event version=\"2.0\" uid=\"PLANCK-ANAFI\" type=\"a-f-A-C-C\" "+time+" how=\"m-g\">"
       "<point lat=\""+str_lat+"\" lon=\""+str_lon+"\" hae=\""+str_alt+"\" ce=\"2\" le=\"2\"/>"
       "<detail/>"
     "</event>";
@@ -278,7 +279,7 @@ std::string COTProtocol::CreateSensorMessage(double lat, double lon, double alt)
   	    "<link relation=\"p-p\""
           //"type=\"a-f-G-U-U-M-R\""
           "type=\"a-f-A-C-C\""
-          "uid=\"PLANCK-SHEARWATER\"/>"
+          "uid=\"PLANCK-ANAFI\"/>"
   	  "</detail>"
   	  "<point "
   	    "lat=\""+str_lat+"\""
