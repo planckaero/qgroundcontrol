@@ -3,9 +3,16 @@
 #include <unistd.h>
 #include "MAVLinkProtocol.h"
 #include "LinkInterface.h"
+#include "QMetaObject"
 
-COTTranslator::COTTranslator(QGCApplication* app, QGCToolbox* toolbox) : QGCTool(app, toolbox) {
-    Init();
+COTTranslator::COTTranslator(QGCApplication* app, QGCToolbox* toolbox) : QGCTool(app, toolbox), reconnect_timer(this) {
+    connect(&socket, SIGNAL(connected()),this, SLOT(connected()));
+    connect(&socket, SIGNAL(disconnected()),this, SLOT(disconnected()));
+    connect(&socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
+    connect(&socket, SIGNAL(error(QAbstractSocket::SocketError)),this, SLOT(error(QAbstractSocket::SocketError)));
+    reconnect_timer.setInterval(1000);
+    connect(&reconnect_timer, SIGNAL(timeout()), this, SLOT(connectToHost()));
+    reconnect_timer.start();
 }
 
 COTTranslator::~COTTranslator() {
@@ -18,48 +25,33 @@ void COTTranslator::setToolbox(QGCToolbox *toolbox)
     connect(toolbox->mavlinkProtocol(), &MAVLinkProtocol::messageReceived, this, &COTTranslator::onMAVLinkMessage);
 }
 
-bool COTTranslator::Init()
-{
-    connect(&socket, SIGNAL(connected()),this, SLOT(connected()));
-    connect(&socket, SIGNAL(disconnected()),this, SLOT(disconnected()));
-    connect(&socket, SIGNAL(bytesWritten(qint64)),this, SLOT(bytesWritten(qint64)));
-    connect(&socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
-
-    qDebug() << "connecting...";
-
-    // this is not blocking call
-    //socket.connectToHost("192.168.42.2", 6969);
-    socket.connectToHost("127.0.0.1", 6969);
-
-    // we need to wait...
-    if(!socket.waitForConnected(5000))
-    {
-        qDebug() << "Error: " << socket.errorString();
-        return false;
-    }
-    return true;
-}
-
 // Called when a properly aligned MAVLink message is detected
 void COTTranslator::onMAVLinkMessage(LinkInterface* link, mavlink_message_t message) {
   Q_UNUSED(link);
   std::string cot_message = cot_proto.TranslateMessage(&message);
-  if(cot_message!="")// && cot_msg_detected)
+  if(!cot_message.empty())
   {
-      socket.write(cot_message.c_str());
+      if(socket.state() == QAbstractSocket::ConnectedState){
+        socket.write(cot_message.c_str());
+      }
   }
 }
 
 // Called when a packet comes in on the COT listen port
-void COTTranslator::OnCOTData(void* data, int length)
+void COTTranslator::OnCOTData(QByteArray data)
 {
-  cot_msg_detected = true;
-  if(cot_proto.Parse(data, length))
+  if(data.length() <= 0) {
+      return;
+  }
+
+  if(cot_proto.Parse(data.data(), data.length()))
   {
     if(cot_proto.IsPingMessage())
     {
       // I'm rubber, you're glue.
-      socket.write((const char*)data, length);
+      if(socket.state() == QAbstractSocket::ConnectedState) {
+        socket.write(data);
+      }
     }
     else
     {
@@ -70,24 +62,33 @@ void COTTranslator::OnCOTData(void* data, int length)
 
 void COTTranslator::connected()
 {
-    qDebug() << "connected...";
+    reconnect_timer.stop();
 }
 
 void COTTranslator::disconnected()
 {
-    qDebug() << "disconnected...";
+    reconnect_timer.start();
 }
 
-void COTTranslator::bytesWritten(qint64 bytes)
+void COTTranslator::connectToHost() {
+    reconnect_timer.stop();
+    //If we are currently attempting to connect, restart the
+    //connection attempt
+    if (socket.state() != QAbstractSocket::ConnectedState) {
+        socket.abort();
+        socket.connectToHost("127.0.0.1", 6969);
+        reconnect_timer.start();
+    }
+}
+
+void COTTranslator::error(QAbstractSocket::SocketError socketError)
 {
-    qDebug() << bytes << " bytes written...";
+    Q_UNUSED(socketError);
+    reconnect_timer.start(1000);
 }
 
 void COTTranslator::readyRead()
 {
-    qDebug() << "reading...";
-
     // read the data from the socket
-    QByteArray data = socket.readAll();
-    OnCOTData(data.data_ptr(), data.length());
+    OnCOTData(socket.readAll());
 }

@@ -3,6 +3,7 @@
 #include "COTProtocol.h"
 #include "QGCToolbox.h"
 #include "QTcpSocket"
+#include "QTimer"
 
 class LinkInterface;
 
@@ -13,23 +14,20 @@ public:
   COTTranslator(QGCApplication* app, QGCToolbox* toolbox);
   ~COTTranslator();
   virtual void setToolbox(QGCToolbox *toolbox);
-  bool Init();
-  void Run();
-  void Stop() { running = false; };
 
 public slots:
     void onMAVLinkMessage(LinkInterface* link, mavlink_message_t message);
     void connected();
     void disconnected();
-    void bytesWritten(qint64 bytes);
     void readyRead();
+    void error(QAbstractSocket::SocketError socketError);
+    void connectToHost();
 
 private:
-  void OnCOTData(void* data, int length);
+  void OnCOTData(QByteArray data);
   void OnCOTLatLonMessage(double lat, double lon);
 
   COTProtocol cot_proto;
-  bool running = true;
-  bool cot_msg_detected = false;
   QTcpSocket socket;
+  QTimer reconnect_timer;
 };
