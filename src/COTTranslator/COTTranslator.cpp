@@ -4,6 +4,8 @@
 #include "MAVLinkProtocol.h"
 #include "LinkInterface.h"
 #include "QMetaObject"
+#include "QGCApplication.h"
+#include "SettingsManager.h"
 
 COTTranslator::COTTranslator(QGCApplication* app, QGCToolbox* toolbox) : QGCTool(app, toolbox), reconnect_timer(this) {
     connect(&socket, SIGNAL(connected()),this, SLOT(connected()));
@@ -71,12 +73,17 @@ void COTTranslator::disconnected()
 }
 
 void COTTranslator::connectToHost() {
+    if(!_toolbox->settingsManager()->appSettings()->connectToCOTServer()->rawValue().toBool()) {
+        return;
+    }
     reconnect_timer.stop();
     //If we are currently attempting to connect, restart the
     //connection attempt
     if (socket.state() != QAbstractSocket::ConnectedState) {
         socket.abort();
-        socket.connectToHost("127.0.0.1", 6969);
+        auto server_addr =  _toolbox->settingsManager()->appSettings()->cotServerAddress()->rawValue().toString();
+        auto server_port =  _toolbox->settingsManager()->appSettings()->cotServerPort()->rawValue().toInt();
+        socket.connectToHost(server_addr, server_port);
         reconnect_timer.start();
     }
 }

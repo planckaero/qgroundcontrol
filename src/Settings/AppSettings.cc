@@ -119,6 +119,9 @@ DECLARE_SETTINGSFACT(AppSettings, disableAllPersistence)
 DECLARE_SETTINGSFACT(AppSettings, usePairing)
 DECLARE_SETTINGSFACT(AppSettings, saveCsvTelemetry)
 DECLARE_SETTINGSFACT(AppSettings, sendPlanckGPS)
+DECLARE_SETTINGSFACT(AppSettings, connectToCOTServer)
+DECLARE_SETTINGSFACT(AppSettings, cotServerAddress)
+DECLARE_SETTINGSFACT(AppSettings, cotServerPort)
 
 DECLARE_SETTINGSFACT_NO_FUNC(AppSettings, indoorPalette)
 {
