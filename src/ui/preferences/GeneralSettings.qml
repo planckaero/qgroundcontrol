@@ -799,12 +799,47 @@ Rectangle {
                             anchors.top:        parent.top
                             spacing:            _margins
 
-                            FactCheckBox {
+                            GridLayout {
+                                Layout.fillWidth:   false
                                 Layout.alignment:   Qt.AlignHCenter
-                                text: qsTr("Send Planck GPS Location from NMEA or Internal GPS")
+                                columns:            2
+                                visible:            true
 
-                                fact:       _sendPlanckGPS
-                                property Fact _sendPlanckGPS: QGroundControl.settingsManager.appSettings.sendPlanckGPS
+                                FactCheckBox {
+                                    id: sendPlanckGPSFactCheckBox
+                                    //Layout.alignment:   Qt.AlignHCenter
+                                    text: qsTr("Send Planck GPS Location from NMEA or Internal GPS")
+
+                                    fact:       _sendPlanckGPS
+                                    property Fact _sendPlanckGPS: QGroundControl.settingsManager.appSettings.sendPlanckGPS
+                                }
+
+                                FactCheckBox {
+                                    text:                   "Connect to COT server"
+                                    fact:                   QGroundControl.settingsManager.appSettings.connectToCOTServer
+                                    visible:                true
+                                    Layout.columnSpan:      2
+                                }
+
+                                QGCLabel {
+                                    text:               "COT server address"
+                                    visible:            QGroundControl.settingsManager.appSettings.connectToCOTServer
+                                }
+                                FactTextField {
+                                    fact:                   QGroundControl.settingsManager.appSettings.cotServerAddress
+                                    visible:                QGroundControl.settingsManager.appSettings.connectToCOTServer
+                                    //Layout.preferredWidth:  _valueFieldWidth
+                                }
+
+                                QGCLabel {
+                                    text:               "COT server port"
+                                    visible:            QGroundControl.settingsManager.appSettings.connectToCOTServer
+                                }
+                                FactTextField {
+                                    fact:                   QGroundControl.settingsManager.appSettings.cotServerPort
+                                    visible:                QGroundControl.settingsManager.appSettings.connectToCOTServer
+                                    //Layout.preferredWidth:  _valueFieldWidth
+                                }
                             }
                         }
                     }

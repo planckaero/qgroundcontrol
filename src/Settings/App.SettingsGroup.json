@@ -283,5 +283,29 @@
     "longDescription":  "Send Planck GPS Position from Local GPS",
     "type":             "bool",
     "defaultValue":     false
+},
+{
+    "name":             "connectToCOTServer",
+    "shortDescription": "Connect to a COT server",
+    "longDescription":  "Connect to a COT server",
+    "type":             "bool",
+    "defaultValue":     false,
+    "qgcRebootRequired":    true
+},
+{
+    "name":             "cotServerAddress",
+    "shortDescription": "COT server address",
+    "longDescription":  "COT server address",
+    "type":             "string",
+    "defaultValue":     "192.168.42.2",
+    "qgcRebootRequired":    true
+},
+{
+    "name":             "cotServerPort",
+    "shortDescription": "COT server port",
+    "longDescription":  "COT server port",
+    "type":             "string",
+    "defaultValue":     "6969",
+    "qgcRebootRequired":    true
 }
 ]
