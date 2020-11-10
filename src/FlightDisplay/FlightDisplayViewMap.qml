@@ -662,7 +662,9 @@ FlightMap {
         MouseArea {
           anchors.fill: parent
           onClicked: {
+            if (!guidedActionsController.guidedUIVisible && guidedActionsController.showGotoLocation) {
               guidedActionsController.confirmAction(guidedActionsController.actionGotoCoT, parent.coordinate, gotoLocationItem)
+            }
           }
         }
     }
