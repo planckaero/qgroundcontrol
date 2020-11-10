@@ -54,6 +54,7 @@ Item {
     readonly property string vtolTransitionTitle:           qsTr("VTOL Transition")
     readonly property string roiTitle:                      qsTr("ROI")
     readonly property string planckTrackTitle:              qsTr("Planck Track")
+    readonly property string gotoCoTTitle:                  qsTr("Go To CoT")
 
     readonly property string armMessage:                        qsTr("Arm the vehicle.")
     readonly property string disarmMessage:                     qsTr("Disarm the vehicle")
@@ -101,6 +102,7 @@ Item {
     readonly property int actionROI:                        22
     readonly property int actionWingman:                    23
     readonly property int actionPlanckTrack:                24
+    readonly property int actionGotoCoT:                    25
 
     property bool   _useChecklist:              QGroundControl.settingsManager.appSettings.useChecklist.rawValue && QGroundControl.corePlugin.options.preFlightChecklistUrl.toString().length
     property bool   _enforceChecklist:          _useChecklist && QGroundControl.settingsManager.appSettings.enforceChecklist.rawValue
@@ -412,6 +414,11 @@ Item {
             confirmDialog.message = planckTrackMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showPlanckTrack })
             break;
+        case actionGotoCoT:
+            confirmDialog.title = gotoCoTTitle
+            confirmDialog.message = gotoMessage
+            confirmDialog.hideTrigger = Qt.binding(function() { return !showGotoLocation })
+            break;
         default:
             console.warn("Unknown actionCode", actionCode)
             return
@@ -495,6 +502,9 @@ Item {
             break
         case actionPlanckTrack:
             activeVehicle.planckTrack()
+            break
+        case actionGotoCoT:
+            activeVehicle.guidedModeGotoLocation(actionData)
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)

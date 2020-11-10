@@ -547,35 +547,6 @@ FlightMap {
         }
     }
 
-    /// COT target location
-    MapQuickItem {
-        anchorPoint.x:  sourceItem.width / 2
-        anchorPoint.y:  sourceItem.height / 2
-        //visible:        coordinate.isValid
-        coordinate:     QGroundControl.cotTranslator.COTTargetPosition
-
-        sourceItem: Image {
-            id: cotAircraftImage
-            source:         "/qmlimages/AlertAircraft.svg"
-            mipmap:         true
-            antialiasing:   true
-            fillMode:       Image.PreserveAspectFit
-            height:         ScreenTools.defaultFontPixelHeight * (isNaN(gcsHeading) ? 1.75 : 2.5 )
-            sourceSize.height: height
-        }
-
-        MouseArea {
-          width:cotAircraftImage.width
-          height:cotAircraftImage.height
-          //anchors.fill:cotAircraftImage
-          //z:cotAircraftImage.z + 1
-          onClicked: {
-              console.log("Clicked!");
-              guidedActionsController.confirmAction(guidedActionsController.actionGoto, parent.coordinate, gotoLocationItem)
-          }
-        }
-    }
-
     // Orbit telemetry visuals
     QGCMapCircleVisuals {
         id:             orbitTelemetryCircle
@@ -670,6 +641,32 @@ FlightMap {
             }
         }
     }
+
+    /// COT target location
+    MapQuickItem {
+        anchorPoint.x:  sourceItem.width / 2
+        anchorPoint.y:  sourceItem.height / 2
+        //visible:        coordinate.isValid
+        coordinate:     QGroundControl.cotTranslator.COTTargetPosition
+
+        sourceItem: Image {
+            id: cotAircraftImage
+            source:         "/qmlimages/AlertAircraft.svg"
+            mipmap:         true
+            antialiasing:   true
+            fillMode:       Image.PreserveAspectFit
+            height:         ScreenTools.defaultFontPixelHeight * (isNaN(gcsHeading) ? 1.75 : 2.5 )
+            sourceSize.height: height
+        }
+
+        MouseArea {
+          anchors.fill: parent
+          onClicked: {
+              guidedActionsController.confirmAction(guidedActionsController.actionGotoCoT, parent.coordinate, gotoLocationItem)
+          }
+        }
+    }
+
 
     MapScale {
         id:                     mapScale
