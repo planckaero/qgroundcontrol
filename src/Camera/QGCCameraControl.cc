@@ -2043,6 +2043,7 @@ QGCCameraControl::_paramDone()
 void
 QGCCameraControl::_checkForVideoStreams()
 {
+    return;
     if(_info.flags & CAMERA_CAP_FLAGS_HAS_VIDEO_STREAM) {
         //-- Skip it if using Taisync as it has its own video settings
         if(!qgcApp()->toolbox()->videoManager()->isTaisync()) {
