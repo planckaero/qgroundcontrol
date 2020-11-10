@@ -82,7 +82,7 @@ QGCToolbox::QGCToolbox(QGCApplication* app)
 #endif
     _planckListener =           new PlanckListener          (app, this);
     _landingPadManager =        new LandingPadPosition      ();
-    _cotServer =                new COTTranslator           (app, this);
+    _cotTranslator =            new COTTranslator           (app, this);
     //-- Airmap Manager
     //-- This should be "pluggable" so an arbitrary AirSpace manager can be used
     //-- For now, we instantiate the one and only AirMap provider
@@ -125,7 +125,7 @@ void QGCToolbox::setChildToolboxes(void)
     _airspaceManager->setToolbox(this);
     _adsbVehicleManager->setToolbox(this);
     _planckListener->setToolbox(this);
-    _cotServer->setToolbox(this);
+    _cotTranslator->setToolbox(this);
 #if defined(QGC_GST_TAISYNC_ENABLED)
     _taisyncManager->setToolbox(this);
 #endif

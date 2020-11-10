@@ -68,6 +68,7 @@ public:
     Q_PROPERTY(QGCMapEngineManager* mapEngineManager    READ mapEngineManager       CONSTANT)
     Q_PROPERTY(QGCPositionManager*  qgcPositionManger   READ qgcPositionManger      CONSTANT)
     Q_PROPERTY(PlanckListener*      planckListener      READ planckListener         CONSTANT)
+    Q_PROPERTY(COTTranslator*       cotTranslator       READ cotTranslator CONSTANT)
     Q_PROPERTY(MissionCommandTree*  missionCommandTree  READ missionCommandTree     CONSTANT)
     Q_PROPERTY(VideoManager*        videoManager        READ videoManager           CONSTANT)
     Q_PROPERTY(MAVLinkLogManager*   mavlinkLogManager   READ mavlinkLogManager      CONSTANT)
@@ -177,6 +178,7 @@ public:
     QGCMapEngineManager*    mapEngineManager    ()  { return _mapEngineManager; }
     QGCPositionManager*     qgcPositionManger   ()  { return _qgcPositionManager; }
     PlanckListener*         planckListener      ()  { return _planckListener; }
+    COTTranslator*          cotTranslator       ()  { return _cotTranslator; }
     MissionCommandTree*     missionCommandTree  ()  { return _missionCommandTree; }
     VideoManager*           videoManager        ()  { return _videoManager; }
     MAVLinkLogManager*      mavlinkLogManager   ()  { return _mavlinkLogManager; }
@@ -272,6 +274,7 @@ private:
     QGCMapEngineManager*    _mapEngineManager       = nullptr;
     QGCPositionManager*     _qgcPositionManager     = nullptr;
     PlanckListener*         _planckListener         = nullptr;
+    COTTranslator*          _cotTranslator          = nullptr;
     MissionCommandTree*     _missionCommandTree     = nullptr;
     VideoManager*           _videoManager           = nullptr;
     MAVLinkLogManager*      _mavlinkLogManager      = nullptr;

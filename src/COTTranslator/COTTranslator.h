@@ -4,6 +4,7 @@
 #include "QGCToolbox.h"
 #include "QTcpSocket"
 #include "QTimer"
+#include <QGeoPositionInfo>
 
 class LinkInterface;
 
@@ -14,6 +15,13 @@ public:
   COTTranslator(QGCApplication* app, QGCToolbox* toolbox);
   ~COTTranslator();
   virtual void setToolbox(QGCToolbox *toolbox);
+
+  Q_PROPERTY(QGeoCoordinate COTTargetPosition  READ targetPosition NOTIFY targetPositionChanged)
+
+  QGeoCoordinate targetPosition (void){ return _targetPosition; };
+
+signals:
+  void targetPositionChanged(QGeoCoordinate position);
 
 public slots:
     void onMAVLinkMessage(LinkInterface* link, mavlink_message_t message);
@@ -30,4 +38,5 @@ private:
   COTProtocol cot_proto;
   QTcpSocket socket;
   QTimer reconnect_timer;
+  QGeoCoordinate _targetPosition;
 };

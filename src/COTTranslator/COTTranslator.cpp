@@ -8,6 +8,7 @@
 #include "SettingsManager.h"
 
 COTTranslator::COTTranslator(QGCApplication* app, QGCToolbox* toolbox) : QGCTool(app, toolbox), reconnect_timer(this) {
+    cot_proto.SubscribeToLatLon(std::bind(&COTTranslator::OnCOTLatLonMessage, this, std::placeholders::_1, std::placeholders::_2));
     connect(&socket, SIGNAL(connected()),this, SLOT(connected()));
     connect(&socket, SIGNAL(disconnected()),this, SLOT(disconnected()));
     connect(&socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
@@ -98,4 +99,18 @@ void COTTranslator::readyRead()
 {
     // read the data from the socket
     OnCOTData(socket.readAll());
+}
+
+// Event callback for when we get a COT message for drone cueing
+void COTTranslator::OnCOTLatLonMessage(double lat, double lon)
+{
+    //Update the globally available position
+    QGeoCoordinate newTarget(lat, lon);
+    if (newTarget.isValid()) {
+        // Note that gcsPosition filters out possible crap values
+        if (qAbs(newTarget.latitude()) > 0.001 && qAbs(newTarget.longitude()) > 0.001) {
+            _targetPosition = newTarget;
+            emit targetPositionChanged(_targetPosition);
+        }
+    }
 }
