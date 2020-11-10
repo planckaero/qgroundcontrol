@@ -68,6 +68,7 @@ void QGroundControlQmlGlobal::setToolbox(QGCToolbox* toolbox)
     _airspaceManager        = toolbox->airspaceManager();
     _adsbVehicleManager     = toolbox->adsbVehicleManager();
     _planckListener         = toolbox->planckListener();
+    _cotTranslator          = toolbox->cotTranslator();
 #if defined(QGC_ENABLE_PAIRING)
     _pairingManager         = toolbox->pairingManager();
 #endif

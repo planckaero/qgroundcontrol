@@ -74,7 +74,7 @@ public:
     ADSBVehicleManager*         adsbVehicleManager      () { return _adsbVehicleManager; }
     LandingPadPosition*         landingPadManager       () { return _landingPadManager; }
     PlanckListener*             planckListener          () { return _planckListener; }
-    COTTranslator*                  cotServer               () { return _cotServer; }
+    COTTranslator*                  cotTranslator               () { return _cotTranslator; }
 #if defined(QGC_ENABLE_PAIRING)
     PairingManager*             pairingManager          () { return _pairingManager; }
 #endif
@@ -117,7 +117,7 @@ private:
     ADSBVehicleManager*         _adsbVehicleManager     = nullptr;
     LandingPadPosition*         _landingPadManager      = nullptr;
     PlanckListener*             _planckListener         = nullptr;
-    COTTranslator*                  _cotServer              = nullptr;
+    COTTranslator*              _cotTranslator          = nullptr;
 #if defined(QGC_ENABLE_PAIRING)
     PairingManager*             _pairingManager         = nullptr;
 #endif
