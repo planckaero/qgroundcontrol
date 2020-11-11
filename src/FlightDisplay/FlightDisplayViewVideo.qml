@@ -33,36 +33,6 @@ Item {
     property var    _camera:            _isCamera ? _dynamicCameras.cameras.get(_curCameraIndex) : null
     property bool   _hasZoom:           _camera && _camera.hasZoom
     property int    _fitMode:           QGroundControl.settingsManager.videoSettings.videoFit.rawValue
-
-    CameraChooser {
-        id:             camChooser
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.bottomMargin: 20
-        anchors.rightMargin: 20
-
-        onCameraChoiceChanged:
-        {
-            // RTSP Mode
-            QGroundControl.settingsManager.videoSettings.rtspUrl.rawValue =
-                cameraChoice===cameraDownward ?
-                QGroundControl.settingsManager.videoSettings.rtspDownUrl.rawValue :
-                QGroundControl.settingsManager.videoSettings.rtspGimbalUrl.rawValue
-
-            // UDP Mode
-            QGroundControl.settingsManager.videoSettings.udpPort.rawValue =
-                cameraChoice===cameraDownward ?
-                QGroundControl.settingsManager.videoSettings.udpDownPort.rawValue :
-                QGroundControl.settingsManager.videoSettings.udpGimbalPort.rawValue
-
-            // TCP Mode
-            QGroundControl.settingsManager.videoSettings.tcpUrl.rawValue =
-                cameraChoice===cameraDownward ?
-                QGroundControl.settingsManager.videoSettings.tcpDownUrl.rawValue :
-                QGroundControl.settingsManager.videoSettings.tcpGimbalUrl.rawValue
-        }
-    }
-
     property double _thermalHeightFactor: 0.85 //-- TODO
 
     Rectangle {

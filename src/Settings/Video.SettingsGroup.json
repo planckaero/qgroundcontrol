@@ -15,22 +15,6 @@
     "defaultValue":     5600
 },
 {
-    "name":             "udpDownPort",
-    "shortDescription": "Video UDP Downward Camera Port",
-    "longDescription":  "UDP port to bind to for down cam video stream.",
-    "type":             "uint16",
-    "min":              1025,
-    "defaultValue":     5600
-},
-{
-    "name":             "udpGimbalPort",
-    "shortDescription": "Video UDP Gimbal UDP Port",
-    "longDescription":  "UDP port to bind to for gimbal cam video stream.",
-    "type":             "uint16",
-    "min":              1025,
-    "defaultValue":     5600
-},
-{
     "name":             "rtspUrl",
     "shortDescription": "Video RTSP Url",
     "longDescription":  "RTSP url address and port to bind to for video stream. Example: rtsp://192.168.42.1:554/live",
@@ -38,37 +22,9 @@
     "defaultValue":     ""
 },
 {
-    "name":             "rtspDownUrl",
-    "shortDescription": "Video RTSP Downward Camera Url",
-    "longDescription":  "RTSP url address and port to bind to for down cam video stream. Example: rtsp://192.168.1.1:8554/live",
-    "type":             "string",
-    "defaultValue":     "rtsp://192.168.1.1:8554/vid"
-},
-{
-    "name":             "rtspGimbalUrl",
-    "shortDescription": "Video RTSP Gimbal Camera Url",
-    "longDescription":  "RTSP url address and port to bind to for gimbal cam video stream. Example: rtsp://192.168.1.1:8556/live",
-    "type":             "string",
-    "defaultValue":     "rtsp://192.168.1.1:8556/vid"
-},
-{
     "name":             "tcpUrl",
     "shortDescription": "Video TCP Url",
     "longDescription":  "TCP url address and port to bind to for video stream. Example: 192.168.143.200:3001",
-    "type":             "string",
-    "defaultValue":     ""
-},
-{
-    "name":             "tcpDownUrl",
-    "shortDescription": "Video TCP Downward Camera Url",
-    "longDescription":  "TCP url address and port to bind to for down cam video stream. Example: 192.168.143.200:3001",
-    "type":             "string",
-    "defaultValue":     ""
-},
-{
-    "name":             "tcpGimbalUrl",
-    "shortDescription": "Video TCP Gimbal Camera Url",
-    "longDescription":  "TCP url address and port to bind to for gimbal cam video stream. Example: 192.168.143.200:3001",
     "type":             "string",
     "defaultValue":     ""
 },
