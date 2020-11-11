@@ -110,24 +110,6 @@ DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, udpPort)
     return _udpPortFact;
 }
 
-DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, udpDownPort)
-{
-    if (!_udpDownPortFact) {
-        _udpDownPortFact = _createSettingsFact(udpDownPortName);
-        connect(_udpDownPortFact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
-    }
-    return _udpDownPortFact;
-}
-
-DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, udpGimbalPort)
-{
-    if (!_udpGimbalPortFact) {
-        _udpGimbalPortFact = _createSettingsFact(udpGimbalPortName);
-        connect(_udpGimbalPortFact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
-    }
-    return _udpGimbalPortFact;
-}
-
 DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, rtspUrl)
 {
     if (!_rtspUrlFact) {
@@ -137,24 +119,6 @@ DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, rtspUrl)
     return _rtspUrlFact;
 }
 
-DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, rtspDownUrl)
-{
-    if (!_rtspDownUrlFact) {
-        _rtspDownUrlFact = _createSettingsFact(rtspDownUrlName);
-        connect(_rtspDownUrlFact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
-    }
-    return _rtspDownUrlFact;
-}
-
-DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, rtspGimbalUrl)
-{
-    if (!_rtspGimbalUrlFact) {
-        _rtspGimbalUrlFact = _createSettingsFact(rtspGimbalUrlName);
-        connect(_rtspGimbalUrlFact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
-    }
-    return _rtspGimbalUrlFact;
-}
-
 DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, tcpUrl)
 {
     if (!_tcpUrlFact) {
@@ -162,24 +126,6 @@ DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, tcpUrl)
         connect(_tcpUrlFact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
     }
     return _tcpUrlFact;
-}
-
-DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, tcpDownUrl)
-{
-    if (!_tcpDownUrlFact) {
-        _tcpDownUrlFact = _createSettingsFact(tcpDownUrlName);
-        connect(_tcpDownUrlFact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
-    }
-    return _tcpDownUrlFact;
-}
-
-DECLARE_SETTINGSFACT_NO_FUNC(VideoSettings, tcpGimbalUrl)
-{
-    if (!_tcpGimbalUrlFact) {
-        _tcpGimbalUrlFact = _createSettingsFact(tcpGimbalUrlName);
-        connect(_tcpGimbalUrlFact, &Fact::valueChanged, this, &VideoSettings::_configChanged);
-    }
-    return _tcpGimbalUrlFact;
 }
 
 bool VideoSettings::streamConfigured(void)
