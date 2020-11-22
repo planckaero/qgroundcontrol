@@ -951,7 +951,7 @@ void APMFirmwarePlugin::pauseVehicle(Vehicle* vehicle)
     _setFlightModeAndValidate(vehicle, pauseFlightMode());
 }
 
-void APMFirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoordinate& gotoCoord)
+void APMFirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoordinate& gotoCoord, double altitude)
 {
     if (qIsNaN(vehicle->altitudeRelative()->rawValue().toDouble())) {
         qgcApp()->showMessage(QStringLiteral("Unable to go to location, vehicle position not known."));
