@@ -474,7 +474,7 @@ Item {
             activeVehicle.guidedModeStartWingman(actionData, actionAltitudeChange)
             break;
         case actionGoto:
-            activeVehicle.guidedModeGotoLocation(actionData, actionAltitudeChange)
+            activeVehicle.guidedModeGotoLocation(actionData, actionAltitudeChange + activeVehicle.altitudeRelative.rawValue)
             break
         case actionSetWaypoint:
             activeVehicle.setCurrentMissionSequence(actionData)
@@ -508,7 +508,7 @@ Item {
             activeVehicle.planckTrack()
             break
         case actionGotoCoT:
-            activeVehicle.guidedModeGotoLocation(actionData, actionAltitudeChange)
+            activeVehicle.guidedModeGotoLocation(actionData, actionAltitudeChange + activeVehicle.altitudeRelative.rawValue)
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)
