@@ -3127,7 +3127,7 @@ void Vehicle::guidedModeOrbit(const QGeoCoordinate& centerCoord, double radius, 
             static_cast<float>(qQNaN()),    // Use default velocity
             0,                              // Vehicle points to center
             static_cast<float>(qQNaN()),    // reserved
-            centerCoord.latitude(), centerCoord.longitude(), static_cast<float>(amslAltitude));
+            centerCoord.latitude(), centerCoord.longitude(), static_cast<float>(amslAltitude), true);
     } else {
         sendMavCommand(
             defaultComponentId(),
@@ -3139,7 +3139,7 @@ void Vehicle::guidedModeOrbit(const QGeoCoordinate& centerCoord, double radius, 
             static_cast<float>(qQNaN()),    // reserved
             static_cast<float>(centerCoord.latitude()),
             static_cast<float>(centerCoord.longitude()),
-            static_cast<float>(amslAltitude));
+            static_cast<float>(amslAltitude), true);
     }
 }
 
