@@ -343,6 +343,10 @@ QGCCameraManager::_handleVideoStreamInfo(const mavlink_message_t& message)
     if(pCamera) {
         mavlink_video_stream_information_t streamInfo;
         mavlink_msg_video_stream_information_decode(&message, &streamInfo);
+        if(QString(streamInfo.uri) == "rtsp://192.168.168.10/live") {
+            memset(streamInfo.uri,0,MAVLINK_MSG_VIDEO_STREAM_INFORMATION_FIELD_URI_LEN);
+            strcpy(streamInfo.uri, "rtsp://192.168.168.14:8554/detector");
+        }
         pCamera->handleVideoInfo(&streamInfo);
     }
 }
