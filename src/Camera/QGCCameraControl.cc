@@ -1559,16 +1559,7 @@ QGCCameraControl::handleVideoInfo(const mavlink_video_stream_information_t* vi)
     _expectedCount = vi->count;
     if(!_findStream(vi->stream_id, false)) {
         qCDebug(CameraControlLog) << "Create stream handler for stream ID:" << vi->stream_id;
-        QGCVideoStreamInfo* pStream;
-        if(QString(vi->uri) == "rtsp://192.168.42.1/live" || QString(vi->uri) == "rtsp://192.168.168.10/live") {
-            mavlink_video_stream_information_t vi_modified = *vi;
-            strcpy(vi_modified.uri,qgcApp()->toolbox()->settingsManager()->videoSettings()->rtspUrl()->rawValue().toString().toStdString().c_str());
-            qDebug() << "Overriding stream address to " << QString(vi_modified.uri);
-            pStream = new QGCVideoStreamInfo(this, &vi_modified);
-        } else {
-          pStream = new QGCVideoStreamInfo(this, vi);
-        }
-
+        QGCVideoStreamInfo* pStream = new QGCVideoStreamInfo(this, vi);
         QQmlEngine::setObjectOwnership(pStream, QQmlEngine::CppOwnership);
         _streams.append(pStream);
         //-- Thermal is handled separately and not listed
