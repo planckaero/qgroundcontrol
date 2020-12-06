@@ -4,6 +4,7 @@
 #include "QGCToolbox.h"
 #include "QTcpSocket"
 #include "QTimer"
+#include <QElapsedTimer>
 #include <QGeoPositionInfo>
 
 class LinkInterface;
@@ -39,4 +40,5 @@ private:
   QTcpSocket socket;
   QTimer reconnect_timer;
   QGeoCoordinate _targetPosition;
+  QElapsedTimer pos_send_timer; //For rate-limiting position messages
 };

@@ -16,6 +16,7 @@ COTTranslator::COTTranslator(QGCApplication* app, QGCToolbox* toolbox) : QGCTool
     reconnect_timer.setInterval(1000);
     connect(&reconnect_timer, SIGNAL(timeout()), this, SLOT(connectToHost()));
     reconnect_timer.start();
+    pos_send_timer.start();
 }
 
 COTTranslator::~COTTranslator() {
@@ -34,6 +35,13 @@ void COTTranslator::onMAVLinkMessage(LinkInterface* link, mavlink_message_t mess
   std::string cot_message = cot_proto.TranslateMessage(&message);
   if(!cot_message.empty())
   {
+      if(message.msgid == MAVLINK_MSG_ID_GLOBAL_POSITION_INT) {
+          if(!pos_send_timer.hasExpired(1000)) {
+              return;
+          } else {
+              pos_send_timer.restart();
+          }
+      }
       if(socket.state() == QAbstractSocket::ConnectedState){
         socket.write(cot_message.c_str());
       }
