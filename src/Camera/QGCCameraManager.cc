@@ -93,25 +93,9 @@ QGCCameraManager::_mavlinkMessageReceived(const mavlink_message_t& message)
             case MAVLINK_MSG_ID_PARAM_EXT_VALUE:
                 _handleParamValue(message);
                 break;
-
-            case MAVLINK_MSG_ID_VIDEO_STREAM_INFORMATION: {
-              mavlink_video_stream_information_t vi;
-              mavlink_msg_video_stream_information_decode(&message, &vi);
-              std::string uri(vi.uri);
-              if(uri == "rtsp://192.168.168.10/live" || uri == "rtsp://192.168.42.1/live") {
-                  uri = "rtsp://192.168.168.14:8554/detector";
-                  //uri = qgcApp()->toolbox()->settingsManager()->videoSettings()->rtspUrl()->rawValue().toString().toStdString();
-                  memset(vi.uri,0,160);
-                  strcpy(vi.uri,uri.c_str());
-                  mavlink_message_t msg;
-                  mavlink_msg_video_stream_information_encode(message.sysid, message.compid, &msg, &vi);
-                  _handleVideoStreamInfo(msg);
-              } else {
+            case MAVLINK_MSG_ID_VIDEO_STREAM_INFORMATION:
                 _handleVideoStreamInfo(message);
-              }
                 break;
-            }
-
             case MAVLINK_MSG_ID_VIDEO_STREAM_STATUS:
                 _handleVideoStreamStatus(message);
                 break;
