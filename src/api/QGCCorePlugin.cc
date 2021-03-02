@@ -445,6 +445,6 @@ QString QGCCorePlugin::stableVersionCheckFileUrl() const
     // Custom builds must override to turn on and provide their own location
     return QString();
 #else
-    return QString("https://s3-us-west-2.amazonaws.com/qgroundcontrol/latest/QGC.version.txt");
+    return QString();//"https://s3-us-west-2.amazonaws.com/qgroundcontrol/latest/QGC.version.txt");
 #endif
 }
