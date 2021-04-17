@@ -6,7 +6,7 @@
 PositionHistory::PositionHistory(QGCApplication* app, QGCToolbox* toolbox)
     : QGCTool(app, toolbox),
       _max_length(100),
-      _min_dist(50.),
+      _min_dist(25.),
       _min_secs(30)
 {
 }
