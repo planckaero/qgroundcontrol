@@ -6,7 +6,7 @@
 MAVPACKED(
 typedef struct __mavlink_planck_landing_tag_estimate_ned_t {
  uint64_t ap_timestamp_us; /*< [microseconds] Timestamp of the latest estimate in AP clock in microseconds*/
- uint32_t age; /*< [milliseconds] Age of the latest measurement in milliseconds*/
+ uint32_t age; /*< [microseconds] Age of the latest measurement in microseconds*/
  float x; /*< [meters] X position of the tag relative to the CG of the aircraft in the NED frame*/
  float y; /*< [meters] Y position of the tag relative to the CG of the aircraft in the NED frame*/
  float z; /*< [meters] Z position of the tag relative to the CG of the aircraft in the NED frame*/
@@ -79,7 +79,7 @@ typedef struct __mavlink_planck_landing_tag_estimate_ned_t {
  *
  * @param target_system  System ID
  * @param target_component  Component ID
- * @param age [milliseconds] Age of the latest measurement in milliseconds
+ * @param age [microseconds] Age of the latest measurement in microseconds
  * @param ap_timestamp_us [microseconds] Timestamp of the latest estimate in AP clock in microseconds
  * @param x [meters] X position of the tag relative to the CG of the aircraft in the NED frame
  * @param y [meters] Y position of the tag relative to the CG of the aircraft in the NED frame
@@ -143,7 +143,7 @@ static inline uint16_t mavlink_msg_planck_landing_tag_estimate_ned_pack(uint8_t 
  * @param msg The MAVLink message to compress the data into
  * @param target_system  System ID
  * @param target_component  Component ID
- * @param age [milliseconds] Age of the latest measurement in milliseconds
+ * @param age [microseconds] Age of the latest measurement in microseconds
  * @param ap_timestamp_us [microseconds] Timestamp of the latest estimate in AP clock in microseconds
  * @param x [meters] X position of the tag relative to the CG of the aircraft in the NED frame
  * @param y [meters] Y position of the tag relative to the CG of the aircraft in the NED frame
@@ -233,7 +233,7 @@ static inline uint16_t mavlink_msg_planck_landing_tag_estimate_ned_encode_chan(u
  *
  * @param target_system  System ID
  * @param target_component  Component ID
- * @param age [milliseconds] Age of the latest measurement in milliseconds
+ * @param age [microseconds] Age of the latest measurement in microseconds
  * @param ap_timestamp_us [microseconds] Timestamp of the latest estimate in AP clock in microseconds
  * @param x [meters] X position of the tag relative to the CG of the aircraft in the NED frame
  * @param y [meters] Y position of the tag relative to the CG of the aircraft in the NED frame
@@ -376,7 +376,7 @@ static inline uint8_t mavlink_msg_planck_landing_tag_estimate_ned_get_target_com
 /**
  * @brief Get field age from planck_landing_tag_estimate_ned message
  *
- * @return [milliseconds] Age of the latest measurement in milliseconds
+ * @return [microseconds] Age of the latest measurement in microseconds
  */
 static inline uint32_t mavlink_msg_planck_landing_tag_estimate_ned_get_age(const mavlink_message_t* msg)
 {

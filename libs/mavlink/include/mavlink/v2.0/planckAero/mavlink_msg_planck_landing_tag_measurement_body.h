@@ -6,7 +6,7 @@
 MAVPACKED(
 typedef struct __mavlink_planck_landing_tag_measurement_body_t {
  uint64_t ap_timestamp_us; /*< [microseconds] Timestamp of this measurement in AP clock in microseconds*/
- uint32_t age; /*< [milliseconds] Age of the latest measurement in milliseconds*/
+ uint32_t age; /*< [microseconds] Age of the latest measurement in microseconds*/
  float x; /*< [meters] X position of the tag relative to the CG of the aircraft in the body frame*/
  float y; /*< [meters] Y position of the tag relative to the CG of the aircraft in the body frame*/
  float z; /*< [meters] Z position of the tag relative to the CG of the aircraft in the body frame*/
@@ -70,7 +70,7 @@ typedef struct __mavlink_planck_landing_tag_measurement_body_t {
  *
  * @param target_system  System ID
  * @param target_component  Component ID
- * @param age [milliseconds] Age of the latest measurement in milliseconds
+ * @param age [microseconds] Age of the latest measurement in microseconds
  * @param ap_timestamp_us [microseconds] Timestamp of this measurement in AP clock in microseconds
  * @param x [meters] X position of the tag relative to the CG of the aircraft in the body frame
  * @param y [meters] Y position of the tag relative to the CG of the aircraft in the body frame
@@ -125,7 +125,7 @@ static inline uint16_t mavlink_msg_planck_landing_tag_measurement_body_pack(uint
  * @param msg The MAVLink message to compress the data into
  * @param target_system  System ID
  * @param target_component  Component ID
- * @param age [milliseconds] Age of the latest measurement in milliseconds
+ * @param age [microseconds] Age of the latest measurement in microseconds
  * @param ap_timestamp_us [microseconds] Timestamp of this measurement in AP clock in microseconds
  * @param x [meters] X position of the tag relative to the CG of the aircraft in the body frame
  * @param y [meters] Y position of the tag relative to the CG of the aircraft in the body frame
@@ -206,7 +206,7 @@ static inline uint16_t mavlink_msg_planck_landing_tag_measurement_body_encode_ch
  *
  * @param target_system  System ID
  * @param target_component  Component ID
- * @param age [milliseconds] Age of the latest measurement in milliseconds
+ * @param age [microseconds] Age of the latest measurement in microseconds
  * @param ap_timestamp_us [microseconds] Timestamp of this measurement in AP clock in microseconds
  * @param x [meters] X position of the tag relative to the CG of the aircraft in the body frame
  * @param y [meters] Y position of the tag relative to the CG of the aircraft in the body frame
@@ -334,7 +334,7 @@ static inline uint8_t mavlink_msg_planck_landing_tag_measurement_body_get_target
 /**
  * @brief Get field age from planck_landing_tag_measurement_body message
  *
- * @return [milliseconds] Age of the latest measurement in milliseconds
+ * @return [microseconds] Age of the latest measurement in microseconds
  */
 static inline uint32_t mavlink_msg_planck_landing_tag_measurement_body_get_age(const mavlink_message_t* msg)
 {
