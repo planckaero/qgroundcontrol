@@ -1107,7 +1107,6 @@
             "rawName":      "MAV_CMD_NAV_PLANCK_FINDANDLAND",
             "friendlyName": "Planck FindAndLand",
             "friendlyEdit": true,
-            "specifiesCoordinate":  true,
             "description":  "Planck FindAndLand command",
             "category":     "Basic",
             "param1": {
