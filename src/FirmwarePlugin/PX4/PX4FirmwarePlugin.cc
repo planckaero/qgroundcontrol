@@ -439,7 +439,7 @@ void PX4FirmwarePlugin::guidedModeTakeoff(Vehicle* vehicle, double takeoffAltRel
         true);                                  // Copiloting message
 }
 
-void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoordinate& gotoCoord, double altitude)
+void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoordinate& gotoCoord)
 {
     if (qIsNaN(vehicle->altitudeAMSL()->rawValue().toDouble())) {
         qgcApp()->showMessage(tr("Unable to go to location, vehicle position not known."));
@@ -449,7 +449,7 @@ void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoord
     if (vehicle->capabilityBits() & MAV_PROTOCOL_CAPABILITY_COMMAND_INT) {
         vehicle->sendMavCommandInt(vehicle->defaultComponentId(),
                                    MAV_CMD_DO_REPOSITION,
-                                   MAV_FRAME_GLOBAL_TERRAIN_ALT_INT,
+                                   MAV_FRAME_GLOBAL,
                                    true,   // show error is fails
                                    -1.0f,
                                    MAV_DO_REPOSITION_FLAGS_CHANGE_MODE,
@@ -457,8 +457,7 @@ void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoord
                                    NAN,
                                    gotoCoord.latitude(),
                                    gotoCoord.longitude(),
-                                   (float)altitude,
-                                   true); //copiloting message
+                                   vehicle->altitudeAMSL()->rawValue().toFloat());
     } else {
         vehicle->sendMavCommand(vehicle->defaultComponentId(),
                                 MAV_CMD_DO_REPOSITION,
@@ -469,8 +468,7 @@ void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoord
                                 NAN,
                                 static_cast<float>(gotoCoord.latitude()),
                                 static_cast<float>(gotoCoord.longitude()),
-                                (float)altitude,
-                                true); //copiloting message
+                                vehicle->altitudeAMSL()->rawValue().toFloat());
     }
 }
 
