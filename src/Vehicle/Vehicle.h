@@ -718,7 +718,7 @@ public:
     Q_INVOKABLE double minimumTakeoffAltitude();
 
     /// Command vehicle to move to specified location (altitude is included and relative)
-    Q_INVOKABLE void guidedModeGotoLocation(const QGeoCoordinate& gotoCoord, double altitude);
+    Q_INVOKABLE void guidedModeGotoLocation(const QGeoCoordinate& gotoCoord);
 
     /// Command vehicle to change altitude
     ///     @param altitudeChange If > 0, go up by amount specified, if < 0, go down by amount specified
