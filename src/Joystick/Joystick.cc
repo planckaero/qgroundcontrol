@@ -65,6 +65,9 @@ const char* Joystick::_buttonActionGimbalLeft =         QT_TR_NOOP("Gimbal Left"
 const char* Joystick::_buttonActionGimbalRight =        QT_TR_NOOP("Gimbal Right");
 const char* Joystick::_buttonActionGimbalCenter =       QT_TR_NOOP("Gimbal Center");
 
+const char* Joystick::_buttonActionPlanckRTB =          QT_TR_NOOP("Planck RTB");
+const char* Joystick::_buttonActionPlanckWingman =      QT_TR_NOOP("Planck Wingman");
+
 const char* Joystick::_rgFunctionSettingsKey[Joystick::maxFunction] = {
     "RollAxis",
     "PitchAxis",
@@ -664,6 +667,8 @@ void Joystick::startPolling(Vehicle* vehicle)
             disconnect(this, &Joystick::gimbalYawStep,      _activeVehicle, &Vehicle::gimbalYawStep);
             disconnect(this, &Joystick::centerGimbal,       _activeVehicle, &Vehicle::centerGimbal);
             disconnect(this, &Joystick::gimbalControlValue, _activeVehicle, &Vehicle::gimbalControlValue);
+            disconnect(this, &Joystick::startPlanckRTB,     _activeVehicle, &Vehicle::planckRTB);
+            disconnect(this, &Joystick::startPlanckWingman, _activeVehicle, &Vehicle::planckWingman);
         }
         // Always set up the new vehicle
         _activeVehicle = vehicle;
@@ -687,6 +692,8 @@ void Joystick::startPolling(Vehicle* vehicle)
             connect(this, &Joystick::gimbalYawStep,      _activeVehicle, &Vehicle::gimbalYawStep);
             connect(this, &Joystick::centerGimbal,       _activeVehicle, &Vehicle::centerGimbal);
             connect(this, &Joystick::gimbalControlValue, _activeVehicle, &Vehicle::gimbalControlValue);
+            connect(this, &Joystick::startPlanckRTB,     _activeVehicle, &Vehicle::planckRTB);
+            connect(this, &Joystick::startPlanckWingman, _activeVehicle, &Vehicle::planckWingman);
             // FIXME: ****
             //connect(this, &Joystick::buttonActionTriggered, uas, &UAS::triggerAction);
         }
@@ -712,6 +719,8 @@ void Joystick::stopPolling(void)
             disconnect(this, &Joystick::gimbalYawStep,      _activeVehicle, &Vehicle::gimbalYawStep);
             disconnect(this, &Joystick::centerGimbal,       _activeVehicle, &Vehicle::centerGimbal);
             disconnect(this, &Joystick::gimbalControlValue, _activeVehicle, &Vehicle::gimbalControlValue);
+            disconnect(this, &Joystick::startPlanckRTB,     _activeVehicle, &Vehicle::planckRTB);
+            disconnect(this, &Joystick::startPlanckWingman, _activeVehicle, &Vehicle::planckWingman);
         }
         // FIXME: ****
         //disconnect(this, &Joystick::buttonActionTriggered,  uas, &UAS::triggerAction);
@@ -1008,6 +1017,10 @@ void Joystick::_executeButtonAction(const QString& action, bool buttonDown)
             _localYaw   = 0.0;
             emit gimbalControlValue(0.0, 0.0);
         }
+    } else if(action == _buttonActionPlanckRTB) {
+        if(buttonDown) emit startPlanckRTB();
+    } else if(action == _buttonActionPlanckWingman) {
+        if(buttonDown) emit startPlanckWingman();
     } else {
         qCDebug(JoystickLog) << "_buttonAction unknown action:" << action;
     }
@@ -1077,6 +1090,8 @@ void Joystick::_buildActionList(Vehicle* activeVehicle)
             _assignableButtonActions.append(new AssignableButtonAction(this, mode));
         }
     }
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionPlanckRTB));
+    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionPlanckWingman));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionVTOLFixedWing));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionVTOLMultiRotor));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionContinuousZoomIn, true));
