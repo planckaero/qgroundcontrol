@@ -226,6 +226,9 @@ signals:
     void setVtolInFwdFlight         (bool set);
     void setFlightMode              (const QString& flightMode);
 
+    void startPlanckRTB             ();
+    void startPlanckWingman         ();
+
 protected:
     void    _setDefaultCalibration  ();
     void    _saveSettings           ();
@@ -351,6 +354,9 @@ private:
     static const char* _buttonActionGimbalLeft;
     static const char* _buttonActionGimbalRight;
     static const char* _buttonActionGimbalCenter;
+
+    static const char* _buttonActionPlanckRTB;
+    static const char* _buttonActionPlanckWingman;
 
 private slots:
     void _activeVehicleChanged(Vehicle* activeVehicle);
