@@ -53,7 +53,8 @@ Item {
     readonly property string gotoTitle:                     qsTr("Go To Location")
     readonly property string vtolTransitionTitle:           qsTr("VTOL Transition")
     readonly property string roiTitle:                      qsTr("ROI")
-    readonly property string planckTrackTitle:              qsTr("Planck Track")
+    readonly property string planckTrackTitle:              qsTr("ACE Track")
+    readonly property string planckWingmanTitle:            qsTr("Wingman")
     readonly property string gotoCoTTitle:                  qsTr("Go To CoT")
 
     readonly property string armMessage:                        qsTr("Arm the vehicle.")
@@ -77,6 +78,7 @@ Item {
     readonly property string vtolTransitionMRMessage:           qsTr("Transition VTOL to multi-rotor flight.")
     readonly property string roiMessage:                        qsTr("Make the specified location a Region Of Interest.")
     readonly property string planckTrackMessage:                qsTr("Start Planck Track.")
+    readonly property string planckWingmanMessage:              qsTr("Start Planck Wingman.")
 
     readonly property int actionRTL:                        1
     readonly property int actionLand:                       2
@@ -103,6 +105,7 @@ Item {
     readonly property int actionWingman:                    23
     readonly property int actionPlanckTrack:                24
     readonly property int actionGotoCoT:                    25
+    readonly property int actionPlanckWingman:              26
 
     property bool   _useChecklist:              QGroundControl.settingsManager.appSettings.useChecklist.rawValue && QGroundControl.corePlugin.options.preFlightChecklistUrl.toString().length
     property bool   _enforceChecklist:          _useChecklist && QGroundControl.settingsManager.appSettings.enforceChecklist.rawValue
@@ -414,6 +417,11 @@ Item {
             confirmDialog.message = planckTrackMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showPlanckTrack })
             break;
+        case actionPlanckWingman:
+            confirmDialog.title = planckWingmanTitle
+            confirmDialog.message = planckWingmanMessage
+            confirmDialog.hideTrigger = Qt.binding(function() { return !showPlanckWingman})
+            break;
         case actionGotoCoT:
             confirmDialog.title = gotoCoTTitle
             confirmDialog.message = gotoMessage
@@ -502,6 +510,9 @@ Item {
             break
         case actionPlanckTrack:
             activeVehicle.planckTrack()
+            break
+        case actionPlanckWingman:
+            activeVehicle.planckWingman()
             break
         case actionGotoCoT:
             activeVehicle.guidedModeGotoLocation(actionData)
