@@ -3221,6 +3221,26 @@ void Vehicle::planckTrack()
                 true); //copiloting
 }
 
+void Vehicle::planckWingman()
+{
+    sendMavCommand(
+                defaultComponentId(),
+                MAV_CMD_NAV_PLANCK_WINGMAN,
+                true,
+                0,0,0,-1,0,0,0, //Hold current relative position
+                true); //copiloting
+}
+
+void Vehicle::planckRTB()
+{
+    sendMavCommand(
+                defaultComponentId(),
+                MAV_CMD_NAV_PLANCK_RTB,
+                true,
+                0,0,0,0,0,0,0,
+                true); //copiloting
+}
+
 void Vehicle::pauseVehicle()
 {
     if (!pauseVehicleSupported()) {

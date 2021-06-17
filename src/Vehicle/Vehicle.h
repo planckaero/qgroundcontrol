@@ -741,6 +741,12 @@ public:
     /// Command vehicle to start PlanckTrack
     Q_INVOKABLE void planckTrack();
 
+    /// Command vehicle to start PlanckWingman
+    Q_INVOKABLE void planckWingman();
+
+    /// Command vehicle to start PlanckRTB
+    Q_INVOKABLE void planckRTB();
+
     /// Command vehicle to pause at current location. If vehicle supports guide mode, vehicle will be left
     /// in guided mode after pause.
     Q_INVOKABLE void pauseVehicle();

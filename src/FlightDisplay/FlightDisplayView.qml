@@ -643,6 +643,13 @@ Item {
                     action:             _guidedController.actionPlanckTrack
                 },
                 {
+                    name:               _guidedController.planckWingmanTitle,
+                    iconSource:         "/res/wingman.png",
+                    buttonVisible:      _guidedController.showLand,
+                    buttonEnabled:      _guidedController.showLand,
+                    action:             _guidedController.actionPlanckWingman
+                },
+                {
                     name:               qsTr("Action"),
                     iconSource:         "/res/action.svg",
                     buttonVisible:      _anyActionAvailable,
