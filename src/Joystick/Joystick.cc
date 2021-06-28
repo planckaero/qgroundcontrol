@@ -76,10 +76,6 @@ const char* Joystick::_buttonActionRC11 =               QT_TR_NOOP("RC11");
 const char* Joystick::_buttonActionRC12 =               QT_TR_NOOP("RC12");
 const char* Joystick::_buttonActionRC13 =               QT_TR_NOOP("RC13");
 const char* Joystick::_buttonActionRC14 =               QT_TR_NOOP("RC14");
-const char* Joystick::_buttonActionRC15 =               QT_TR_NOOP("RC15");
-const char* Joystick::_buttonActionRC16 =               QT_TR_NOOP("RC16");
-const char* Joystick::_buttonActionRC17 =               QT_TR_NOOP("RC17");
-const char* Joystick::_buttonActionRC18 =               QT_TR_NOOP("RC18");
 const char* Joystick::_buttonActionTriButtonKill =      QT_TR_NOOP("Triple Button E-Stop");
 const char* Joystick::_buttonActionPlanckTrackAltHoldToggle = QT_TR_NOOP("Toggle PlanckTrack/AltHold");
 const char* Joystick::_buttonActionPlanckTrackLoiterToggle  = QT_TR_NOOP("Toggle PlanckTrack/Loiter");
@@ -697,7 +693,9 @@ void Joystick::_handleAxis()
             if(_activeVehicle && _axisCount > 4 && _gimbalEnabled) {
                 //-- TODO: There is nothing consuming this as there are no messages to handle gimbal
                 //   the way MANUAL_CONTROL handles the other channels.
-                emit manualControlGimbal((gimbalPitch + 1.0f) / 2.0f * 90.0f, gimbalYaw * 180.0f);
+                //emit manualControlGimbal((gimbalPitch + 1.0f) / 2.0f * 90.0f, gimbalYaw * 180.0f);
+                _rcOverrideChannels[14] = (int)(((gimbalPitch + 1.0f) / 2.0f * 800.0f) + 1100.0f);
+                _rcOverrideChannels[15] = (int)(((gimbalYaw   + 1.0f) / 2.0f * 800.0f) + 1100.0f);
             }
         }
     }
@@ -850,10 +848,10 @@ void Joystick::_initRCOverrideChannels(const QString& action, bool enable)
     else if (action == _buttonActionRC12)         _rcOverrideChannels[11] = enable ? 1100 : UINT16_MAX;
     else if (action == _buttonActionRC13)         _rcOverrideChannels[12] = enable ? 1100 : UINT16_MAX;
     else if (action == _buttonActionRC14)         _rcOverrideChannels[13] = enable ? 1100 : UINT16_MAX;
-    else if (action == _buttonActionRC15)         _rcOverrideChannels[14] = enable ? 1100 : UINT16_MAX;
-    else if (action == _buttonActionRC16)         _rcOverrideChannels[15] = enable ? 1100 : UINT16_MAX;
-    else if (action == _buttonActionRC17)         _rcOverrideChannels[16] = enable ? 1100 : UINT16_MAX;
-    else if (action == _buttonActionRC18)         _rcOverrideChannels[17] = enable ? 1100 : UINT16_MAX;
+    _rcOverrideChannels[14] = UINT16_MAX;
+    _rcOverrideChannels[15] = UINT16_MAX;
+    _rcOverrideChannels[16] = UINT16_MAX;
+    _rcOverrideChannels[17] = UINT16_MAX;
 }
 
 void Joystick::setButtonAction(int button, const QString& action)
@@ -1119,14 +1117,6 @@ void Joystick::_executeButtonAction(const QString& action, bool buttonDown)
         if (buttonDown) _rcTwoState(_rcOverrideChannels[12]);
     } else if (action == _buttonActionRC14) {
         if (buttonDown) _rcTwoState(_rcOverrideChannels[13]);
-    } else if (action == _buttonActionRC15) {
-        if (buttonDown) _rcTwoState(_rcOverrideChannels[14]);
-    } else if (action == _buttonActionRC16) {
-        if (buttonDown) _rcTwoState(_rcOverrideChannels[15]);
-    } else if (action == _buttonActionRC17) {
-        if (buttonDown) _rcTwoState(_rcOverrideChannels[16]);
-    } else if (action == _buttonActionRC18) {
-        if (buttonDown) _rcTwoState(_rcOverrideChannels[17]);
     } else if (action == _buttonActionTriButtonKill) {
         _triButtonKillUpdate(buttonDown);
     } else if (action == _buttonActionPlanckTrackLoiterToggle && buttonDown) {
@@ -1268,10 +1258,6 @@ void Joystick::_buildActionList(Vehicle* activeVehicle)
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC12));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC13));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC14));
-    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC15));
-    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC16));
-    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC17));
-    _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionRC18));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionTriButtonKill));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionPlanckTrackLoiterToggle));
     _assignableButtonActions.append(new AssignableButtonAction(this, _buttonActionPlanckTrackAltHoldToggle));

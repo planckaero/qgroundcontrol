@@ -393,10 +393,6 @@ private:
     static const char* _buttonActionRC12;
     static const char* _buttonActionRC13;
     static const char* _buttonActionRC14;
-    static const char* _buttonActionRC15;
-    static const char* _buttonActionRC16;
-    static const char* _buttonActionRC17;
-    static const char* _buttonActionRC18;
     static const char* _buttonActionTriButtonKill;
     static const char* _buttonActionPlanckTrackAltHoldToggle;
     static const char* _buttonActionPlanckTrackLoiterToggle;
