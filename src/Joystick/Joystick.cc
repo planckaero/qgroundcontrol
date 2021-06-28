@@ -631,16 +631,18 @@ void Joystick::_handleAxis()
             if(_useZAxisRC8) {
                 //Ignore cases where both buttons are being pressed
                 Calibration_t calib_default;
-                float val2 = _adjustRange(_rgAxisValues[2], calib_default, _deadband);
-                float val5 = _adjustRange(_rgAxisValues[5], calib_default, _deadband);
+                float val2 = (_adjustRange(_rgAxisValues[2], calib_default, _deadband) + 1.0f)/2;
+                float val5 = (_adjustRange(_rgAxisValues[5], calib_default, _deadband) + 1.0f)/2;
                 if(fabs(val2) > 0.05 && fabs(val5) > 0.05) {
                     _rcOverrideChannels[7] = 1500;
                 } else if (fabs(val2) > 0.05) {
-                    _rcOverrideChannels[7] = (int)(((val2 + 1.0f) / 2.0f * -400.0f) + 1500.0f);
+                    _rcOverrideChannels[7] = (int)((val2 * -400.0f) + 1500.0f);
                 } else if (fabs(val5) > 0.05) {
-                    _rcOverrideChannels[7] = (int)(((val5 + 1.0f) / 2.0f * 400.0f) + 1500.0f);
+                    _rcOverrideChannels[7] = (int)((val5 * 400.0f) + 1500.0f);
+                } else { //Must both be zero
+                    _rcOverrideChannels[7] = 1500;
                 }
-
+                qCDebug(JoystickValuesLog) << "name:val2:val5:rc7" << name() << val2 << val5 << _rcOverrideChannels[7];
             } else {
                 _rcOverrideChannels[7] = UINT16_MAX;
             }
