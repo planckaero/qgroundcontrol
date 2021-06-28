@@ -629,13 +629,18 @@ void Joystick::_handleAxis()
 
             //Push the gimbal pitch/yaw into a single value for channel 8
             if(_useZAxisRC8) {
-                if(gimbalPitch > 0) {
-                    _rcMomentary(_rcOverrideChannels[7], true, true, true);
-                } else if (gimbalYaw > 0) {
-                    _rcMomentary(_rcOverrideChannels[7], true, true, false);
-                } else {
-                    _rcMomentary(_rcOverrideChannels[7], false, true, false);
+                //Ignore cases where both buttons are being pressed
+                Calibration_t calib_default;
+                float val2 = _adjustRange(_rgAxisValues[2], calib_default, _deadband);
+                float val5 = _adjustRange(_rgAxisValues[5], calib_default, _deadband);
+                if(fabs(val2) > 0.05 && fabs(val5) > 0.05) {
+                    _rcOverrideChannels[7] = 1500;
+                } else if (fabs(val2) > 0.05) {
+                    _rcOverrideChannels[7] = (int)(((val2 + 1.0f) / 2.0f * -400.0f) + 1500.0f);
+                } else if (fabs(val5) > 0.05) {
+                    _rcOverrideChannels[7] = (int)(((val5 + 1.0f) / 2.0f * 400.0f) + 1500.0f);
                 }
+
             } else {
                 _rcOverrideChannels[7] = UINT16_MAX;
             }
