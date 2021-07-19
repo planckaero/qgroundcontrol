@@ -711,8 +711,10 @@ bool FirmwarePlugin::_armVehicleAndValidate(Vehicle* vehicle)
 
     bool armedChanged = false;
 
+    int max_retries = (vehicle->flightMode() == "Planck Track") ? 1 : 3;
+
     // We try arming 3 times
-    for (int retries=0; retries<3; retries++) {
+    for (int retries=0; retries<max_retries; retries++) {
         vehicle->setArmed(true);
 
         // Wait for vehicle to return armed state for 3 seconds
