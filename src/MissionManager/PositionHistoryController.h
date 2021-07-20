@@ -53,4 +53,6 @@ private:
 
   PositionHistory* _positionHistory;
   MissionController* _missionController;
+
+  QList<QGeoCoordinate> find_position_history_envelope(const QGeoCoordinate& takeoffCoord, const QList<QGeoPositionInfo>& posHist);
 };

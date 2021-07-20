@@ -8,17 +8,41 @@ PositionHistoryController::PositionHistoryController(QObject* parent)
     _positionHistory(qgcApp()->toolbox()->positionHistory()),
     _missionController(nullptr)
 {
-    connect(_positionHistory, &PositionHistory::position_added, this, &PositionHistoryController::convert_position_for_map);
+  connect(_positionHistory, &PositionHistory::position_added, this, &PositionHistoryController::convert_position_for_map);
 }
 
 void PositionHistoryController::convert_position_for_map(QGeoPositionInfo pos)
 {
-    emit newPositionAvailable(pos.coordinate());
+  emit newPositionAvailable(pos.coordinate());
 }
 
 void PositionHistoryController::set_mission_controller(MissionController* controller)
 {
   _missionController = controller;
+}
+
+QList<QGeoCoordinate> PositionHistoryController::find_position_history_envelope(const QGeoCoordinate& takeoffCoord, const QList<QGeoPositionInfo>& posHist)
+{
+  // Make one forward and backward path and merge after
+  QList<QGeoCoordinate> fwdEnvelope, bwdEnvelope;
+  fwdEnvelope.append(takeoffCoord);
+  bwdEnvelope.append(takeoffCoord);
+
+  // TODO: incorporate drift direction and speed
+  QGeoCoordinate src_coord = takeoffCoord;
+  qreal spread = 5.0;
+  for(const auto& pos : posHist) {
+    QGeoCoordinate cur_coord = pos.coordinate();
+    qreal az = src_coord.azimuthTo(cur_coord);
+    // TODO: expand distance in a meaningful way. Maybe use drift direction and speed?
+    fwdEnvelope.append(cur_coord.atDistanceAndAzimuth(spread, az-90.0));
+    bwdEnvelope.append(cur_coord.atDistanceAndAzimuth(spread, az+90.0));
+    spread += 5;
+  }
+
+  std::reverse(bwdEnvelope.begin(), bwdEnvelope.end());
+  fwdEnvelope.append(bwdEnvelope);
+  return fwdEnvelope;
 }
 
 void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt)
@@ -29,16 +53,7 @@ void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord,
   std::reverse(positions.begin(), positions.end()); //reverse so we start at the most recent waypoint
 
   SurveyComplexItem* survey = qobject_cast<SurveyComplexItem*>(_missionController->insertComplexMissionItem(MissionController::patternSurveyName, takeoffCoord, -1));
-  {
-    // TODO: placeholder until polygon strategy developed (incorporate drift speed and direction)
-    QList<QGeoCoordinate> coords;
-    coords.append(takeoffCoord);
-    for(const auto& pos : positions)
-        coords.append(pos.coordinate());
-    survey->surveyAreaPolygon()->setPath(coords);
-    // TODO: change angle to point away from takeoff point
-    // 0 angle points path towards East
-  }
+  survey->surveyAreaPolygon()->setPath(find_position_history_envelope(takeoffCoord, positions));
 
   _missionController->insertLandItem(positions.back().coordinate(), -1);
   _missionController->sendToVehicle();
