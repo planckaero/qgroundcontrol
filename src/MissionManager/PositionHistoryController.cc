@@ -1,7 +1,6 @@
 #include "PositionHistoryController.h"
 #include "QGCApplication.h"
 #include "SimpleMissionItem.h"
-#include "SurveyComplexItem.h"
 
 PositionHistoryController::PositionHistoryController(QObject* parent)
   : QObject(parent),
@@ -21,7 +20,7 @@ void PositionHistoryController::set_mission_controller(MissionController* contro
   _missionController = controller;
 }
 
-QList<QGeoCoordinate> PositionHistoryController::find_position_history_envelope(const QGeoCoordinate& takeoffCoord, const QList<QGeoPositionInfo>& posHist)
+void PositionHistoryController::populate_survey_item(const QGeoCoordinate& takeoffCoord, const QList<QGeoPositionInfo>& posHist, SurveyComplexItem* survey)
 {
   // Make one forward and backward path and merge after
   QList<QGeoCoordinate> fwdEnvelope, bwdEnvelope;
@@ -29,9 +28,11 @@ QList<QGeoCoordinate> PositionHistoryController::find_position_history_envelope(
   // TODO: incorporate drift direction and speed
   QGeoCoordinate src_coord = takeoffCoord;
   qreal spread = 5.0;
+  qreal az_sum = 0.0; // used to calculate overall survey angle
   for(const auto& pos : posHist) {
     QGeoCoordinate cur_coord = pos.coordinate();
     qreal az = src_coord.azimuthTo(cur_coord);
+    az_sum += az;
     // TODO: expand distance in a meaningful way. Maybe use drift direction and speed?
     fwdEnvelope.append(cur_coord.atDistanceAndAzimuth(spread, az-90.0));
     bwdEnvelope.append(cur_coord.atDistanceAndAzimuth(spread, az+90.0));
@@ -41,7 +42,11 @@ QList<QGeoCoordinate> PositionHistoryController::find_position_history_envelope(
 
   std::reverse(bwdEnvelope.begin(), bwdEnvelope.end());
   fwdEnvelope.append(bwdEnvelope);
-  return fwdEnvelope;
+
+  survey->surveyAreaPolygon()->appendVertices(fwdEnvelope);
+  // Average the azimuth angle across all track history points
+  qreal survey_angle = az_sum/static_cast<qreal>(posHist.length());
+  survey->setAzimuth(survey_angle);
 }
 
 void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt)
@@ -52,7 +57,7 @@ void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord,
   std::reverse(positions.begin(), positions.end()); //reverse so we start at the most recent waypoint
 
   SurveyComplexItem* survey = qobject_cast<SurveyComplexItem*>(_missionController->insertComplexMissionItem(MissionController::patternSurveyName, takeoffCoord, -1));
-  survey->surveyAreaPolygon()->appendVertices(find_position_history_envelope(takeoffCoord, positions));
+  populate_survey_item(takeoffCoord, positions, survey);
 
   _missionController->insertLandItem(positions.back().coordinate(), -1);
   _missionController->sendToVehicle();

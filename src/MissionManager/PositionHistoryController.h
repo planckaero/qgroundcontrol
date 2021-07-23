@@ -3,6 +3,7 @@
 #include "PlanCreator.h"
 #include "MissionController.h"
 #include "PositionHistory.h"
+#include "SurveyComplexItem.h"
 
 /// Interface between PositionHistory and QML element
 class PositionHistoryController : public QObject
@@ -54,5 +55,5 @@ private:
   PositionHistory* _positionHistory;
   MissionController* _missionController;
 
-  QList<QGeoCoordinate> find_position_history_envelope(const QGeoCoordinate& takeoffCoord, const QList<QGeoPositionInfo>& posHist);
+  void populate_survey_item(const QGeoCoordinate& takeoffCoord, const QList<QGeoPositionInfo>& posHist, SurveyComplexItem* survey);
 };
