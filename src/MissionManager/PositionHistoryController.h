@@ -15,24 +15,27 @@ public:
 
   Q_PROPERTY(MissionController* missionController WRITE set_mission_controller)
 
-  Q_PROPERTY(double currentSpeed   READ get_current_speed   WRITE set_current_speed)
-  Q_PROPERTY(double currentHeading READ get_current_heading WRITE set_current_heading)
-  Q_PROPERTY(double windSpeed      READ get_wind_speed   WRITE set_wind_speed)
-  Q_PROPERTY(double windHeading    READ get_wind_heading WRITE set_wind_heading)
+  Q_PROPERTY(qreal searchWidth    READ get_search_width    WRITE set_search_width)
+  Q_PROPERTY(qreal currentSpeed   READ get_current_speed   WRITE set_current_speed)
+  Q_PROPERTY(qreal currentHeading READ get_current_heading WRITE set_current_heading)
+  Q_PROPERTY(qreal windSpeed      READ get_wind_speed   WRITE set_wind_speed)
+  Q_PROPERTY(qreal windHeading    READ get_wind_heading WRITE set_wind_heading)
 
   void set_mission_controller(MissionController* controller);
 
-  /// @brief Getters for speed and heading to modify mission
-  double get_current_speed()   { return _currentSpeed; }
-  double get_current_heading() { return _currentHeading; }
-  double get_wind_speed()      { return _windSpeed; }
-  double get_wind_heading()    { return _windHeading; }
+  /// @brief Getters for mission parameters
+  qreal get_search_width()    { return _searchWidth; }
+  qreal get_current_speed()   { return _currentSpeed; }
+  qreal get_current_heading() { return _currentHeading; }
+  qreal get_wind_speed()      { return _windSpeed; }
+  qreal get_wind_heading()    { return _windHeading; }
 
-  /// @brief Setters for speed and heading to modify mission
-  void set_current_speed(double speed)     { _currentSpeed = speed; }
-  void set_current_heading(double heading) { _currentHeading = heading; }
-  void set_wind_speed(double speed)        { _windSpeed = speed; }
-  void set_wind_heading(double heading)    { _windHeading = heading; }
+  /// @brief Setters for mission parameters
+  void set_search_width(qreal width)      { _searchWidth = width; }
+  void set_current_speed(qreal speed)     { _currentSpeed = speed; }
+  void set_current_heading(qreal heading) { _currentHeading = heading; }
+  void set_wind_speed(qreal speed)        { _windSpeed = speed; }
+  void set_wind_heading(qreal heading)    { _windHeading = heading; }
 
   Q_INVOKABLE void send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt);
 
@@ -47,10 +50,11 @@ private slots:
   void convert_position_for_map(QGeoPositionInfo pos);
 
 private:
-  double _currentSpeed = 0.0;
-  double _currentHeading = 0.0;
-  double _windSpeed = 0.0;
-  double _windHeading = 0.0;
+  qreal _searchWidth = 10.0; /// Width in meters to fly in search pattern
+  qreal _currentSpeed = 0.0;
+  qreal _currentHeading = 0.0;
+  qreal _windSpeed = 0.0;
+  qreal _windHeading = 0.0;
 
   PositionHistory* _positionHistory;
   MissionController* _missionController;

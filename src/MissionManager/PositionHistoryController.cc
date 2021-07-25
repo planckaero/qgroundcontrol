@@ -27,16 +27,14 @@ void PositionHistoryController::populate_survey_item(const QGeoCoordinate& takeo
 
   // TODO: incorporate drift direction and speed
   QGeoCoordinate src_coord = takeoffCoord;
-  qreal spread = 5.0;
   qreal az_sum = 0.0; // used to calculate overall survey angle
   for(const auto& pos : posHist) {
     QGeoCoordinate cur_coord = pos.coordinate();
     qreal az = src_coord.azimuthTo(cur_coord);
     az_sum += az;
     // TODO: expand distance in a meaningful way. Maybe use drift direction and speed?
-    fwdEnvelope.append(cur_coord.atDistanceAndAzimuth(spread, az-90.0));
-    bwdEnvelope.append(cur_coord.atDistanceAndAzimuth(spread, az+90.0));
-    spread += 5;
+    fwdEnvelope.append(cur_coord.atDistanceAndAzimuth(_searchWidth, az-90.0));
+    bwdEnvelope.append(cur_coord.atDistanceAndAzimuth(_searchWidth, az+90.0));
     src_coord = cur_coord;
   }
 
@@ -47,6 +45,10 @@ void PositionHistoryController::populate_survey_item(const QGeoCoordinate& takeo
   // Average the azimuth angle across all track history points
   qreal survey_angle = az_sum/static_cast<qreal>(posHist.length());
   survey->setAzimuth(survey_angle);
+
+  survey->cameraTriggerInTurnAround()->setRawValue(false);
+  survey->hoverAndCapture()->setRawValue(false);
+  survey->cameraCalc()->adjustedFootprintFrontal()->setRawValue(0);
 }
 
 void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt)
