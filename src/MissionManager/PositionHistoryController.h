@@ -43,10 +43,10 @@ private slots:
   void convert_position_for_map(QGeoPositionInfo pos);
 
 private:
-  Fact _searchWidth; /// Width in meters to fly in search pattern
-  Fact _currentSpeed;
+  Fact _searchWidth;     /// Width in meters to fly in search pattern
+  Fact _currentSpeed;    /// Current speed in knots
   Fact _currentHeading;
-  Fact _windSpeed;
+  Fact _windSpeed;       /// Wind speed in knots
   Fact _windHeading;
 
   PositionHistory* _positionHistory;

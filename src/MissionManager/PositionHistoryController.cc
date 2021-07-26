@@ -41,10 +41,21 @@ void PositionHistoryController::populate_survey_item(const QGeoCoordinate& takeo
   // Create the survey polygon
   QList<QGeoCoordinate> fwdEnvelope, bwdEnvelope;
 
+  QDateTime cur_time = QDateTime::currentDateTime();
   QGeoCoordinate src_coord = takeoffCoord;
   qreal az_sum = 0.0; // used to calculate overall survey angle
+
+  double wind_speed = _windSpeed.rawValue().toDouble();
+  double wind_dir = _windHeading.rawValue().toDouble();
+  double current_speed = _currentSpeed.rawValue().toDouble();
+  double current_dir = _currentHeading.rawValue().toDouble();
+
   for(const auto& pos : posHist) {
-    QGeoCoordinate cur_coord = pos.coordinate();
+    qint64 drift_t_s = pos.timestamp().secsTo(cur_time);
+    qreal wind_drift  = 0.011 * (wind_speed*0.514444*static_cast<qreal>(drift_t_s)) + 0.07;
+    qreal current_drift = current_speed*0.514444 * static_cast<qreal>(drift_t_s);
+
+    QGeoCoordinate cur_coord = pos.coordinate().atDistanceAndAzimuth(wind_drift, wind_dir).atDistanceAndAzimuth(current_drift, current_dir);
     qreal az = src_coord.azimuthTo(cur_coord);
     az_sum += az;
     // TODO: expand distance in a meaningful way. Maybe use drift direction and speed?
