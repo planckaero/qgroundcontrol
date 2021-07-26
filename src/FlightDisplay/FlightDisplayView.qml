@@ -1264,7 +1264,7 @@ Item {
                 unitsLabel: "kts"
                 showUnits: true
                 showHelp: false
-                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
             }
             FactTextField {
                 fact:                   _positionHistoryController.windHeading
@@ -1272,7 +1272,7 @@ Item {
                 unitsLabel: "deg"
                 showUnits: true
                 showHelp: false
-                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 9
             }
             QGCLabel {
                 text:           qsTr("Current Speed/Dir")
@@ -1284,7 +1284,7 @@ Item {
                 unitsLabel: "kts"
                 showUnits: true
                 showHelp: false
-                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
             }
             FactTextField {
                 fact:                   _positionHistoryController.currentHeading
@@ -1292,7 +1292,7 @@ Item {
                 unitsLabel: "deg"
                 showUnits: true
                 showHelp: false
-                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 9
             }
             QGCLabel {
                 text:           qsTr("Search Width")
@@ -1304,7 +1304,7 @@ Item {
                 unitsLabel: "m"
                 showUnits: true
                 showHelp: false
-                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
             }
         }
     }
