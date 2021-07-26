@@ -1249,55 +1249,51 @@ Item {
         height:                     surveyEnvironmentalGrid.height + _toolsMargin * 2
 
         GridLayout {
-          anchors.margins:    ScreenTools.defaultFontPixelHeight
-          columnSpacing:      ScreenTools.defaultFontPixelWidth * 2
-          anchors.horizontalCenter: parent.horizontalCenter
-          id:         surveyEnvironmentalGrid
-          rows: 2
-          columns: 1
-          Row {
-              anchors.margins:    ScreenTools.defaultFontPixelHeight
-              Layout.row: 0
-              QGCLabel {
-                  text:           qsTr("Wind Speed/Dir")
-                  visible:        true
-              }
-              FactTextField {
-                  fact:                   _positionHistoryController.windSpeed
-                  Layout.preferredWidth:  ScreenTools.defaultFontPixelWidth * 4
-                  enabled:                true
-                  unitsLabel: "kts"
-                  showUnits: true
-              }
-              FactTextField {
-                  fact:                   _positionHistoryController.windHeading
-                  Layout.preferredWidth:  ScreenTools.defaultFontPixelWidth * 5
-                  enabled:                true
-                  unitsLabel: "deg"
-                  showUnits: true
-              }
-          }
-          Row {
-              Layout.row: 1
-              QGCLabel {
-                  text:           qsTr("Current Speed/Dir")
-                  visible:        true
-              }
-              FactTextField {
-                  fact:                   _positionHistoryController.currentSpeed
-                  Layout.preferredWidth:  ScreenTools.defaultFontPixelWidth * 4
-                  enabled:                true
-                  unitsLabel: "kts"
-                  showUnits: true
-              }
-              FactTextField {
-                  fact:                   _positionHistoryController.currentHeading
-                  Layout.preferredWidth:  ScreenTools.defaultFontPixelWidth * 5
-                  enabled:                true
-                  unitsLabel: "deg"
-                  showUnits: true
-              }
-          }
+            id:                 surveyEnvironmentalGrid
+            rows: 2
+            columns: 3
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            QGCLabel {
+                text:           qsTr("Wind Speed/Dir")
+                visible:        true
+            }
+            FactTextField {
+                fact:                   _positionHistoryController.windSpeed
+                enabled:                activeVehicle ? !vehicleArmed : true
+                unitsLabel: "kts"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
+            }
+            FactTextField {
+                fact:                   _positionHistoryController.windHeading
+                enabled:                activeVehicle ? !vehicleArmed : true
+                unitsLabel: "deg"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
+            }
+            QGCLabel {
+                text:           qsTr("Current Speed/Dir")
+                visible:        true
+            }
+            FactTextField {
+                fact:                   _positionHistoryController.currentSpeed
+                enabled:                activeVehicle ? !vehicleArmed : true
+                unitsLabel: "kts"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
+            }
+            FactTextField {
+                fact:                   _positionHistoryController.currentHeading
+                enabled:                activeVehicle ? !vehicleArmed : true
+                unitsLabel: "deg"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
+            }
         }
     }
 
