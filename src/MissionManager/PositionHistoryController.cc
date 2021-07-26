@@ -4,10 +4,25 @@
 
 PositionHistoryController::PositionHistoryController(QObject* parent)
   : QObject(parent),
+    _searchWidth(0, "Search Width", FactMetaData::valueTypeInt16),
+    _currentSpeed(0, "Current Speed", FactMetaData::valueTypeDouble),
+    _currentHeading(0, "Current Heading", FactMetaData::valueTypeDouble),
+    _windSpeed(0, "Wind Speed", FactMetaData::valueTypeDouble),
+    _windHeading(0, "Wind Direction", FactMetaData::valueTypeDouble),
     _positionHistory(qgcApp()->toolbox()->positionHistory()),
     _missionController(nullptr)
 {
   connect(_positionHistory, &PositionHistory::position_added, this, &PositionHistoryController::convert_position_for_map);
+  _searchWidth.setRawValue(10);
+  _windSpeed.setRawValue(0);
+  _windHeading.setRawValue(0);
+  _currentSpeed.setRawValue(0);
+  _currentHeading.setRawValue(0);
+
+  _windSpeed.metaData()->setDecimalPlaces(1);
+  _windHeading.metaData()->setDecimalPlaces(1);
+  _currentSpeed.metaData()->setDecimalPlaces(1);
+  _currentHeading.metaData()->setDecimalPlaces(1);
 }
 
 void PositionHistoryController::convert_position_for_map(QGeoPositionInfo pos)
@@ -33,8 +48,8 @@ void PositionHistoryController::populate_survey_item(const QGeoCoordinate& takeo
     qreal az = src_coord.azimuthTo(cur_coord);
     az_sum += az;
     // TODO: expand distance in a meaningful way. Maybe use drift direction and speed?
-    fwdEnvelope.append(cur_coord.atDistanceAndAzimuth(_searchWidth, az-90.0));
-    bwdEnvelope.append(cur_coord.atDistanceAndAzimuth(_searchWidth, az+90.0));
+    fwdEnvelope.append(cur_coord.atDistanceAndAzimuth(_searchWidth.rawValue().toDouble(), az-90.0));
+    bwdEnvelope.append(cur_coord.atDistanceAndAzimuth(_searchWidth.rawValue().toDouble(), az+90.0));
     src_coord = cur_coord;
   }
 

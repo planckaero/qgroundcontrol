@@ -15,27 +15,20 @@ public:
 
   Q_PROPERTY(MissionController* missionController WRITE set_mission_controller)
 
-  Q_PROPERTY(qreal searchWidth    READ get_search_width    WRITE set_search_width)
-  Q_PROPERTY(qreal currentSpeed   READ get_current_speed   WRITE set_current_speed)
-  Q_PROPERTY(qreal currentHeading READ get_current_heading WRITE set_current_heading)
-  Q_PROPERTY(qreal windSpeed      READ get_wind_speed   WRITE set_wind_speed)
-  Q_PROPERTY(qreal windHeading    READ get_wind_heading WRITE set_wind_heading)
+  Q_PROPERTY(Fact* searchWidth    READ get_search_width    CONSTANT)
+  Q_PROPERTY(Fact* currentSpeed   READ get_current_speed   CONSTANT)
+  Q_PROPERTY(Fact* currentHeading READ get_current_heading CONSTANT)
+  Q_PROPERTY(Fact* windSpeed      READ get_wind_speed   CONSTANT)
+  Q_PROPERTY(Fact* windHeading    READ get_wind_heading CONSTANT)
 
   void set_mission_controller(MissionController* controller);
 
   /// @brief Getters for mission parameters
-  qreal get_search_width()    { return _searchWidth; }
-  qreal get_current_speed()   { return _currentSpeed; }
-  qreal get_current_heading() { return _currentHeading; }
-  qreal get_wind_speed()      { return _windSpeed; }
-  qreal get_wind_heading()    { return _windHeading; }
-
-  /// @brief Setters for mission parameters
-  void set_search_width(qreal width)      { _searchWidth = width; }
-  void set_current_speed(qreal speed)     { _currentSpeed = speed; }
-  void set_current_heading(qreal heading) { _currentHeading = heading; }
-  void set_wind_speed(qreal speed)        { _windSpeed = speed; }
-  void set_wind_heading(qreal heading)    { _windHeading = heading; }
+  Fact* get_search_width()    { return &_searchWidth; }
+  Fact* get_current_speed()   { return &_currentSpeed; }
+  Fact* get_current_heading() { return &_currentHeading; }
+  Fact* get_wind_speed()      { return &_windSpeed; }
+  Fact* get_wind_heading()    { return &_windHeading; }
 
   Q_INVOKABLE void send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt);
 
@@ -50,11 +43,11 @@ private slots:
   void convert_position_for_map(QGeoPositionInfo pos);
 
 private:
-  qreal _searchWidth = 10.0; /// Width in meters to fly in search pattern
-  qreal _currentSpeed = 0.0;
-  qreal _currentHeading = 0.0;
-  qreal _windSpeed = 0.0;
-  qreal _windHeading = 0.0;
+  Fact _searchWidth; /// Width in meters to fly in search pattern
+  Fact _currentSpeed;
+  Fact _currentHeading;
+  Fact _windSpeed;
+  Fact _windHeading;
 
   PositionHistory* _positionHistory;
   MissionController* _missionController;

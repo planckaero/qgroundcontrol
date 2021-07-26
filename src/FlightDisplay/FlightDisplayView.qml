@@ -27,6 +27,7 @@ import QGroundControl.FlightMap     1.0
 import QGroundControl.Palette       1.0
 import QGroundControl.ScreenTools   1.0
 import QGroundControl.Vehicle       1.0
+import QGroundControl.FactControls  1.0
 
 /// Flight Display View
 Item {
@@ -1230,6 +1231,80 @@ Item {
                         horizontalAlignment: Text.AlignHCenter
                     }
                 }
+            }
+        }
+    }
+
+    //-- Survey wind/current speed/dir
+    Rectangle {
+        visible:                    true
+        id:                         surveyEnvironmentalData
+        anchors.horizontalCenter:   parent.horizontalCenter
+        anchors.topMargin:          _toolsMargin
+        anchors.top:                _showAnnunciatorPanel ? annunciatorPanel.bottom : parent.top
+        z:                          _mapAndVideo.z + 1
+        color:                      qgcPal.globalTheme === QGCPalette.Light ? QGroundControl.corePlugin.options.toolbarBackgroundLight : QGroundControl.corePlugin.options.toolbarBackgroundDark
+        radius:                     ScreenTools.defaultFontPixelWidth / 2
+        width:                      surveyEnvironmentalGrid.width + _toolsMargin * 2
+        height:                     surveyEnvironmentalGrid.height + _toolsMargin * 2
+
+        GridLayout {
+            id:                 surveyEnvironmentalGrid
+            rows: 3
+            columns: 3
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            QGCLabel {
+                text:           qsTr("Wind Speed/Dir")
+                visible:        true
+            }
+            FactTextField {
+                fact:                   _positionHistoryController.windSpeed
+                enabled:                activeVehicle ? !vehicleArmed : true
+                unitsLabel: "kts"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
+            }
+            FactTextField {
+                fact:                   _positionHistoryController.windHeading
+                enabled:                activeVehicle ? !vehicleArmed : true
+                unitsLabel: "deg"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 9
+            }
+            QGCLabel {
+                text:           qsTr("Current Speed/Dir")
+                visible:        true
+            }
+            FactTextField {
+                fact:                   _positionHistoryController.currentSpeed
+                enabled:                activeVehicle ? !vehicleArmed : true
+                unitsLabel: "kts"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
+            }
+            FactTextField {
+                fact:                   _positionHistoryController.currentHeading
+                enabled:                activeVehicle ? !vehicleArmed : true
+                unitsLabel: "deg"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 9
+            }
+            QGCLabel {
+                text:           qsTr("Search Width")
+                visible:        true
+            }
+            FactTextField {
+                fact:                   _positionHistoryController.searchWidth
+                enabled:                activeVehicle ? !vehicleArmed : true
+                unitsLabel: "m"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
             }
         }
     }
