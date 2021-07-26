@@ -1250,7 +1250,7 @@ Item {
 
         GridLayout {
             id:                 surveyEnvironmentalGrid
-            rows: 2
+            rows: 3
             columns: 3
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -1290,6 +1290,18 @@ Item {
                 fact:                   _positionHistoryController.currentHeading
                 enabled:                activeVehicle ? !vehicleArmed : true
                 unitsLabel: "deg"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
+            }
+            QGCLabel {
+                text:           qsTr("Search Width")
+                visible:        true
+            }
+            FactTextField {
+                fact:                   _positionHistoryController.searchWidth
+                enabled:                activeVehicle ? !vehicleArmed : true
+                unitsLabel: "m"
                 showUnits: true
                 showHelp: false
                 Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 10
