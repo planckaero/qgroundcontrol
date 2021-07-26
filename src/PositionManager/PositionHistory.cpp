@@ -84,3 +84,23 @@ void PositionHistory::reset_history()
     QMutexLocker lock(&_track_history_mutex);
     _track_history.clear();
 }
+
+void PositionHistory::populate_test_history()
+{
+    reset_history();
+
+    //QGeoCoordinate final_coord(32.6111700, -116.953500, 171.0);
+    QGeoCoordinate final_coord(50.13584599180814, -5.039177136465469,0);
+    int total_pts = 20;
+    double azi = 180;
+    QList<QGeoPositionInfo> coords;
+    for(int i = 0; i < total_pts; ++i) {
+      QGeoCoordinate coord = final_coord.atDistanceAndAzimuth(i*40, -azi);
+      azi += 0.3 * 180.*sin(double(i)/double(total_pts)*3.14159)/3.14159;
+      QGeoPositionInfo position(coord, QDateTime::currentDateTime().addSecs(-30*i));
+      coords.push_front(position);
+    }
+    for (auto p : coords) {
+      push_position(p);
+    }
+}

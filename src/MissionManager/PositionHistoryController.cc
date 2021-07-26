@@ -82,3 +82,8 @@ void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord,
   _missionController->insertLandItem(positions.back().coordinate(), -1);
   _missionController->sendToVehicle();
 }
+
+void PositionHistoryController::add_test_positions()
+{
+  _positionHistory->populate_test_history();
+}

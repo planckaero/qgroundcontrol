@@ -971,6 +971,43 @@ Item {
         }
 
         Rectangle {
+            id: _testPositions
+            anchors.topMargin:          _toolsMargin
+            anchors.leftMargin:         _toolsMargin
+            anchors.left:               toolStrip.right
+            anchors.top:                _followDescend.bottom
+            z:                          _mapAndVideo.z + 1
+            width: ScreenTools.defaultFontPixelWidth * 9
+            height: ScreenTools.defaultFontPixelHeight * 3
+            color: "Green"
+            visible: !_testPositions._init
+            border { width: 1; color: "black" }
+
+            property bool _init: false
+
+            Text {
+                id: _testPositionsText
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "black"
+                font.pointSize: ScreenTools.defaultFontPointSize
+                text: "TEST"
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            MouseArea {
+                id: _testPositionsMouseArea
+                anchors.fill: parent
+                preventStealing: true
+                enabled: !_testPositions._init
+                onReleased: {
+                    _testPositions._init = true
+                    _positionHistoryController.add_test_positions()
+                }
+            }
+        }
+
+        Rectangle {
             id: _followOffset
             anchors.topMargin:          _toolsMargin
             anchors.leftMargin:         _toolsMargin
