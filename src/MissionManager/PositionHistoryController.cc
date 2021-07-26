@@ -22,10 +22,10 @@ void PositionHistoryController::set_mission_controller(MissionController* contro
 
 void PositionHistoryController::populate_survey_item(const QGeoCoordinate& takeoffCoord, const QList<QGeoPositionInfo>& posHist, SurveyComplexItem* survey)
 {
-  // Make one forward and backward path and merge after
+  // TODO: incorporate drift direction and speed
+  // Create the survey polygon
   QList<QGeoCoordinate> fwdEnvelope, bwdEnvelope;
 
-  // TODO: incorporate drift direction and speed
   QGeoCoordinate src_coord = takeoffCoord;
   qreal az_sum = 0.0; // used to calculate overall survey angle
   for(const auto& pos : posHist) {
@@ -40,12 +40,18 @@ void PositionHistoryController::populate_survey_item(const QGeoCoordinate& takeo
 
   std::reverse(bwdEnvelope.begin(), bwdEnvelope.end());
   fwdEnvelope.append(bwdEnvelope);
-
   survey->surveyAreaPolygon()->appendVertices(fwdEnvelope);
+
+  // Grid spacing dictated by altitude
+  // TODO: Parameterize footprint calculation
+  qreal footprint = 1.2565*takeoffCoord.altitude() + 0.4634;
+  survey->cameraCalc()->adjustedFootprintSide()->setRawValue(footprint*0.75); // 25% overlap
+
   // Average the azimuth angle across all track history points
   qreal survey_angle = az_sum/static_cast<qreal>(posHist.length());
   survey->setAzimuth(survey_angle);
 
+  // Remove camera trigger distance waypoints from survey missioin
   survey->cameraTriggerInTurnAround()->setRawValue(false);
   survey->hoverAndCapture()->setRawValue(false);
   survey->cameraCalc()->adjustedFootprintFrontal()->setRawValue(0);
@@ -59,7 +65,8 @@ void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord,
   std::reverse(positions.begin(), positions.end()); //reverse so we start at the most recent waypoint
 
   SurveyComplexItem* survey = qobject_cast<SurveyComplexItem*>(_missionController->insertComplexMissionItem(MissionController::patternSurveyName, takeoffCoord, -1));
-  populate_survey_item(takeoffCoord, positions, survey);
+  QGeoCoordinate takeoffCoordWithAlt(takeoffCoord.latitude(), takeoffCoord.longitude(), takeoffAlt);
+  populate_survey_item(takeoffCoordWithAlt, positions, survey);
 
   _missionController->insertLandItem(positions.back().coordinate(), -1);
   _missionController->sendToVehicle();
