@@ -32,6 +32,8 @@ public:
 
   Q_INVOKABLE void send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt);
 
+  Q_INVOKABLE void add_test_positions();
+
 signals:
   /// @brief Used to connect with flight map QML
   /// @param pos  coordinate of new position in history

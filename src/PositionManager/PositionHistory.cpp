@@ -84,3 +84,18 @@ void PositionHistory::reset_history()
     QMutexLocker lock(&_track_history_mutex);
     _track_history.clear();
 }
+
+void PositionHistory::populate_test_history()
+{
+    reset_history();
+    QMutexLocker lock(&_track_history_mutex);
+
+    QGeoCoordinate init_coord(32.6188, -116.9534, 171.0);
+    int total_pts = 20;
+    for(int i = 0; i < total_pts; ++i) {
+      QGeoCoordinate coord = init_coord.atDistanceAndAzimuth(i*40, -180);
+      QGeoPositionInfo position(coord, QDateTime::currentDateTime().addSecs(-30*(total_pts-i)));
+      _track_history.append(position);
+      emit position_added(position);
+    }
+}

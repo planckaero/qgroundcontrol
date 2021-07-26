@@ -22,6 +22,9 @@ public:
     //Clear the history
     void reset_history();
 
+    //TODO: remove function after testing
+    void populate_test_history();
+
     void setToolbox(QGCToolbox* toolbox) override;
 signals:
     //Signal that a new position has been pushed
