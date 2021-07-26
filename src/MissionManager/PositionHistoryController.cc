@@ -41,21 +41,11 @@ void PositionHistoryController::populate_survey_item(const QGeoCoordinate& takeo
   // Create the survey polygon
   QList<QGeoCoordinate> fwdEnvelope, bwdEnvelope;
 
-  QDateTime cur_time = QDateTime::currentDateTime();
   QGeoCoordinate src_coord = takeoffCoord;
   qreal az_sum = 0.0; // used to calculate overall survey angle
 
-  double wind_speed = _windSpeed.rawValue().toDouble();
-  double wind_dir = _windHeading.rawValue().toDouble();
-  double current_speed = _currentSpeed.rawValue().toDouble();
-  double current_dir = _currentHeading.rawValue().toDouble();
-
   for(const auto& pos : posHist) {
-    qint64 drift_t_s = pos.timestamp().secsTo(cur_time);
-    qreal wind_drift  = 0.011 * (wind_speed*0.514444*static_cast<qreal>(drift_t_s)) + 0.07;
-    qreal current_drift = current_speed*0.514444 * static_cast<qreal>(drift_t_s);
-
-    QGeoCoordinate cur_coord = pos.coordinate().atDistanceAndAzimuth(wind_drift, wind_dir).atDistanceAndAzimuth(current_drift, current_dir);
+    QGeoCoordinate cur_coord = pos.coordinate();
     qreal az = src_coord.azimuthTo(cur_coord);
     az_sum += az;
     // TODO: expand distance in a meaningful way. Maybe use drift direction and speed?
@@ -90,9 +80,31 @@ void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord,
   item->missionItem().setParam1(takeoffAlt);
   std::reverse(positions.begin(), positions.end()); //reverse so we start at the most recent waypoint
 
-  SurveyComplexItem* survey = qobject_cast<SurveyComplexItem*>(_missionController->insertComplexMissionItem(MissionController::patternSurveyName, takeoffCoord, -1));
-  QGeoCoordinate takeoffCoordWithAlt(takeoffCoord.latitude(), takeoffCoord.longitude(), takeoffAlt);
-  populate_survey_item(takeoffCoordWithAlt, positions, survey);
+  /// Shift position history based on drift
+  QDateTime cur_time = QDateTime::currentDateTime();
+  double wind_speed = _windSpeed.rawValue().toDouble();
+  double wind_dir = _windHeading.rawValue().toDouble();
+  double current_speed = _currentSpeed.rawValue().toDouble();
+  double current_dir = _currentHeading.rawValue().toDouble();
+  for(auto& pos : positions) {
+    qint64 drift_t_s = pos.timestamp().secsTo(cur_time);
+    qreal wind_drift  = 0.011 * (wind_speed*0.514444*static_cast<qreal>(drift_t_s)) + 0.07;
+    qreal current_drift = current_speed*0.514444 * static_cast<qreal>(drift_t_s);
+    QGeoCoordinate drifted_coord = pos.coordinate().atDistanceAndAzimuth(wind_drift, wind_dir).atDistanceAndAzimuth(current_drift, current_dir);
+    pos.setCoordinate(drifted_coord);
+  }
+
+  /// Only search at path when search width is 0
+  if(_searchWidth.rawValue().toDouble() == 0.0) {
+    for (const auto& pos : positions) {
+      _missionController->insertSimpleMissionItem(pos.coordinate(), -1);
+    }
+  }
+  else {
+    SurveyComplexItem* survey = qobject_cast<SurveyComplexItem*>(_missionController->insertComplexMissionItem(MissionController::patternSurveyName, takeoffCoord, -1));
+    QGeoCoordinate takeoffCoordWithAlt(takeoffCoord.latitude(), takeoffCoord.longitude(), takeoffAlt);
+    populate_survey_item(takeoffCoordWithAlt, positions, survey);
+  }
 
   _missionController->insertLandItem(positions.back().coordinate(), -1);
   _missionController->sendToVehicle();
