@@ -159,7 +159,7 @@ Item {
     property bool vehicleInMissionFlightMode:       activeVehicle ? (activeVehicle.flightMode === activeVehicle.missionFlightMode) : false
     property bool vehicleWasInMissionFlightMode:    false
     property bool showMissionCompleteDialog:        vehicleWasArmed && vehicleWasInMissionFlightMode &&
-                                                        (_missionController.containsitems || _geoFenceController.containsItems || _rallyPointController.containsItems ||
+                                                        (_missionController.containsItems || _geoFenceController.containsItems || _rallyPointController.containsItems ||
                                                         (activeVehicle ? activeVehicle.cameraTriggerPoints.count !== 0 : false))
 
     onVehicleArmedChanged: {
