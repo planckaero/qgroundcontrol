@@ -75,6 +75,17 @@ void PositionHistoryController::populate_survey_item(const QGeoCoordinate& takeo
 
 void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt)
 {
+  // Check for previous takeoff items before resending
+  if(_missionController->visualItems()->count() > 0) {
+    for(int i = 0; i < _missionController->visualItems()->count(); ++i) {
+      SimpleMissionItem* simple_item =  qobject_cast<SimpleMissionItem*>(_missionController->visualItems()->get(i));
+      if(simple_item && simple_item->command() == MAV_CMD_NAV_PLANCK_TAKEOFF) {
+          takeoffAlt = simple_item->missionItem().param1();
+          break;
+      }
+    }
+  }
+
    /// Remove previous mission
   _missionController->removeAll();
 
@@ -107,6 +118,7 @@ void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord,
       wind_drift = 0.011 * (wind_speed*0.514444*static_cast<qreal>(mission_t_s)) + 0.07;
       current_drift = current_speed*0.514444*static_cast<qreal>(mission_t_s);
       wp->setCoordinate(drifted_coord.atDistanceAndAzimuth(wind_drift, wind_dir).atDistanceAndAzimuth(current_drift, current_dir));
+      wp->applyNewAltitude(takeoffAlt);
     }
   }
   else {
