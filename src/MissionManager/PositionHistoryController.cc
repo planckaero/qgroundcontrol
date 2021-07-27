@@ -13,7 +13,7 @@ PositionHistoryController::PositionHistoryController(QObject* parent)
     _missionController(nullptr)
 {
   connect(_positionHistory, &PositionHistory::position_added, this, &PositionHistoryController::convert_position_for_map);
-  _searchWidth.setRawValue(10);
+  _searchWidth.setRawValue(0);
   _windSpeed.setRawValue(0);
   _windHeading.setRawValue(0);
   _currentSpeed.setRawValue(0);
@@ -80,24 +80,30 @@ void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord,
   item->missionItem().setParam1(takeoffAlt);
   std::reverse(positions.begin(), positions.end()); //reverse so we start at the most recent waypoint
 
-  /// Shift position history based on drift
-  QDateTime cur_time = QDateTime::currentDateTime();
-  double wind_speed = _windSpeed.rawValue().toDouble();
-  double wind_dir = _windHeading.rawValue().toDouble();
-  double current_speed = _currentSpeed.rawValue().toDouble();
-  double current_dir = _currentHeading.rawValue().toDouble();
-  for(auto& pos : positions) {
-    qint64 drift_t_s = pos.timestamp().secsTo(cur_time);
-    qreal wind_drift  = 0.011 * (wind_speed*0.514444*static_cast<qreal>(drift_t_s)) + 0.07;
-    qreal current_drift = current_speed*0.514444 * static_cast<qreal>(drift_t_s);
-    QGeoCoordinate drifted_coord = pos.coordinate().atDistanceAndAzimuth(wind_drift, wind_dir).atDistanceAndAzimuth(current_drift, current_dir);
-    pos.setCoordinate(drifted_coord);
-  }
-
   /// Only search at path when search width is 0
   if(_searchWidth.rawValue().toDouble() == 0.0) {
+    double wind_speed = _windSpeed.rawValue().toDouble();
+    double wind_dir = _windHeading.rawValue().toDouble();
+    double current_speed = _currentSpeed.rawValue().toDouble();
+    double current_dir = _currentHeading.rawValue().toDouble();
+
+    double init_msn_time = _missionController->missionTime();
+    QDateTime curr_time = QDateTime::currentDateTime();
     for (const auto& pos : positions) {
-      _missionController->insertSimpleMissionItem(pos.coordinate(), -1);
+      // Apply drift based on timing without mission transit time
+      qint64 drift_t_s = pos.timestamp().secsTo(curr_time);
+      qreal wind_drift  = 0.011 * (wind_speed*0.514444*static_cast<qreal>(drift_t_s)) + 0.07;
+      qreal current_drift = current_speed*0.514444*static_cast<qreal>(drift_t_s);
+      QGeoCoordinate drifted_coord = pos.coordinate().atDistanceAndAzimuth(wind_drift, wind_dir).atDistanceAndAzimuth(current_drift, current_dir);
+
+      VisualMissionItem* wp = _missionController->insertSimpleMissionItem(drifted_coord, -1);
+
+      // Update based on mission time
+      double curr_msn_time = _missionController->missionTime();
+      double mission_t_s = curr_msn_time - init_msn_time;
+      wind_drift = 0.011 * (wind_speed*0.514444*static_cast<qreal>(mission_t_s)) + 0.07;
+      current_drift = current_speed*0.514444*static_cast<qreal>(mission_t_s);
+      wp->setCoordinate(drifted_coord.atDistanceAndAzimuth(wind_drift, wind_dir).atDistanceAndAzimuth(current_drift, current_dir));
     }
   }
   else {
