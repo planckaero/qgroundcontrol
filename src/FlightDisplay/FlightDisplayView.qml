@@ -1261,6 +1261,7 @@ Item {
             }
 
             FactTextField {
+                id:                     _windSpeedTextField
                 fact:                   _positionHistoryController.windSpeed
                 enabled:                activeVehicle ? !vehicleArmed : true
                 unitsLabel: "kts"
@@ -1270,6 +1271,7 @@ Item {
             }
 
             FactTextField {
+                id:                     _windDirTextField
                 fact:                   _positionHistoryController.windHeading
                 enabled:                activeVehicle ? !vehicleArmed : true
                 unitsLabel: "deg"
@@ -1284,6 +1286,7 @@ Item {
             }
 
             FactTextField {
+                id:                     _currentSpeedTextField
                 fact:                   _positionHistoryController.currentSpeed
                 enabled:                activeVehicle ? !vehicleArmed : true
                 unitsLabel: "kts"
@@ -1293,6 +1296,7 @@ Item {
             }
 
             FactTextField {
+                id:                     _currentDirTextField
                 fact:                   _positionHistoryController.currentHeading
                 enabled:                activeVehicle ? !vehicleArmed : true
                 unitsLabel: "deg"
@@ -1302,17 +1306,19 @@ Item {
             }
 
             Rectangle {
-                id:       previewMissionButton
-                width:    ScreenTools.defaultFontPixelWidth * 7
+                id:       updateMissionButton
+                width:    ScreenTools.defaultFontPixelWidth * 8.5
                 height:   ScreenTools.defaultFontPixelHeight * 2
-                color:    "green"
-                visible:  activeVehicle ? !vehicleArmed : true
+                color:    "white"
                 border    { width: 1; color: "black" }
+                anchors.horizontalCenter: parent.horizontalCenter
 
                 Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
                     color: "black"
                     font.pointSize: ScreenTools.defaultFontPointSize
-                    text: "Preview"
+                    text: "Update"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -1320,13 +1326,15 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     preventStealing: true
-                    enabled: true
+                    enabled: activeVehicle && _missionController.missionItemCount > 1
                     onReleased: {
-                        var takeoffAlt = 25
-                        if (_missionController.visualItems.count > 0) {
-                            takeoffAlt = _missionController.visualItems.get(0).coordinate.altitude
-                        }
-                        _positionHistoryController.send_mission(activeVehicle.coordinate, takeoffAlt)
+                        // Finish editing on all text fields
+                        _windSpeedTextField.focus = false
+                        _windDirTextField.focus = false
+                        _currentSpeedTextField.focus = false
+                        _currentDirTextField.focus = false
+
+                        _positionHistoryController.send_mission(activeVehicle.coordinate, 25)
                     }
                 }
             }
