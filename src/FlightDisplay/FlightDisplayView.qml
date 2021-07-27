@@ -159,7 +159,7 @@ Item {
     property bool vehicleInMissionFlightMode:       activeVehicle ? (activeVehicle.flightMode === activeVehicle.missionFlightMode) : false
     property bool vehicleWasInMissionFlightMode:    false
     property bool showMissionCompleteDialog:        vehicleWasArmed && vehicleWasInMissionFlightMode &&
-                                                        (_missionController.containsItems || _geoFenceController.containsItems || _rallyPointController.containsItems ||
+                                                        (_missionController.containsitems || _geoFenceController.containsItems || _rallyPointController.containsItems ||
                                                         (activeVehicle ? activeVehicle.cameraTriggerPoints.count !== 0 : false))
 
     onVehicleArmedChanged: {
@@ -1254,10 +1254,12 @@ Item {
             columns: 3
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
+
             QGCLabel {
                 text:           qsTr("Wind Speed/Dir")
                 visible:        true
             }
+
             FactTextField {
                 fact:                   _positionHistoryController.windSpeed
                 enabled:                activeVehicle ? !vehicleArmed : true
@@ -1266,6 +1268,7 @@ Item {
                 showHelp: false
                 Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
             }
+
             FactTextField {
                 fact:                   _positionHistoryController.windHeading
                 enabled:                activeVehicle ? !vehicleArmed : true
@@ -1274,10 +1277,12 @@ Item {
                 showHelp: false
                 Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 9
             }
+
             QGCLabel {
                 text:           qsTr("Current Speed/Dir")
                 visible:        true
             }
+
             FactTextField {
                 fact:                   _positionHistoryController.currentSpeed
                 enabled:                activeVehicle ? !vehicleArmed : true
@@ -1286,6 +1291,7 @@ Item {
                 showHelp: false
                 Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
             }
+
             FactTextField {
                 fact:                   _positionHistoryController.currentHeading
                 enabled:                activeVehicle ? !vehicleArmed : true
@@ -1294,18 +1300,49 @@ Item {
                 showHelp: false
                 Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 9
             }
-            QGCLabel {
-                text:           qsTr("Search Width")
-                visible:        true
+
+            Rectangle {
+                id:       previewMissionButton
+                width:    ScreenTools.defaultFontPixelWidth * 7
+                height:   ScreenTools.defaultFontPixelHeight * 2
+                color:    "green"
+                visible:  activeVehicle ? !vehicleArmed : true
+                border    { width: 1; color: "black" }
+
+                Text {
+                    color: "black"
+                    font.pointSize: ScreenTools.defaultFontPointSize
+                    text: "Preview"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    preventStealing: true
+                    enabled: true
+                    onReleased: {
+                        var takeoffAlt = 25
+                        if (_missionController.visualItems.count > 0) {
+                            takeoffAlt = _missionController.visualItems.get(0).coordinate.altitude
+                        }
+                        _positionHistoryController.send_mission(activeVehicle.coordinate, takeoffAlt)
+                    }
+                }
             }
-            FactTextField {
-                fact:                   _positionHistoryController.searchWidth
-                enabled:                activeVehicle ? !vehicleArmed : true
-                unitsLabel: "m"
-                showUnits: true
-                showHelp: false
-                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
-            }
+            // TODO: Use this when survey gets properly implemented
+            // QGCLabel {
+            //     text:           qsTr("Search Width")
+            //     visible:        true
+            // }
+            // FactTextField {
+            //     fact:                   _positionHistoryController.searchWidth
+            //     enabled:                activeVehicle ? !vehicleArmed : true
+            //     unitsLabel: "m"
+            //     showUnits: true
+            //     showHelp: false
+            //     Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
+            // }
         }
     }
 
