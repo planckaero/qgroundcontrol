@@ -1313,7 +1313,7 @@ Item {
                 border    { width: 1; color: "black" }
                 anchors.right: parent.right
 
-                property bool updateEnabled:  activeVehicle && activeVehicle.armed && _missionController.missionItemCount > 1
+                property bool updateEnabled:  activeVehicle && !activeVehicle.armed && _missionController.missionItemCount > 1
 
                 onUpdateEnabledChanged: {
                     updateMissionButton.color = (updateMissionButton.updateEnabled) ? "white" : qgcPal.colorGrey
@@ -1332,7 +1332,7 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     preventStealing: true
-                    enabled: updateEnabled
+                    enabled: updateMissionButton.updateEnabled
                     onReleased: {
                         // Finish editing on all text fields
                         _windSpeedTextField.focus = false
