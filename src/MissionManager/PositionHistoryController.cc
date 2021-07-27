@@ -75,6 +75,9 @@ void PositionHistoryController::populate_survey_item(const QGeoCoordinate& takeo
 
 void PositionHistoryController::send_mission(const QGeoCoordinate& takeoffCoord, double takeoffAlt)
 {
+   /// Remove previous mission
+  _missionController->removeAll();
+
   QList<QGeoPositionInfo> positions = _positionHistory->get_history_until(15*60); //15mins
   SimpleMissionItem* item = qobject_cast<SimpleMissionItem*>(_missionController->insertTakeoffItem(takeoffCoord, -1));
   item->missionItem().setParam1(takeoffAlt);
