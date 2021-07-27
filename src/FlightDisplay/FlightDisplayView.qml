@@ -1316,7 +1316,7 @@ Item {
                 property bool updateEnabled:  activeVehicle && !activeVehicle.armed && _missionController.missionItemCount > 1
 
                 onUpdateEnabledChanged: {
-                    updateMissionButton.color = (updateMissionButton.updateEnabled) ? "white" : qgcPal.colorGrey
+                    updateMissionButton.color = (updateMissionButton.updateEnabled) ? "green" : qgcPal.colorGrey
                 }
 
                 Text {
