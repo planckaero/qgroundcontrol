@@ -1263,7 +1263,7 @@ Item {
             FactTextField {
                 id:                     _windSpeedTextField
                 fact:                   _positionHistoryController.windSpeed
-                enabled:                activeVehicle ? !vehicleArmed : true
+                enabled:                activeVehicle ? !activeVehicle.armed : true
                 unitsLabel: "kts"
                 showUnits: true
                 showHelp: false
@@ -1273,7 +1273,7 @@ Item {
             FactTextField {
                 id:                     _windDirTextField
                 fact:                   _positionHistoryController.windHeading
-                enabled:                activeVehicle ? !vehicleArmed : true
+                enabled:                activeVehicle ? !activeVehicle.armed : true
                 unitsLabel: "deg"
                 showUnits: true
                 showHelp: false
@@ -1288,7 +1288,7 @@ Item {
             FactTextField {
                 id:                     _currentSpeedTextField
                 fact:                   _positionHistoryController.currentSpeed
-                enabled:                activeVehicle ? !vehicleArmed : true
+                enabled:                activeVehicle ? !activeVehicle.armed : true
                 unitsLabel: "kts"
                 showUnits: true
                 showHelp: false
@@ -1298,7 +1298,7 @@ Item {
             FactTextField {
                 id:                     _currentDirTextField
                 fact:                   _positionHistoryController.currentHeading
-                enabled:                activeVehicle ? !vehicleArmed : true
+                enabled:                activeVehicle ? !activeVehicle.armed : true
                 unitsLabel: "deg"
                 showUnits: true
                 showHelp: false
@@ -1309,9 +1309,15 @@ Item {
                 id:       updateMissionButton
                 width:    ScreenTools.defaultFontPixelWidth * 8.5
                 height:   ScreenTools.defaultFontPixelHeight * 2
-                color:    "white"
+                color:    qgcPal.colorGrey
                 border    { width: 1; color: "black" }
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.right: parent.right
+
+                property bool updateEnabled:  activeVehicle && activeVehicle.armed && _missionController.missionItemCount > 1
+
+                onUpdateEnabledChanged: {
+                    updateMissionButton.color = (updateMissionButton.updateEnabled) ? "white" : qgcPal.colorGrey
+                }
 
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
@@ -1326,7 +1332,7 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     preventStealing: true
-                    enabled: activeVehicle && _missionController.missionItemCount > 1
+                    enabled: updateEnabled
                     onReleased: {
                         // Finish editing on all text fields
                         _windSpeedTextField.focus = false
