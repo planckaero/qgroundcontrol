@@ -27,6 +27,7 @@ import QGroundControl.FlightMap     1.0
 import QGroundControl.Palette       1.0
 import QGroundControl.ScreenTools   1.0
 import QGroundControl.Vehicle       1.0
+import QGroundControl.FactControls  1.0
 
 /// Flight Display View
 Item {
@@ -1228,6 +1229,118 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
                         horizontalAlignment: Text.AlignHCenter
+                    }
+                }
+            }
+        }
+    }
+
+    //-- Survey wind/current speed/dir
+    Rectangle {
+        visible:                    true
+        id:                         surveyEnvironmentalData
+        anchors.horizontalCenter:   parent.horizontalCenter
+        anchors.topMargin:          _toolsMargin
+        anchors.top:                _showAnnunciatorPanel ? annunciatorPanel.bottom : parent.top
+        z:                          _mapAndVideo.z + 1
+        color:                      qgcPal.globalTheme === QGCPalette.Light ? QGroundControl.corePlugin.options.toolbarBackgroundLight : QGroundControl.corePlugin.options.toolbarBackgroundDark
+        radius:                     ScreenTools.defaultFontPixelWidth / 2
+        width:                      surveyEnvironmentalGrid.width + _toolsMargin * 2
+        height:                     surveyEnvironmentalGrid.height + _toolsMargin * 2
+
+        GridLayout {
+            id:                 surveyEnvironmentalGrid
+            rows: 3
+            columns: 3
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+
+            QGCLabel {
+                text:           qsTr("Wind Speed/Dir")
+                visible:        true
+            }
+
+            FactTextField {
+                id:                     _windSpeedTextField
+                fact:                   _positionHistoryController.windSpeed
+                enabled:                activeVehicle ? !activeVehicle.armed : true
+                unitsLabel: "kts"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
+            }
+
+            FactTextField {
+                id:                     _windDirTextField
+                fact:                   _positionHistoryController.windHeading
+                enabled:                activeVehicle ? !activeVehicle.armed : true
+                unitsLabel: "deg"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 9
+            }
+
+            QGCLabel {
+                text:           qsTr("Current Speed/Dir")
+                visible:        true
+            }
+
+            FactTextField {
+                id:                     _currentSpeedTextField
+                fact:                   _positionHistoryController.currentSpeed
+                enabled:                activeVehicle ? !activeVehicle.armed : true
+                unitsLabel: "kts"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
+            }
+
+            FactTextField {
+                id:                     _currentDirTextField
+                fact:                   _positionHistoryController.currentHeading
+                enabled:                activeVehicle ? !activeVehicle.armed : true
+                unitsLabel: "deg"
+                showUnits: true
+                showHelp: false
+                Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 9
+            }
+
+            Rectangle {
+                id:       updateMissionButton
+                width:    ScreenTools.defaultFontPixelWidth * 8.5
+                height:   ScreenTools.defaultFontPixelHeight * 2
+                color:    qgcPal.colorGrey
+                border    { width: 1; color: "black" }
+                anchors.right: parent.right
+
+                property bool updateEnabled:  activeVehicle && !activeVehicle.armed && _missionController.missionItemCount > 1
+
+                onUpdateEnabledChanged: {
+                    updateMissionButton.color = (updateMissionButton.updateEnabled) ? "green" : qgcPal.colorGrey
+                }
+
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: "black"
+                    font.pointSize: ScreenTools.defaultFontPointSize
+                    text: "Update"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    preventStealing: true
+                    enabled: updateMissionButton.updateEnabled
+                    onReleased: {
+                        // Finish editing on all text fields
+                        _windSpeedTextField.focus = false
+                        _windDirTextField.focus = false
+                        _currentSpeedTextField.focus = false
+                        _currentDirTextField.focus = false
+
+                        _positionHistoryController.send_mission(activeVehicle.coordinate, 25)
                     }
                 }
             }
