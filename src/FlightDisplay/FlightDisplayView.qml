@@ -1344,19 +1344,6 @@ Item {
                     }
                 }
             }
-            // TODO: Use this when survey gets properly implemented
-            // QGCLabel {
-            //     text:           qsTr("Search Width")
-            //     visible:        true
-            // }
-            // FactTextField {
-            //     fact:                   _positionHistoryController.searchWidth
-            //     enabled:                activeVehicle ? !vehicleArmed : true
-            //     unitsLabel: "m"
-            //     showUnits: true
-            //     showHelp: false
-            //     Layout.preferredWidth: ScreenTools.defaultFontPixelWidth * 8
-            // }
         }
     }
 

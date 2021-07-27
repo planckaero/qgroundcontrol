@@ -3,7 +3,6 @@
 #include "PlanCreator.h"
 #include "MissionController.h"
 #include "PositionHistory.h"
-#include "SurveyComplexItem.h"
 
 /// Interface between PositionHistory and QML element
 class PositionHistoryController : public QObject
@@ -15,7 +14,6 @@ public:
 
   Q_PROPERTY(MissionController* missionController WRITE set_mission_controller)
 
-  Q_PROPERTY(Fact* searchWidth    READ get_search_width    CONSTANT)
   Q_PROPERTY(Fact* currentSpeed   READ get_current_speed   CONSTANT)
   Q_PROPERTY(Fact* currentHeading READ get_current_heading CONSTANT)
   Q_PROPERTY(Fact* windSpeed      READ get_wind_speed   CONSTANT)
@@ -51,6 +49,4 @@ private:
 
   PositionHistory* _positionHistory;
   MissionController* _missionController;
-
-  void populate_survey_item(const QGeoCoordinate& takeoffCoord, const QList<QGeoPositionInfo>& posHist, SurveyComplexItem* survey);
 };
