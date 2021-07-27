@@ -4,7 +4,6 @@
 
 PositionHistoryController::PositionHistoryController(QObject* parent)
   : QObject(parent),
-    _searchWidth(0, "Search Width", FactMetaData::valueTypeInt16),
     _currentSpeed(0, "Current Speed", FactMetaData::valueTypeDouble),
     _currentHeading(0, "Current Heading", FactMetaData::valueTypeDouble),
     _windSpeed(0, "Wind Speed", FactMetaData::valueTypeDouble),
@@ -13,7 +12,6 @@ PositionHistoryController::PositionHistoryController(QObject* parent)
     _missionController(nullptr)
 {
   connect(_positionHistory, &PositionHistory::position_added, this, &PositionHistoryController::convert_position_for_map);
-  _searchWidth.setRawValue(0);
   _windSpeed.setRawValue(0);
   _windHeading.setRawValue(0);
   _currentSpeed.setRawValue(0);

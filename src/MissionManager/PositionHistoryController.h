@@ -22,7 +22,6 @@ public:
   void set_mission_controller(MissionController* controller);
 
   /// @brief Getters for mission parameters
-  Fact* get_search_width()    { return &_searchWidth; }
   Fact* get_current_speed()   { return &_currentSpeed; }
   Fact* get_current_heading() { return &_currentHeading; }
   Fact* get_wind_speed()      { return &_windSpeed; }
@@ -41,7 +40,6 @@ private slots:
   void convert_position_for_map(QGeoPositionInfo pos);
 
 private:
-  Fact _searchWidth;     /// Width in meters to fly in search pattern
   Fact _currentSpeed;    /// Current speed in knots
   Fact _currentHeading;
   Fact _windSpeed;       /// Wind speed in knots
