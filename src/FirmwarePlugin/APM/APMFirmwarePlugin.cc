@@ -1062,7 +1062,7 @@ bool APMFirmwarePlugin::_guidedModeTakeoff(Vehicle* vehicle, double altitudeRel)
     }
 
     if (!_setFlightModeAndValidate(vehicle, "Planck Track")) {
-        qgcApp()->showMessage(tr("Unable to takeoff: Vehicle failed to change to Guided mode."));
+        qgcApp()->showMessage(tr("Unable to takeoff: Vehicle failed to change to Planck Track mode."));
         return false;
     }
 
