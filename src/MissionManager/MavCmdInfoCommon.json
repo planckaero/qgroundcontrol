@@ -1119,15 +1119,16 @@
         },
         {
             "id": 9101,
-            "rawName":      "MAV_CMD_NAV_PLANCK_FINDANDLAND",
-            "friendlyName": "Planck FindAndLand",
+            "rawName":      "MAV_CMD_NAV_PAYLOAD_RECOVER",
+            "friendlyName": "Payload Recover",
+            "specifiesCoordinate":  true,
             "friendlyEdit": true,
-            "description":  "Planck FindAndLand command",
+            "description":  "Recover Payload",
             "category":     "Basic",
             "param1": {
-                "label":            "min_alt",
-                "default":          5.0,
-                "decimalPlaces":    2,
+                "label":            "Max descent",
+                "default":          0,
+                "decimalPlaces":    0,
                 "units":   "m"
             }
         },
