@@ -1118,7 +1118,7 @@
             }
         },
         {
-            "id": 9101,
+            "id": 86,
             "rawName":      "MAV_CMD_NAV_PAYLOAD_RECOVER",
             "friendlyName": "Payload Recover",
             "specifiesCoordinate":  true,
