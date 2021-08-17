@@ -400,7 +400,7 @@ VisualMissionItem* MissionController::insertSimpleMissionItem(QGeoCoordinate coo
 VisualMissionItem* MissionController::insertTakeoffItem(QGeoCoordinate /*coordinate*/, int visualItemIndex, bool makeCurrentItem)
 {
     int sequenceNumber = _nextSequenceNumber();
-    TakeoffMissionItem * newItem = new TakeoffMissionItem(_controllerVehicle->vtol() ? MAV_CMD_NAV_VTOL_TAKEOFF : MAV_CMD_NAV_PLANCK_TAKEOFF, _controllerVehicle, _flyView, _settingsItem, this);
+    TakeoffMissionItem * newItem = new TakeoffMissionItem(_controllerVehicle->vtol() ? MAV_CMD_NAV_VTOL_TAKEOFF : MAV_CMD_NAV_TAKEOFF, _controllerVehicle, _flyView, _settingsItem, this);
     newItem->setSequenceNumber(sequenceNumber);
     _initVisualItem(newItem);
 
@@ -436,7 +436,7 @@ VisualMissionItem* MissionController::insertLandItem(QGeoCoordinate coordinate, 
         fwLanding->setLoiterDragAngleOnly(true);
         return fwLanding;
     } else {
-        return _insertSimpleMissionItemWorker(coordinate, MAV_CMD_NAV_PLANCK_RTB, visualItemIndex, makeCurrentItem);
+        return _insertSimpleMissionItemWorker(coordinate, MAV_CMD_NAV_RETURN_TO_LAUNCH, visualItemIndex, makeCurrentItem);
     }
 }
 

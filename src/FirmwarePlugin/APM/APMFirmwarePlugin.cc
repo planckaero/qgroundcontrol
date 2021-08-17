@@ -807,7 +807,8 @@ QList<MAV_CMD> APMFirmwarePlugin::supportedMissionCommands(void)
         MAV_CMD_DO_GUIDED_LIMITS,
         MAV_CMD_DO_AUTOTUNE_ENABLE,
         MAV_CMD_NAV_VTOL_TAKEOFF, MAV_CMD_NAV_VTOL_LAND, MAV_CMD_DO_VTOL_TRANSITION,
-        MAV_CMD_NAV_PLANCK_TAKEOFF, MAV_CMD_NAV_PLANCK_RTB, MAV_CMD_NAV_PLANCK_WINGMAN, MAV_CMD_NAV_PLANCK_FINDANDLAND
+        MAV_CMD_NAV_PLANCK_TAKEOFF, MAV_CMD_NAV_PLANCK_RTB, MAV_CMD_NAV_PLANCK_WINGMAN, MAV_CMD_NAV_PLANCK_FINDANDLAND,
+        MAV_CMD_NAV_PAYLOAD_PLACE
 #if 0
     // Waiting for module update
         MAV_CMD_DO_SET_REVERSE,
@@ -1061,7 +1062,7 @@ bool APMFirmwarePlugin::_guidedModeTakeoff(Vehicle* vehicle, double altitudeRel)
         takeoffAltRel = altitudeRel;
     }
 
-    if (!_setFlightModeAndValidate(vehicle, "Planck Track")) {
+    if (!_setFlightModeAndValidate(vehicle, "Guided")) {
         qgcApp()->showMessage(tr("Unable to takeoff: Vehicle failed to change to Guided mode."));
         return false;
     }

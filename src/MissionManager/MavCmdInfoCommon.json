@@ -1103,6 +1103,21 @@
             }
         },
         {
+            "id": 94,
+            "rawName":              "MAV_CMD_NAV_PAYLOAD_PLACE",
+            "friendlyName":         "Payload Place",
+            "description":          "Descend and place payload",
+            "specifiesCoordinate":  true,
+            "friendlyEdit":         true,
+            "category":             "Basic",
+            "param1": {
+                "label":            "Max descent",
+                "default":          0,
+                "decimalPlaces":    0,
+                "units":            "m"
+            }
+        },
+        {
             "id": 9101,
             "rawName":      "MAV_CMD_NAV_PLANCK_FINDANDLAND",
             "friendlyName": "Planck FindAndLand",
