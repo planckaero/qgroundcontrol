@@ -145,7 +145,7 @@ FlightMap {
 
     NumberAnimation on animatedLatitude { id: animateLat; from: _animatedLatitudeStart; to: _animatedLatitudeStop; duration: 1000 }
     NumberAnimation on animatedLongitude { id: animateLong; from: _animatedLongitudeStart; to: _animatedLongitudeStop; duration: 1000 }
-
+/*
     // Allows centering on drone, landing pad, or free move
     MapCenterChooser {
         id: mapcenterchooser
@@ -159,7 +159,7 @@ FlightMap {
             updateMapAnimated()
         }
     }
-
+*/
     function animatedMapRecenter(fromCoord, toCoord) {
         _animatedLatitudeStart = fromCoord.latitude
         _animatedLongitudeStart = fromCoord.longitude

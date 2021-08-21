@@ -1299,7 +1299,7 @@
 <field name="Bitmask">0:Land,1:VTOL Land,2:DO_LAND_START,3:Takeoff,4:VTOL Takeoff,5:Rallypoint</field>
 </param>
 <param humanName="Arm Checks to Peform (bitmask)" name="ARMING_CHECK" documentation="Checks prior to arming motor. This is a bitmask of checks that will be performed before allowing arming. The default is no checks, allowing arming at any time. You can select whatever checks you prefer by adding together the values of each check type to set this parameter. For example, to only allow arming when you have GPS lock and no RC failsafe you would set ARMING_CHECK to 72. For most users it is recommended that you set this to 1 to enable all checks." user="Standard">
-<field name="Bitmask">0:All,1:Barometer,2:Compass,3:GPS lock,4:INS,5:Parameters,6:RC Channels,7:Board voltage,8:Battery Level,9:Airspeed,10:Logging Available,11:Hardware safety switch,12:GPS Configuration,13:System,14:Mission,15:Rangefinder,16:Planck Commbox GPS</field>
+<field name="Bitmask">0:All,1:Barometer,2:Compass,3:GPS lock,4:INS,5:Parameters,6:RC Channels,7:Board voltage,8:Battery Level,9:Airspeed,10:Logging Available,11:Hardware safety switch,12:GPS Configuration,13:System,14:Mission,15:Rangefinder</field>
 <values>
 <value code="0">None</value>
 <value code="1">All</value>
@@ -1316,7 +1316,6 @@
 <value code="2048">Hardware safety switch</value>
 <value code="4096">GPS configuration</value>
 <value code="8192">System</value>
-<value code="16384">Planck Commbox GPS</value>
 </values>
 </param>
 </parameters>

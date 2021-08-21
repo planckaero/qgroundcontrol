@@ -77,7 +77,7 @@ Map {
             onCoordinateChanged:    center = coordinate
         }
     }
-
+/*
     readonly property double meters_to_deg: 0.000008983152841
 
     // 10m range ring
@@ -263,7 +263,7 @@ Map {
                     color: "white"
                 }
             }
-
+*/
 
     // We track whether the user has panned or not to correctly handle automatic map positioning
     Connections {
