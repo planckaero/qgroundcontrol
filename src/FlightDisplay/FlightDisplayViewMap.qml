@@ -27,8 +27,8 @@ import QGroundControl.Vehicle       1.0
 FlightMap {
     id:                         flightMap
     mapName:                    _mapName
-    allowGCSLocationCenter:     MapCenterChooser.centerMode===MapCenterChooser.centerLP
-    allowVehicleLocationCenter: MapCenterChooser.centerMode===MapCenterChooser.centerLP
+    allowGCSLocationCenter:     !userPanned
+    allowVehicleLocationCenter: !_keepVehicleCentered
     planView:                   false
     zoomLevel:                  QGroundControl.flightMapZoom
     center:                     QGroundControl.flightMapPosition
@@ -53,8 +53,7 @@ FlightMap {
     property bool   _keepMapCenteredOnVehicle:  _flyViewSettings.keepMapCenteredOnVehicle.rawValue
 
     property bool   _disableVehicleTracking:    false
-    property bool   _disablePadTracking:        false
-    property bool   _keepVehicleCentered:       false
+    property bool   _keepVehicleCentered:       mainIsMap ? false : true
     property bool   _pipping:                   false
 
     function updateAirspace(reset) {
@@ -109,17 +108,12 @@ FlightMap {
     }
 
     // When the user pans the map we stop responding to vehicle coordinate updates until the panRecenterTimer fires
-    onUserPanningChanged: {
-        if (userPanning) {
+    onUserPannedChanged: {
+        if (userPanned) {
+            userPanned = false
             _disableVehicleTracking = true
-            _disablePadTracking = true
+            panRecenterTimer.restart()
         }
-        else
-        {
-            _disableVehicleTracking = false
-            _disablePadTracking = false
-        }
-        mapcenterchooser.free = true
     }
 
     on_AirspaceEnabledChanged: {
@@ -145,21 +139,7 @@ FlightMap {
 
     NumberAnimation on animatedLatitude { id: animateLat; from: _animatedLatitudeStart; to: _animatedLatitudeStop; duration: 1000 }
     NumberAnimation on animatedLongitude { id: animateLong; from: _animatedLongitudeStart; to: _animatedLongitudeStop; duration: 1000 }
-/*
-    // Allows centering on drone, landing pad, or free move
-    MapCenterChooser {
-        id: mapcenterchooser
-        anchors.right: flightMap.right
-        anchors.rightMargin: 10
-        anchors.bottom: flightMap.bottom
-        anchors.bottomMargin: 100
 
-        onCenterModeChanged:
-        {
-            updateMapAnimated()
-        }
-    }
-*/
     function animatedMapRecenter(fromCoord, toCoord) {
         _animatedLatitudeStart = fromCoord.latitude
         _animatedLongitudeStart = fromCoord.longitude
@@ -169,9 +149,28 @@ FlightMap {
         animateLong.start()
     }
 
+    function recenterNeeded() {
+        var vehiclePoint = flightMap.fromCoordinate(_activeVehicleCoordinate, false /* clipToViewport */)
+        var toolStripRightEdge = mapFromItem(toolStrip, toolStrip.x, 0).x + toolStrip.width
+        var instrumentsWidth = 0
+        if (QGroundControl.corePlugin.options.instrumentWidget && QGroundControl.corePlugin.options.instrumentWidget.widgetPosition === CustomInstrumentWidget.POS_TOP_RIGHT) {
+            // Assume standard instruments
+            instrumentsWidth = flightDisplayViewWidgets.getPreferredInstrumentWidth()
+        }
+        var centerViewport = Qt.rect(toolStripRightEdge, 0, width - toolStripRightEdge - instrumentsWidth, height)
+        return !pointInRect(vehiclePoint, centerViewport)
+    }
+
     function updateMapToVehiclePosition() {
-        if (_activeVehicleCoordinate.isValid) {
-            flightMap.center = _activeVehicleCoordinate
+        // We let FlightMap handle first vehicle position
+        if (!_keepMapCenteredOnVehicle && firstVehiclePositionReceived && _activeVehicleCoordinate.isValid && !_disableVehicleTracking) {
+            if (_keepVehicleCentered) {
+                flightMap.center = _activeVehicleCoordinate
+            } else {
+                if (firstVehiclePositionReceived && recenterNeeded()) {
+                    animatedMapRecenter(flightMap.center, _activeVehicleCoordinate)
+                }
+            }
         }
     }
 
@@ -181,46 +180,21 @@ FlightMap {
         }
     }
 
-    function updateMapToPadPosition() {
-        if(gcsPosition.isValid) {
-            flightMap.center = gcsPosition
-        }
-    }
-
-    function updateMap() {
-        if (mapcenterchooser.centerMode===mapcenterchooser.centerDRONE && !_disableVehicleTracking)
-        {
+    Timer {
+        id:         panRecenterTimer
+        interval:   10000
+        running:    false
+        onTriggered: {
+            _disableVehicleTracking = false
             updateMapToVehiclePosition()
         }
-        else if (mapcenterchooser.centerMode===mapcenterchooser.centerLP && !_disablePadTracking)
-        {
-            updateMapToPadPosition()
-        }
     }
-
-    function updateMapAnimated() {
-        if (mapcenterchooser.centerMode===mapcenterchooser.centerDRONE && !_disableVehicleTracking)
-        {
-            animatedMapRecenter(flightMap.center, _activeVehicleCoordinate)
-        }
-        else if (mapcenterchooser.centerMode===mapcenterchooser.centerLP && !_disablePadTracking)
-        {
-            animatedMapRecenter(flightMap.center, gcsPosition)
-        }
-    }
-
-    onGcsPositionChanged: {
-        updateMap()
-        wingmanItem.coordinate.latitude = gcsPosition.latitude + wingmanItem.wingmanRelative.latitude
-        wingmanItem.coordinate.longitude = gcsPosition.longitude + wingmanItem.wingmanRelative.longitude
-    }
-
 
     Timer {
-        interval:       1000
-        running:        !userPanning
+        interval:       500
+        running:        true
         repeat:         true
-        onTriggered:    updateMap()
+        onTriggered:    updateMapToVehiclePosition()
     }
 
     QGCMapPalette { id: mapPal; lightColors: isSatelliteMap }
@@ -413,58 +387,6 @@ FlightMap {
         }
     }
 
-    // Wingman visuals
-    MapQuickItem {
-        id:             wingmanItem
-        visible:        false
-        z:              QGroundControl.zOrderMapItems
-        anchorPoint.x:  sourceItem.anchorPointX
-        anchorPoint.y:  sourceItem.anchorPointY
-
-        sourceItem: MissionItemIndexLabel {
-            checked:    true
-            index:      -1
-            label:      qsTr("Wingman here", "Relative location")
-        }
-
-        property bool inWingmanMode: activeVehicle ? activeVehicle.flightMode === activeVehicle.gotoFlightMode : false
-        property var wingmanRelative: QtPositioning.coordinate()
-        property var wingmanMeters: QtPositioning.coordinate()
-
-        onInWingmanModeChanged: {
-            if (!inWingmanMode && visible) {
-                // Hide wingman indicator when vehicle falls out of guided mode
-                visible = false
-            }
-        }
-
-        Connections {
-            target: mainWindow
-            onActiveVehicleChanged: {
-                if (!activeVehicle) {
-                    gotoLocationItem.visible = false
-                }
-            }
-        }
-
-        function show(coord) {
-            wingmanItem.coordinate = coord
-            wingmanItem.visible = true
-        }
-
-        function hide() {
-            wingmanItem.visible = false
-        }
-
-        function actionConfirmed() {
-            hide()
-        }
-
-        function actionCancelled() {
-            hide()
-        }
-    }
-
     // Orbit editing visuals
     QGCMapCircleVisuals {
         id:             orbitMapCircle
@@ -582,8 +504,6 @@ FlightMap {
 
                 onTriggered: {
                     gotoLocationItem.show(clickMenu.coord)
-                    orbitMapCircle.hide()
-                    wingmanItem.hide()
                     guidedActionsController.confirmAction(guidedActionsController.actionGoto, clickMenu.coord, gotoLocationItem)
                 }
             }
@@ -593,20 +513,7 @@ FlightMap {
 
                 onTriggered: {
                     orbitMapCircle.show(clickMenu.coord)
-                    gotoLocationItem.hide()
-                    wingmanItem.hide()
                     guidedActionsController.confirmAction(guidedActionsController.actionOrbit, clickMenu.coord, orbitMapCircle)
-                }
-            }
-            QGCMenuItem {
-                text:           qsTr("Wingman")
-                visible:        guidedActionsController.showWingman
-
-                onTriggered: {
-                    wingmanItem.show(clickMenu.coord)
-                    orbitMapCircle.hide()
-                    gotoLocationItem.hide()
-                    guidedActionsController.confirmAction(guidedActionsController.actionWingman, wingmanItem.wingmanMeters, wingmanItem)
                 }
             }
             QGCMenuItem {
@@ -621,23 +528,12 @@ FlightMap {
         }
 
         onClicked: {
-            if (!guidedActionsController.guidedUIVisible && (guidedActionsController.showGotoLocation || guidedActionsController.showOrbit || guidedActionsController.showROI || guidedActionsController.showWingman)) {
+            if (!guidedActionsController.guidedUIVisible && (guidedActionsController.showGotoLocation || guidedActionsController.showOrbit || guidedActionsController.showROI)) {
                 orbitMapCircle.hide()
                 gotoLocationItem.hide()
-                wingmanItem.hide()
                 var clickCoord = flightMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
                 clickMenu.coord = clickCoord
                 clickMenu.popup()
-
-                wingmanItem.wingmanRelative.latitude = clickCoord.latitude - gcsPosition.latitude
-                wingmanItem.wingmanRelative.longitude = clickCoord.longitude - gcsPosition.longitude
-
-                var distance = gcsPosition.distanceTo(clickCoord)
-                var azimuth = gcsPosition.azimuthTo(clickCoord) * Math.PI / 180.0
-
-                // These actually return meters. I stuffed them into a geocoordinate, though.
-                wingmanItem.wingmanMeters.latitude = distance * Math.cos(azimuth)
-                wingmanItem.wingmanMeters.longitude = distance * Math.sin(azimuth)
             }
         }
     }
