@@ -373,7 +373,7 @@ SetupPage {
                                 QGCLabel { text: qsTr("Throttle failsafe:") }
                                 QGCComboBox {
                                     model:              [qsTr("Disabled"), qsTr("Always RTL"),
-                                        qsTr("Continue with Mission in Auto Mode"), qsTr("Always Land"), qsTr("Always SmartRTL or RTL"), qsTr("Always SmartRTL or Land"), qsTr("Always Planck RTB or Planck Land")]
+                                        qsTr("Continue with Mission in Auto Mode"), qsTr("Always Land"), qsTr("Always SmartRTL or RTL"), qsTr("Always SmartRTL or Land")]
                                     currentIndex:       _failsafeThrEnable.value
                                     Layout.fillWidth:   true
 

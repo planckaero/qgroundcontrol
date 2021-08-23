@@ -783,35 +783,6 @@ Rectangle {
                     Item { width: 1; height: _margins }
 
                     QGCLabel {
-                        id:         planckSectionLabel
-                        text:       qsTr("Planck Configuration")
-                    }
-                    Rectangle {
-                        Layout.preferredWidth:  planckCol.width + (_margins * 2)
-                        Layout.preferredHeight: planckCol.height + (_margins * 2)
-                        color:                  qgcPal.windowShade
-                        Layout.fillWidth:       true
-
-                        ColumnLayout {
-                            id:                 planckCol
-                            anchors.margins:    _margins
-                            anchors.left:       parent.left
-                            anchors.top:        parent.top
-                            spacing:            _margins
-
-                            FactCheckBox {
-                                Layout.alignment:   Qt.AlignHCenter
-                                text: qsTr("Send Planck GPS Location from NMEA or Internal GPS")
-
-                                fact:       _sendPlanckGPS
-                                property Fact _sendPlanckGPS: QGroundControl.settingsManager.appSettings.sendPlanckGPS
-                            }
-                        }
-                    }
-
-                    Item { width: 1; height: _margins }
-
-                    QGCLabel {
                         id:         rtkSectionLabel
                         text:       qsTr("RTK GPS")
                         visible:    QGroundControl.settingsManager.rtkSettings.visible

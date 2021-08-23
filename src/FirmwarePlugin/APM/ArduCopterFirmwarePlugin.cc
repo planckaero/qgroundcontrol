@@ -83,10 +83,10 @@ ArduCopterFirmwarePlugin::ArduCopterFirmwarePlugin(void)
         APMCopterMode(APMCopterMode::FOLLOW,        true),
 #endif
         APMCopterMode(APMCopterMode::ZIGZAG,        true),
-        APMCopterMode(APMCopterMode::PLANCK_TRACK,   true),
-        APMCopterMode(APMCopterMode::PLANCK_RTB,     true),
-        APMCopterMode(APMCopterMode::PLANCK_LAND,    true),
-        APMCopterMode(APMCopterMode::PLANCK_WINGMAN, true),
+        APMCopterMode(APMCopterMode::PLANCK_TRACK,   false),
+        APMCopterMode(APMCopterMode::PLANCK_RTB,     false),
+        APMCopterMode(APMCopterMode::PLANCK_LAND,    false),
+        APMCopterMode(APMCopterMode::PLANCK_WINGMAN, false),
     });
 
     if (!_remapParamNameIntialized) {

@@ -102,8 +102,6 @@
 <value code="2">Enabled Continue with Mission in Auto Mode</value>
 <value code="3">Enabled always SmartRTL or RTL</value>
 <value code="4">Enabled always SmartRTL or Land</value>
-<value code="5">Enabled always Land</value>
-<value code="6">Enabled always Planck RTB or Planck Land</value>
 </values>
 </param>
 <param humanName="GPS Hdop Good" name="ArduCopter:GPS_HDOP_GOOD" documentation="GPS Hdop value at or below this value represent a good position.  Used for pre-arm checks" user="Advanced">
@@ -217,7 +215,6 @@
 <value code="3">Enabled always Land</value>
 <value code="4">Enabled always SmartRTL or RTL</value>
 <value code="5">Enabled always SmartRTL or Land</value>
-<value code="6">Enabled always Planck RTB or Planck Land</value>
 </values>
 </param>
 <param humanName="Throttle Failsafe Value" name="ArduCopter:FS_THR_VALUE" documentation="The PWM level in microseconds on channel 3 below which throttle failsafe triggers" user="Standard">
@@ -1870,7 +1867,6 @@
 <value code="3">SmartRTL or RTL</value>
 <value code="4">SmartRTL or Land</value>
 <value code="5">Terminate</value>
-<value code="6">PlanckRTB or Planck Land</value>
 </values>
 </param>
 <param humanName="Critical battery failsafe action" name="BATT2_FS_CRT_ACT" documentation="What action the vehicle should perform if it hits a critical battery failsafe" user="Standard">
@@ -1881,7 +1877,6 @@
 <value code="3">SmartRTL or RTL</value>
 <value code="4">SmartRTL or Land</value>
 <value code="5">Terminate</value>
-<value code="6">PlanckRTB or Planck Land</value>
 </values>
 </param>
 <param humanName="Required arming voltage" name="BATT2_ARM_VOLT" documentation="Battery voltage level which is required to arm the aircraft. Set to 0 to allow arming at any voltage." user="Advanced">
@@ -2864,7 +2859,6 @@
 <value code="3">SmartRTL or RTL</value>
 <value code="4">SmartRTL or Land</value>
 <value code="5">Terminate</value>
-<value code="6">PlanckRTB or Planck Land</value>
 </values>
 </param>
 <param humanName="Critical battery failsafe action" name="BATT_FS_CRT_ACT" documentation="What action the vehicle should perform if it hits a critical battery failsafe" user="Standard">
@@ -2875,7 +2869,6 @@
 <value code="3">SmartRTL or RTL</value>
 <value code="4">SmartRTL or Land</value>
 <value code="5">Terminate</value>
-<value code="6">PlanckRTB or Planck Land</value>
 </values>
 </param>
 <param humanName="Required arming voltage" name="BATT_ARM_VOLT" documentation="Battery voltage level which is required to arm the aircraft. Set to 0 to allow arming at any voltage." user="Advanced">
