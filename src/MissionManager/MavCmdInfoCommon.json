@@ -1126,7 +1126,7 @@
             "description":  "Recover Payload",
             "category":     "Basic",
             "param1": {
-                "label":            "Min altitude",
+                "label":            "Start altitude",
                 "default":          0,
                 "decimalPlaces":    0,
                 "units":   "m"

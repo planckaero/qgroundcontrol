@@ -985,6 +985,17 @@ void Vehicle::_handleStatusText(mavlink_message_t& message, bool longVersion)
             qgcApp()->toolbox()->audioOutput()->say(messageText);
         }
     }
+
+    //Look for a very specific string for DR2M. Save the string in a text file
+    if(messageText.startsWith("Location: ")) {
+        QString filename = "Placement " + QDateTime::currentDateTime().toString() + ".txt";
+        QFile file(QDir(qgcApp()->toolbox()->settingsManager()->appSettings()->logSavePath()).absoluteFilePath(filename));
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            return;
+        }
+        file.write(messageText.toUtf8());//, messageText.length());
+        file.close();
+    }
     emit textMessageReceived(id(), message.compid, severity, messageText);
 }
 
