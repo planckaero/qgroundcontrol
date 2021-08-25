@@ -1,6 +1,10 @@
 #include "COTTranslator.h"
 #include <iostream>
+#ifdef _WIN32
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include "MAVLinkProtocol.h"
 #include "LinkInterface.h"
 #include "QMetaObject"

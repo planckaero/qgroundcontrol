@@ -198,6 +198,8 @@ public:
     Q_PROPERTY(ThermalViewMode thermalMode      READ thermalMode        WRITE  setThermalMode       NOTIFY thermalModeChanged)
     Q_PROPERTY(double       thermalOpacity      READ thermalOpacity     WRITE  setThermalOpacity    NOTIFY thermalOpacityChanged)
 
+    Q_PROPERTY(bool         streamSelectable    READ streamSelectable                               NOTIFY streamSelectableChanged)
+
     Q_INVOKABLE virtual void setVideoMode   ();
     Q_INVOKABLE virtual void setPhotoMode   ();
     Q_INVOKABLE virtual void toggleMode     ();
@@ -254,6 +256,7 @@ public:
     virtual QGCVideoStreamInfo* thermalStreamInstance();
     virtual int          currentStream      () { return _currentStream; }
     virtual void         setCurrentStream   (int stream);
+    virtual void         revertCurrentStream();
     virtual bool         autoStream         ();
     virtual quint32      recordTime         () { return _recordTime; }
     virtual QString      recordTimeStr      ();
@@ -265,6 +268,8 @@ public:
     virtual Fact*       aperture            ();
     virtual Fact*       wb                  ();
     virtual Fact*       mode                ();
+
+    virtual bool       streamSelectable     () { return _previousStream < 0; }
 
     /// Stream names to show the user (for selection)
     virtual QStringList streamLabels        () { return _streamLabels; }
@@ -331,6 +336,7 @@ signals:
     void    thermalModeChanged              ();
     void    thermalOpacityChanged           ();
     void    storageStatusChanged            ();
+    void    streamSelectableChanged         ();
 
 protected:
     virtual void    _setVideoStatus         (VideoStatus status);
@@ -427,4 +433,5 @@ protected:
     QStringList                         _streamLabels;
     ThermalViewMode                     _thermalMode        = THERMAL_BLEND;
     double                              _thermalOpacity     = 85.0;
+    int                                 _previousStream     = -1;
 };

@@ -704,7 +704,7 @@ QGCCameraControl::_mavCommandResult(int vehicleId, int component, int command, i
                 }
                 break;
             case MAV_CMD_VIDEO_START_CAPTURE:
-                _setVideoStatus(VIDEO_CAPTURE_STATUS_RUNNING);
+                 _setVideoStatus(VIDEO_CAPTURE_STATUS_RUNNING);
                 _captureStatusTimer.start(1000);
                 break;
             case MAV_CMD_VIDEO_STOP_CAPTURE:
@@ -720,6 +720,11 @@ QGCCameraControl::_mavCommandResult(int vehicleId, int component, int command, i
             case MAV_CMD_IMAGE_START_CAPTURE:
                 _captureStatusTimer.start(1000);
                 break;
+            case MAV_CMD_VIDEO_START_STREAMING:
+                qCDebug(CameraControlLog) << "Successfully started stream (" << _currentStream << ").";
+                _requestStreamStatus(static_cast<uint8_t>(_currentStream));
+                emit currentStreamChanged();
+                emit _vehicle->dynamicCameras()->streamChanged();
         }
     } else {
         if(noReponseFromVehicle || result == MAV_RESULT_TEMPORARILY_REJECTED || result == MAV_RESULT_FAILED) {
@@ -736,7 +741,7 @@ QGCCameraControl::_mavCommandResult(int vehicleId, int component, int command, i
                     if(++_captureInfoRetries < 3) {
                         _captureStatusTimer.start(1000);
                     } else {
-                        qCDebug(CameraControlLog) << "Giving up start/stop image capture";
+                        qCDebug(CameraControlLog) << "Giving up stop image capture";
                         _setPhotoStatus(PHOTO_CAPTURE_IDLE);
                     }
                     break;
@@ -754,10 +759,19 @@ QGCCameraControl::_mavCommandResult(int vehicleId, int component, int command, i
                         qCDebug(CameraControlLog) << "Giving up requesting storage status";
                     }
                     break;
+                case MAV_CMD_VIDEO_START_STREAMING:
+                    qCDebug(CameraControlLog) << "Reverting to original stream due to video start stream failure.";
+                    revertCurrentStream();
             }
         } else {
             qCDebug(CameraControlLog) << "Bad response for" << command << result;
         }
+    }
+
+    // Resolve video start streaming
+    if(command == MAV_CMD_VIDEO_START_STREAMING) {
+        _previousStream = -1;
+        emit streamSelectableChanged();
     }
 }
 
@@ -1479,7 +1493,7 @@ QGCCameraControl::handleSettings(const mavlink_camera_settings_t& settings)
 void
 QGCCameraControl::handleStorageInfo(const mavlink_storage_information_t& st)
 {
-    qCDebug(CameraControlLog) << "handleStorageInfo:" << st.available_capacity << st.status << st.storage_count << st.storage_id << st.total_capacity << st.used_capacity;
+    // qCDebug(CameraControlLog) << "handleStorageInfo:" << st.available_capacity << st.status << st.storage_count << st.storage_id << st.total_capacity << st.used_capacity;
     if(st.status == STORAGE_STATUS_READY) {
         uint32_t t = static_cast<uint32_t>(st.total_capacity);
         if(_storageTotal != t) {
@@ -1599,8 +1613,15 @@ QGCCameraControl::handleVideoStatus(const mavlink_video_stream_status_t* vs)
 void
 QGCCameraControl::setCurrentStream(int stream)
 {
+    if(!streamSelectable()) {
+       return;
+    }
+
     if(stream != _currentStream && stream >= 0 && stream < _streamLabels.count()) {
         if(_currentStream != stream) {
+            _previousStream = _currentStream;
+            emit streamSelectableChanged();
+
             QGCVideoStreamInfo* pInfo = currentStreamInstance();
             if(pInfo) {
                 qCDebug(CameraControlLog) << "Stopping stream:" << pInfo->uri();
@@ -1608,7 +1629,7 @@ QGCCameraControl::setCurrentStream(int stream)
                 _vehicle->sendMavCommand(
                     _compID,                                // Target component
                     MAV_CMD_VIDEO_STOP_STREAMING,           // Command id
-                    false,                                  // ShowError
+                    true,                                   // ShowError
                     pInfo->streamID());                     // Stream ID
             }
             _currentStream = stream;
@@ -1619,14 +1640,23 @@ QGCCameraControl::setCurrentStream(int stream)
                 _vehicle->sendMavCommand(
                     _compID,                                // Target component
                     MAV_CMD_VIDEO_START_STREAMING,          // Command id
-                    false,                                  // ShowError
+                    true,                                   // ShowError
                     pInfo->streamID());                     // Stream ID
-                //-- Update stream status
-                _requestStreamStatus(static_cast<uint8_t>(pInfo->streamID()));
+                // //-- Update stream status
+                // _requestStreamStatus(static_cast<uint8_t>(pInfo->streamID()));
             }
-            emit currentStreamChanged();
-            emit _vehicle->dynamicCameras()->streamChanged();
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+void
+QGCCameraControl::revertCurrentStream()
+{
+     if(_currentStream != _previousStream) {
+        _currentStream = _previousStream;
+        emit currentStreamChanged();
+        emit _vehicle->dynamicCameras()->streamChanged();
     }
 }
 
