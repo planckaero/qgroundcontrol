@@ -1055,6 +1055,10 @@ Set -1 to disable the check</short_desc>
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="18">Planck Track</value>
+        <value code="19">Planck RTB</value>
+        <value code="20">Planck Land</value>
+        <value code="21">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="-1" name="COM_FLTMODE2" type="INT32">
@@ -1075,6 +1079,10 @@ Set -1 to disable the check</short_desc>
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="18">Planck Track</value>
+        <value code="19">Planck RTB</value>
+        <value code="20">Planck Land</value>
+        <value code="21">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="-1" name="COM_FLTMODE3" type="INT32">
@@ -1095,6 +1103,10 @@ Set -1 to disable the check</short_desc>
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="18">Planck Track</value>
+        <value code="19">Planck RTB</value>
+        <value code="20">Planck Land</value>
+        <value code="21">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="-1" name="COM_FLTMODE4" type="INT32">
@@ -1115,6 +1127,10 @@ Set -1 to disable the check</short_desc>
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="18">Planck Track</value>
+        <value code="19">Planck RTB</value>
+        <value code="20">Planck Land</value>
+        <value code="21">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="-1" name="COM_FLTMODE5" type="INT32">
@@ -1135,6 +1151,10 @@ Set -1 to disable the check</short_desc>
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="18">Planck Track</value>
+        <value code="19">Planck RTB</value>
+        <value code="20">Planck Land</value>
+        <value code="21">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="-1" name="COM_FLTMODE6" type="INT32">
@@ -1155,6 +1175,10 @@ Set -1 to disable the check</short_desc>
         <value code="10">Takeoff</value>
         <value code="11">Land</value>
         <value code="12">Follow Me</value>
+        <value code="18">Planck Track</value>
+        <value code="19">Planck RTB</value>
+        <value code="20">Planck Land</value>
+        <value code="21">Planck Takeoff</value>
       </values>
     </parameter>
     <parameter default="0" name="COM_FLT_PROFILE" type="INT32">

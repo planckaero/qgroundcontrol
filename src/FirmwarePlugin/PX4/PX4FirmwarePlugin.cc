@@ -36,24 +36,28 @@ PX4FirmwarePluginInstanceData::PX4FirmwarePluginInstanceData(QObject* parent)
 }
 
 PX4FirmwarePlugin::PX4FirmwarePlugin()
-    : _manualFlightMode     (tr("Manual"))
-    , _acroFlightMode       (tr("Acro"))
-    , _stabilizedFlightMode (tr("Stabilized"))
-    , _rattitudeFlightMode  (tr("Rattitude"))
-    , _altCtlFlightMode     (tr("Altitude"))
-    , _posCtlFlightMode     (tr("Position"))
-    , _offboardFlightMode   (tr("Offboard"))
-    , _readyFlightMode      (tr("Ready"))
-    , _takeoffFlightMode    (tr("Takeoff"))
-    , _holdFlightMode       (tr("Hold"))
-    , _missionFlightMode    (tr("Mission"))
-    , _rtlFlightMode        (tr("Return"))
-    , _landingFlightMode    (tr("Land"))
-    , _preclandFlightMode   (tr("Precision Land"))
-    , _rtgsFlightMode       (tr("Return to Groundstation"))
-    , _followMeFlightMode   (tr("Follow Me"))
-    , _simpleFlightMode     (tr("Simple"))
-    , _orbitFlightMode      (tr("Orbit"))
+    : _manualFlightMode        (tr("Manual"))
+    , _acroFlightMode          (tr("Acro"))
+    , _stabilizedFlightMode    (tr("Stabilized"))
+    , _rattitudeFlightMode     (tr("Rattitude"))
+    , _altCtlFlightMode        (tr("Altitude"))
+    , _posCtlFlightMode        (tr("Position"))
+    , _offboardFlightMode      (tr("Offboard"))
+    , _readyFlightMode         (tr("Ready"))
+    , _takeoffFlightMode       (tr("Takeoff"))
+    , _holdFlightMode          (tr("Hold"))
+    , _missionFlightMode       (tr("Mission"))
+    , _rtlFlightMode           (tr("Return"))
+    , _landingFlightMode       (tr("Land"))
+    , _preclandFlightMode      (tr("Precision Land"))
+    , _rtgsFlightMode          (tr("Return to Groundstation"))
+    , _followMeFlightMode      (tr("Follow Me"))
+    , _simpleFlightMode        (tr("Simple"))
+    , _orbitFlightMode         (tr("Orbit"))
+    , _planckTrackFlightMode   (tr("Planck Track"))
+    , _planckRTBFlightMode     (tr("Planck RTB"))
+    , _planckLandFlightMode    (tr("Planck Land"))
+    , _planckTakeoffFlightMode (tr("Planck Takeoff"))
 {
     qmlRegisterType<PX4AdvancedFlightModesController>   ("QGroundControl.Controllers", 1, 0, "PX4AdvancedFlightModesController");
     qmlRegisterType<PX4SimpleFlightModesController>     ("QGroundControl.Controllers", 1, 0, "PX4SimpleFlightModesController");
@@ -71,25 +75,30 @@ PX4FirmwarePlugin::PX4FirmwarePlugin()
     };
 
     static const struct Modes2Name rgModes2Name[] = {
-        //main_mode                         sub_mode                                canBeSet  FW      MC
-        { PX4_CUSTOM_MAIN_MODE_MANUAL,      0,                                      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_STABILIZED,  0,                                      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_ACRO,        0,                                      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_RATTITUDE,   0,                                      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_ALTCTL,      0,                                      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    0,                                      true,   false,  true },
-        { PX4_CUSTOM_MAIN_MODE_SIMPLE,      0,                                      false,  false,  true },
-        { PX4_CUSTOM_MAIN_MODE_POSCTL,      PX4_CUSTOM_SUB_MODE_POSCTL_POSCTL,      true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_POSCTL,      PX4_CUSTOM_SUB_MODE_POSCTL_ORBIT,       false,  false,   false },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_LOITER,        true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_MISSION,       true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_RTL,           true,   true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_FOLLOW_TARGET, true,   false,  true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_LAND,          false,  true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_PRECLAND,      false,  false,  true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_READY,         false,  true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_RTGS,          false,  true,   true },
-        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF,       false,  true,   true },
+        // TODO: replace sub modes
+        //main_mode                         sub_mode                                     canBeSet  FW      MC
+        { PX4_CUSTOM_MAIN_MODE_MANUAL,      0,                                           true,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_STABILIZED,  0,                                           true,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_ACRO,        0,                                           true,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_RATTITUDE,   0,                                           true,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_ALTCTL,      0,                                           true,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    0,                                           true,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_SIMPLE,      0,                                           false,  false,  true },
+        { PX4_CUSTOM_MAIN_MODE_POSCTL,      PX4_CUSTOM_SUB_MODE_POSCTL_POSCTL,           true,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_POSCTL,      PX4_CUSTOM_SUB_MODE_POSCTL_ORBIT,            false,  false,  false },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_LOITER,             true,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_MISSION,            true,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_RTL,                true,   true,   true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_FOLLOW_TARGET,      true,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_LAND,               false,  true,   true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_PRECLAND,           false,  false,  true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_READY,              false,  true,   true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_RTGS,               false,  true,   true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF,            false,  true,   true },
+        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    PX4_CUSTOM_SUB_MODE_OFFBOARD_PLANCK_TRACK,   true,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    PX4_CUSTOM_SUB_MODE_OFFBOARD_PLANCK_RTB,     true,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    PX4_CUSTOM_SUB_MODE_OFFBOARD_PLANCK_LAND,    true,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    PX4_CUSTOM_SUB_MODE_OFFBOARD_PLANCK_TAKEOFF, true,   false,  true },
     };
 
     // Must be in same order as above structure
@@ -112,6 +121,10 @@ PX4FirmwarePlugin::PX4FirmwarePlugin()
         &_readyFlightMode,
         &_rtgsFlightMode,
         &_takeoffFlightMode,
+        &_planckTrackFlightMode,
+        &_planckRTBFlightMode,
+        &_planckLandFlightMode,
+        &_planckTakeoffFlightMode,
     };
 
     // Convert static information to dynamic list. This allows for plugin override class to manipulate list.
@@ -186,7 +199,7 @@ QString PX4FirmwarePlugin::flightMode(uint8_t base_mode, uint32_t custom_mode) c
         }
 
         if (!found) {
-            qWarning() << "Unknown flight mode" << custom_mode;
+            qWarning() << "Unknown flight mode" << base_mode << "," << custom_mode;
             return tr("Unknown %1:%2").arg(base_mode).arg(custom_mode);
         }
     }
@@ -297,6 +310,8 @@ QList<MAV_CMD> PX4FirmwarePlugin::supportedMissionCommands(void)
         MAV_CMD_IMAGE_START_CAPTURE, MAV_CMD_IMAGE_STOP_CAPTURE, MAV_CMD_VIDEO_START_CAPTURE, MAV_CMD_VIDEO_STOP_CAPTURE,
         MAV_CMD_NAV_DELAY,
         MAV_CMD_CONDITION_YAW,
+        MAV_CMD_NAV_PLANCK_TAKEOFF,
+        MAV_CMD_NAV_PLANCK_RTB,
     };
 }
 
@@ -347,12 +362,12 @@ void PX4FirmwarePlugin::pauseVehicle(Vehicle* vehicle)
 void PX4FirmwarePlugin::guidedModeRTL(Vehicle* vehicle, bool smartRTL)
 {
     Q_UNUSED(smartRTL);
-    _setFlightModeAndValidate(vehicle, _rtlFlightMode);
+    _setFlightModeAndValidate(vehicle, _planckRTBFlightMode);
 }
 
 void PX4FirmwarePlugin::guidedModeLand(Vehicle* vehicle)
 {
-    _setFlightModeAndValidate(vehicle, _landingFlightMode);
+    _setFlightModeAndValidate(vehicle, _planckLandFlightMode);
 }
 
 void PX4FirmwarePlugin::_mavCommandResult(int vehicleId, int component, int command, int result, bool noReponseFromVehicle)
@@ -367,7 +382,7 @@ void PX4FirmwarePlugin::_mavCommandResult(int vehicleId, int component, int comm
         return;
     }
 
-    if (command == MAV_CMD_NAV_TAKEOFF && result == MAV_RESULT_ACCEPTED) {
+    if (command == MAV_CMD_NAV_PLANCK_TAKEOFF && result == MAV_RESULT_ACCEPTED) {
         // Now that we are in takeoff mode we can arm the vehicle which will cause it to takeoff.
         // We specifically don't retry arming if it fails. This way we don't fight with the user if
         // They are trying to disarm.
@@ -405,7 +420,7 @@ void PX4FirmwarePlugin::guidedModeTakeoff(Vehicle* vehicle, double takeoffAltRel
     connect(vehicle, &Vehicle::mavCommandResult, this, &PX4FirmwarePlugin::_mavCommandResult);
     vehicle->sendMavCommand(
         vehicle->defaultComponentId(),
-        MAV_CMD_NAV_TAKEOFF,
+        MAV_CMD_NAV_PLANCK_TAKEOFF,
         true,                                   // show error is fails
         -1,                                     // No pitch requested
         0, 0,                                   // param 2-4 unused
