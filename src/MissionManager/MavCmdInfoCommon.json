@@ -1064,45 +1064,6 @@
             }
         },
         {
-            "id": 9001,
-            "rawName":      "MAV_CMD_NAV_PLANCK_TAKEOFF",
-            "friendlyName": "Planck takeoff",
-            "friendlyEdit": true,
-            "description":  "Planck takeoff command",
-            "category":     "Basic",
-            "param1": {
-                "label":            "Altitude",
-                "default":          10
-            }
-        },
-        {
-            "id": 9002,
-            "rawName":      "MAV_CMD_NAV_PLANCK_RTB",
-            "friendlyName": "Planck RTB",
-            "friendlyEdit": true,
-            "description":  "Planck RTB command",
-            "category":     "Basic"
-        },
-        {
-            "id": 9003,
-            "rawName":      "MAV_CMD_NAV_PLANCK_WINGMAN",
-            "friendlyName": "Planck Wingman",
-            "description":  "Planck Wingman command",
-            "category":     "Basic",
-            "param1": {
-                "label":            "x",
-                "default":          0
-            },
-            "param2": {
-                "label":            "y",
-                "default":          0
-            },
-            "param3": {
-                "label":            "z",
-                "default":          0
-            }
-        },
-        {
             "id": 94,
             "rawName":              "MAV_CMD_NAV_PAYLOAD_PLACE",
             "friendlyName":         "Payload Place",
