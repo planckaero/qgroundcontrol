@@ -197,6 +197,7 @@ public:
     Q_PROPERTY(QStringList  streamLabels        READ streamLabels                                   NOTIFY streamLabelsChanged)
     Q_PROPERTY(ThermalViewMode thermalMode      READ thermalMode        WRITE  setThermalMode       NOTIFY thermalModeChanged)
     Q_PROPERTY(double       thermalOpacity      READ thermalOpacity     WRITE  setThermalOpacity    NOTIFY thermalOpacityChanged)
+    Q_PROPERTY(bool         streamSelectable    READ streamSelectable                               NOTIFY streamSelectableChanged)
 
     Q_INVOKABLE virtual void setVideoMode   ();
     Q_INVOKABLE virtual void setPhotoMode   ();
@@ -266,6 +267,8 @@ public:
     virtual Fact*       wb                  ();
     virtual Fact*       mode                ();
 
+    virtual bool        streamSelectable    () { return _streamSelectable; }
+
     /// Stream names to show the user (for selection)
     virtual QStringList streamLabels        () { return _streamLabels; }
 
@@ -331,6 +334,7 @@ signals:
     void    thermalModeChanged              ();
     void    thermalOpacityChanged           ();
     void    storageStatusChanged            ();
+    void    streamSelectableChanged         ();
 
 protected:
     virtual void    _setVideoStatus         (VideoStatus status);
@@ -356,6 +360,7 @@ protected slots:
     virtual void    _streamStatusTimeout    ();
     virtual void    _recTimerHandler        ();
     virtual void    _checkForVideoStreams   ();
+    virtual void    _mavlinkMessageReceived (LinkInterface* link, mavlink_message_t message);
 
 private:
     bool    _handleLocalization             (QByteArray& bytes);
@@ -372,6 +377,7 @@ private:
     void    _updateRanges                   (Fact* pFact);
     void    _httpRequest                    (const QString& url);
     void    _handleDefinitionFile           (const QString& url);
+    void    _handleHeartbeat                (mavlink_message_t& message);
 
     QStringList     _loadExclusions         (QDomNode option);
     QStringList     _loadUpdates            (QDomNode option);
@@ -427,4 +433,5 @@ protected:
     QStringList                         _streamLabels;
     ThermalViewMode                     _thermalMode        = THERMAL_BLEND;
     double                              _thermalOpacity     = 85.0;
+    bool                                _streamSelectable   = false;
 };

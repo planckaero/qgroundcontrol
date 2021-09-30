@@ -239,6 +239,7 @@ Column {
                     Row {
                         spacing:            ScreenTools.defaultFontPixelWidth
                         visible:            _camera && _camera.streamLabels.length > 1
+                        enabled:            _camera.streamSelectable;
                         anchors.horizontalCenter: parent.horizontalCenter
                         QGCLabel {
                             text:           qsTr("Stream Selector:")

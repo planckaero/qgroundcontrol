@@ -184,6 +184,8 @@ QGCCameraControl::QGCCameraControl(const mavlink_camera_information_t *info, Veh
     _recTimer.setSingleShot(false);
     _recTimer.setInterval(333);
     connect(&_recTimer, &QTimer::timeout, this, &QGCCameraControl::_recTimerHandler);
+    MAVLinkProtocol* mavlinkProtocol = qgcApp()->toolbox()->mavlinkProtocol();
+    connect(mavlinkProtocol, &MAVLinkProtocol::messageReceived, this, &QGCCameraControl::_mavlinkMessageReceived);
 }
 
 //-----------------------------------------------------------------------------
@@ -1969,6 +1971,35 @@ QGCCameraControl::_handleDefinitionFile(const QString &url)
 
 //-----------------------------------------------------------------------------
 void
+QGCCameraControl::_handleHeartbeat (mavlink_message_t& message)
+{
+    // Only perform the following steps for Anafi heartbeats
+    if(message.sysid != 1 && message.compid != 41)  {
+        return;
+    }
+
+    uint32_t custom_mode = mavlink_msg_heartbeat_get_custom_mode(&message);
+    switch(custom_mode) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+        if(_streamSelectable) {
+            _streamSelectable = false;
+            emit streamSelectableChanged();
+        }
+        break;
+    default:
+        if(!_streamSelectable) {
+            _streamSelectable = true;
+            emit streamSelectableChanged();
+        }
+        break;
+    }
+}
+
+//-----------------------------------------------------------------------------
+void
 QGCCameraControl::_httpRequest(const QString &url)
 {
     qCDebug(CameraControlLog) << "Request camera definition:" << url;
@@ -2054,6 +2085,16 @@ QGCCameraControl::_checkForVideoStreams()
             _requestStreamInfo(0);
             _streamInfoTimer.start(2000);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void
+QGCCameraControl::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t message)
+{
+    if(message.msgid == MAVLINK_MSG_ID_HEARTBEAT) {
+        _handleHeartbeat(message);
     }
 }
 
