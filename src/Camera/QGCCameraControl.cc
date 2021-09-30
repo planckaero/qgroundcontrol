@@ -1974,7 +1974,7 @@ void
 QGCCameraControl::_handleHeartbeat (mavlink_message_t& message)
 {
     // Only perform the following steps for Anafi heartbeats
-    if(message.sysid != 1 && message.compid != 41)  {
+    if(message.sysid != 1 || message.compid != 41)  {
         return;
     }
 
@@ -1985,17 +1985,24 @@ QGCCameraControl::_handleHeartbeat (mavlink_message_t& message)
     case 3:
     case 4:
         if(_streamSelectable) {
+            qCDebug(CameraControlLog) << "Received ANAFI custom_mode (" << custom_mode << "). Disabling stream selection.";
             _streamSelectable = false;
             emit streamSelectableChanged();
         }
         break;
-    default:
+    case 0:
+    case 5:
         if(!_streamSelectable) {
+            qCDebug(CameraControlLog) << "Received ANAFI custom_mode (" << custom_mode << "). Enabling stream selection.";
             _streamSelectable = true;
             emit streamSelectableChanged();
         }
         break;
+    default:
+        qCDebug(CameraControlLog) << "Received unexpected ANAFI custom_mode (" << custom_mode << ").";
+        break;
     }
+
 }
 
 //-----------------------------------------------------------------------------

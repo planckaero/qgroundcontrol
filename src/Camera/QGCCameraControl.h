@@ -433,5 +433,5 @@ protected:
     QStringList                         _streamLabels;
     ThermalViewMode                     _thermalMode        = THERMAL_BLEND;
     double                              _thermalOpacity     = 85.0;
-    bool                                _streamSelectable   = false;
+    bool                                _streamSelectable   = true;
 };
