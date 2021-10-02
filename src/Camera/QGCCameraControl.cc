@@ -1984,18 +1984,18 @@ QGCCameraControl::_handleHeartbeat (mavlink_message_t& message)
     case 2:
     case 3:
     case 4:
-        if(_streamSelectable) {
-            qCDebug(CameraControlLog) << "Received ANAFI custom_mode (" << custom_mode << "). Disabling stream selection.";
-            _streamSelectable = false;
-            emit streamSelectableChanged();
+        if(!_locked) {
+            qCDebug(CameraControlLog) << "Received ANAFI custom_mode (" << custom_mode << "). Locking camera.";
+            _locked = true;
+            emit lockedChanged();
         }
         break;
     case 0:
     case 5:
-        if(!_streamSelectable) {
-            qCDebug(CameraControlLog) << "Received ANAFI custom_mode (" << custom_mode << "). Enabling stream selection.";
-            _streamSelectable = true;
-            emit streamSelectableChanged();
+        if(_locked) {
+            qCDebug(CameraControlLog) << "Received ANAFI custom_mode (" << custom_mode << "). Unlocking camera.";
+            _locked = false;
+            emit lockedChanged();
         }
         break;
     default:

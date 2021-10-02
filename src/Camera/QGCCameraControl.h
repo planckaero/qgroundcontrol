@@ -197,7 +197,7 @@ public:
     Q_PROPERTY(QStringList  streamLabels        READ streamLabels                                   NOTIFY streamLabelsChanged)
     Q_PROPERTY(ThermalViewMode thermalMode      READ thermalMode        WRITE  setThermalMode       NOTIFY thermalModeChanged)
     Q_PROPERTY(double       thermalOpacity      READ thermalOpacity     WRITE  setThermalOpacity    NOTIFY thermalOpacityChanged)
-    Q_PROPERTY(bool         streamSelectable    READ streamSelectable                               NOTIFY streamSelectableChanged)
+    Q_PROPERTY(bool         locked    READ locked                                                   NOTIFY lockedChanged)
 
     Q_INVOKABLE virtual void setVideoMode   ();
     Q_INVOKABLE virtual void setPhotoMode   ();
@@ -267,7 +267,7 @@ public:
     virtual Fact*       wb                  ();
     virtual Fact*       mode                ();
 
-    virtual bool        streamSelectable    () { return _streamSelectable; }
+    virtual bool        locked    () { return _locked; }
 
     /// Stream names to show the user (for selection)
     virtual QStringList streamLabels        () { return _streamLabels; }
@@ -334,7 +334,7 @@ signals:
     void    thermalModeChanged              ();
     void    thermalOpacityChanged           ();
     void    storageStatusChanged            ();
-    void    streamSelectableChanged         ();
+    void    lockedChanged                   ();
 
 protected:
     virtual void    _setVideoStatus         (VideoStatus status);
@@ -433,5 +433,5 @@ protected:
     QStringList                         _streamLabels;
     ThermalViewMode                     _thermalMode        = THERMAL_BLEND;
     double                              _thermalOpacity     = 85.0;
-    bool                                _streamSelectable   = true;
+    bool                                _locked             = false;
 };
