@@ -50,7 +50,7 @@ Column {
     property bool   _storageReady:          _camera && _camera.storageStatus === QGCCameraControl.STORAGE_READY
     property bool   _batteryReady:          _camera && _camera.batteryRemaining >= 0
     property bool   _storageIgnored:        _camera && _camera.storageStatus === QGCCameraControl.STORAGE_NOT_SUPPORTED
-    property bool   _canShoot:              !_cameraModeUndefined && ((_storageReady && _camera.storageFree > 0) || _storageIgnored) && !_cameraLocked
+    property bool   _canShoot:              !_cameraModeUndefined && ((_storageReady && _camera.storageFree > 0) || _storageIgnored)
     property bool   _isShooting:            (_cameraVideoMode && _videoRecording) || (_cameraPhotoMode && !_photoIdle)
 
     function showSettings() {
@@ -94,6 +94,7 @@ Column {
         height:     _hasModes ? ScreenTools.defaultFontPixelWidth * 4 : 0
         color:      qgcPal.button
         radius:     height * 0.5
+        enabled:    !_cameraLocked
         visible:    _hasModes && !_cameraLocked
         anchors.horizontalCenter: parent.horizontalCenter
         //-- Video Mode
@@ -172,7 +173,6 @@ Column {
         }
         MouseArea {
             anchors.fill:   parent
-            enabled:        _canShoot
             onClicked: {
                 if(_cameraVideoMode) {
                     _camera.toggleVideo()
@@ -417,7 +417,7 @@ Column {
                            anchors.verticalCenter: parent.verticalCenter
                         }
                         QGCSwitch {
-                            enabled:            _streamingEnabled && activeVehicle && !camera.locked
+                            enabled:            _streamingEnabled && activeVehicle && !_cameraLocked
                             checked:            QGroundControl.settingsManager.videoSettings.gridLines.rawValue
                             width:              _editFieldWidth
                             anchors.verticalCenter: parent.verticalCenter
