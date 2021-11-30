@@ -95,10 +95,10 @@ PX4FirmwarePlugin::PX4FirmwarePlugin()
         { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_READY,              false,  true,   true },
         { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_RTGS,               false,  true,   true },
         { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF,            false,  true,   true },
-        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    PX4_CUSTOM_SUB_MODE_OFFBOARD_PLANCK_TRACK,   true,   false,  true },
-        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    PX4_CUSTOM_SUB_MODE_OFFBOARD_PLANCK_RTB,     true,   false,  true },
-        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    PX4_CUSTOM_SUB_MODE_OFFBOARD_PLANCK_LAND,    true,   false,  true },
-        { PX4_CUSTOM_MAIN_MODE_OFFBOARD,    PX4_CUSTOM_SUB_MODE_OFFBOARD_PLANCK_TAKEOFF, true,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_PLANCK_TRACK,       true,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_PLANCK_RTB,         true,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_PLANCK_LAND,        true,   false,  true },
+        { PX4_CUSTOM_MAIN_MODE_AUTO,        PX4_CUSTOM_SUB_MODE_AUTO_PLANCK_TAKEOFF,     true,   false,  true },
     };
 
     // Must be in same order as above structure
