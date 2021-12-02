@@ -515,7 +515,7 @@ QGCCameraManager::_stepStream(int direction)
         QGCCameraControl* pCamera = currentCameraInstance();
         if(pCamera) {
             // Prevent stream switching
-            if(!pCamera->streamSelectable())  {
+            if(pCamera->locked())  {
                 qWarning() << "Stream switching currently blocked";
                 return;
             }
