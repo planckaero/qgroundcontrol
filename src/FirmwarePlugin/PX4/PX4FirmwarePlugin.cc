@@ -75,7 +75,6 @@ PX4FirmwarePlugin::PX4FirmwarePlugin()
     };
 
     static const struct Modes2Name rgModes2Name[] = {
-        // TODO: replace sub modes
         //main_mode                         sub_mode                                     canBeSet  FW      MC
         { PX4_CUSTOM_MAIN_MODE_MANUAL,      0,                                           true,   true,   true },
         { PX4_CUSTOM_MAIN_MODE_STABILIZED,  0,                                           true,   true,   true },
