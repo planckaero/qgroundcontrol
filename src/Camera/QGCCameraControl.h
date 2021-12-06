@@ -138,6 +138,16 @@ public:
         THERMAL_PIP,
     };
 
+    //-- Anafi Custom Modes
+    enum AnafiMode {
+        MODE_PLANCKIDLE = 0,
+        MODE_PLANCKTAKEOFF,
+        MODE_PLANCKTRACK,
+        MODE_PLANCKRTB,
+        MODE_PLANCKLAND,
+        MODE_PLANCKWINGMAN,
+    };
+
     Q_ENUM(CameraMode)
     Q_ENUM(VideoStatus)
     Q_ENUM(PhotoStatus)

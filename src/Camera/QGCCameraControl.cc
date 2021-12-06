@@ -1978,20 +1978,20 @@ QGCCameraControl::_handleHeartbeat (mavlink_message_t& message)
         return;
     }
 
-    uint32_t custom_mode = mavlink_msg_heartbeat_get_custom_mode(&message);
+    AnafiMode custom_mode = static_cast<AnafiMode>(mavlink_msg_heartbeat_get_custom_mode(&message));
     switch(custom_mode) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
+    case MODE_PLANCKTAKEOFF:
+    case MODE_PLANCKTRACK:
+    case MODE_PLANCKRTB:
+    case MODE_PLANCKLAND:
         if(!_locked) {
             qCDebug(CameraControlLog) << "Received ANAFI custom_mode (" << custom_mode << "). Locking camera.";
             _locked = true;
             emit lockedChanged();
         }
         break;
-    case 0:
-    case 5:
+    case MODE_PLANCKIDLE:
+    case MODE_PLANCKWINGMAN:
         if(_locked) {
             qCDebug(CameraControlLog) << "Received ANAFI custom_mode (" << custom_mode << "). Unlocking camera.";
             _locked = false;
