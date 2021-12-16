@@ -138,6 +138,16 @@ public:
         THERMAL_PIP,
     };
 
+    //-- Anafi Custom Modes
+    enum AnafiMode {
+        MODE_PLANCKIDLE = 0,
+        MODE_PLANCKTAKEOFF,
+        MODE_PLANCKTRACK,
+        MODE_PLANCKRTB,
+        MODE_PLANCKLAND,
+        MODE_PLANCKWINGMAN,
+    };
+
     Q_ENUM(CameraMode)
     Q_ENUM(VideoStatus)
     Q_ENUM(PhotoStatus)
@@ -197,6 +207,7 @@ public:
     Q_PROPERTY(QStringList  streamLabels        READ streamLabels                                   NOTIFY streamLabelsChanged)
     Q_PROPERTY(ThermalViewMode thermalMode      READ thermalMode        WRITE  setThermalMode       NOTIFY thermalModeChanged)
     Q_PROPERTY(double       thermalOpacity      READ thermalOpacity     WRITE  setThermalOpacity    NOTIFY thermalOpacityChanged)
+    Q_PROPERTY(bool         locked    READ locked                                                   NOTIFY lockedChanged)
 
     Q_INVOKABLE virtual void setVideoMode   ();
     Q_INVOKABLE virtual void setPhotoMode   ();
@@ -266,6 +277,8 @@ public:
     virtual Fact*       wb                  ();
     virtual Fact*       mode                ();
 
+    virtual bool        locked    () { return _locked; }
+
     /// Stream names to show the user (for selection)
     virtual QStringList streamLabels        () { return _streamLabels; }
 
@@ -331,6 +344,7 @@ signals:
     void    thermalModeChanged              ();
     void    thermalOpacityChanged           ();
     void    storageStatusChanged            ();
+    void    lockedChanged                   ();
 
 protected:
     virtual void    _setVideoStatus         (VideoStatus status);
@@ -356,6 +370,7 @@ protected slots:
     virtual void    _streamStatusTimeout    ();
     virtual void    _recTimerHandler        ();
     virtual void    _checkForVideoStreams   ();
+    virtual void    _mavlinkMessageReceived (LinkInterface* link, mavlink_message_t message);
 
 private:
     bool    _handleLocalization             (QByteArray& bytes);
@@ -372,6 +387,7 @@ private:
     void    _updateRanges                   (Fact* pFact);
     void    _httpRequest                    (const QString& url);
     void    _handleDefinitionFile           (const QString& url);
+    void    _handleHeartbeat                (mavlink_message_t& message);
 
     QStringList     _loadExclusions         (QDomNode option);
     QStringList     _loadUpdates            (QDomNode option);
@@ -427,4 +443,5 @@ protected:
     QStringList                         _streamLabels;
     ThermalViewMode                     _thermalMode        = THERMAL_BLEND;
     double                              _thermalOpacity     = 85.0;
+    bool                                _locked             = false;
 };

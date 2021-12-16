@@ -514,6 +514,12 @@ QGCCameraManager::_stepStream(int direction)
         _lastCameraChange.start();
         QGCCameraControl* pCamera = currentCameraInstance();
         if(pCamera) {
+            // Prevent stream switching
+            if(pCamera->locked())  {
+                qWarning() << "Stream switching currently blocked";
+                return;
+            }
+
             qCDebug(CameraManagerLog) << "Step Camera Stream" << direction;
             int c = pCamera->currentStream() + direction;
             if(c < 0) c = pCamera->streams()->count() - 1;

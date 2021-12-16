@@ -34,6 +34,7 @@ Column {
     property bool   _isCamera:              _dynamicCameras ? _dynamicCameras.cameras.count > 0 : false
     property int    _curCameraIndex:        _dynamicCameras ? _dynamicCameras.currentCamera : 0
     property var    _camera:                _isCamera ? (_dynamicCameras.cameras.get(_curCameraIndex) && _dynamicCameras.cameras.get(_curCameraIndex).paramComplete ? _dynamicCameras.cameras.get(_curCameraIndex) : null) : null
+    property bool   _cameraLocked:          _camera ? _camera.locked : true
     property bool   _cameraModeUndefined:   _camera ? _camera.cameraMode === QGCCameraControl.CAM_MODE_UNDEFINED : true
     property bool   _cameraVideoMode:       _camera ? _camera.cameraMode === QGCCameraControl.CAM_MODE_VIDEO : false
     property bool   _cameraPhotoMode:       _camera ? _camera.cameraMode === QGCCameraControl.CAM_MODE_PHOTO : false
@@ -93,7 +94,8 @@ Column {
         height:     _hasModes ? ScreenTools.defaultFontPixelWidth * 4 : 0
         color:      qgcPal.button
         radius:     height * 0.5
-        visible:    _hasModes
+        enabled:    !_cameraLocked
+        visible:    _hasModes && !_cameraLocked
         anchors.horizontalCenter: parent.horizontalCenter
         //-- Video Mode
         Rectangle {
@@ -171,7 +173,6 @@ Column {
         }
         MouseArea {
             anchors.fill:   parent
-            enabled:        _canShoot
             onClicked: {
                 if(_cameraVideoMode) {
                     _camera.toggleVideo()
@@ -239,6 +240,7 @@ Column {
                     Row {
                         spacing:            ScreenTools.defaultFontPixelWidth
                         visible:            _camera && _camera.streamLabels.length > 1
+                        enabled:            !_cameraLocked;
                         anchors.horizontalCenter: parent.horizontalCenter
                         QGCLabel {
                             text:           qsTr("Stream Selector:")
@@ -300,6 +302,7 @@ Column {
                         Row {
                             spacing:        ScreenTools.defaultFontPixelWidth
                             anchors.horizontalCenter: parent.horizontalCenter
+                            enabled:                  !_cameraLocked
                             property var    _fact:      _camera.getFact(modelData)
                             property bool   _isBool:    _fact.typeIsBool
                             property bool   _isCombo:   !_isBool && _fact.enumStrings.length > 0
@@ -368,6 +371,7 @@ Column {
                             id:             photoModeCombo
                             width:          _editFieldWidth
                             model:          parent.photoModes
+                            enabled:        !_cameraLocked
                             currentIndex:   _camera ? _camera.photoMode : 0
                             onActivated:    _camera.photoMode = index
                         }
@@ -386,6 +390,7 @@ Column {
                         Item {
                             height:     photoModeCombo.height
                             width:      _editFieldWidth
+                            enabled:    !_cameraLocked
                             QGCSlider {
                                 maximumValue:   60
                                 minimumValue:   1
@@ -412,7 +417,7 @@ Column {
                            anchors.verticalCenter: parent.verticalCenter
                         }
                         QGCSwitch {
-                            enabled:            _streamingEnabled && activeVehicle
+                            enabled:            _streamingEnabled && activeVehicle && !_cameraLocked
                             checked:            QGroundControl.settingsManager.videoSettings.gridLines.rawValue
                             width:              _editFieldWidth
                             anchors.verticalCenter: parent.verticalCenter
@@ -439,6 +444,7 @@ Column {
                         FactComboBox {
                             fact:               QGroundControl.settingsManager.videoSettings.videoFit
                             indexModel:         false
+                            enabled:            !_cameraLocked
                             width:              _editFieldWidth
                             anchors.verticalCenter: parent.verticalCenter
                         }
@@ -455,6 +461,7 @@ Column {
                         }
                         QGCButton {
                             text:       qsTr("Reset")
+                            enabled:    !_cameraLocked
                             onClicked:  resetPrompt.open()
                             width:      _editFieldWidth
                             anchors.verticalCenter: parent.verticalCenter
@@ -483,6 +490,7 @@ Column {
                         }
                         QGCButton {
                             text:       qsTr("Format")
+                            enabled:    !_cameraLocked
                             onClicked:  formatPrompt.open()
                             width:      _editFieldWidth
                             anchors.verticalCenter: parent.verticalCenter

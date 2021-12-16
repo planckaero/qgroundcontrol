@@ -184,6 +184,8 @@ QGCCameraControl::QGCCameraControl(const mavlink_camera_information_t *info, Veh
     _recTimer.setSingleShot(false);
     _recTimer.setInterval(333);
     connect(&_recTimer, &QTimer::timeout, this, &QGCCameraControl::_recTimerHandler);
+    MAVLinkProtocol* mavlinkProtocol = qgcApp()->toolbox()->mavlinkProtocol();
+    connect(mavlinkProtocol, &MAVLinkProtocol::messageReceived, this, &QGCCameraControl::_mavlinkMessageReceived);
 }
 
 //-----------------------------------------------------------------------------
@@ -1969,6 +1971,42 @@ QGCCameraControl::_handleDefinitionFile(const QString &url)
 
 //-----------------------------------------------------------------------------
 void
+QGCCameraControl::_handleHeartbeat (mavlink_message_t& message)
+{
+    // Only perform the following steps for Anafi heartbeats
+    if(message.sysid != 1 || message.compid != 41)  {
+        return;
+    }
+
+    AnafiMode custom_mode = static_cast<AnafiMode>(mavlink_msg_heartbeat_get_custom_mode(&message));
+    switch(custom_mode) {
+    case MODE_PLANCKTAKEOFF:
+    case MODE_PLANCKTRACK:
+    case MODE_PLANCKRTB:
+    case MODE_PLANCKLAND:
+        if(!_locked) {
+            qCDebug(CameraControlLog) << "Received ANAFI custom_mode (" << custom_mode << "). Locking camera.";
+            _locked = true;
+            emit lockedChanged();
+        }
+        break;
+    case MODE_PLANCKIDLE:
+    case MODE_PLANCKWINGMAN:
+        if(_locked) {
+            qCDebug(CameraControlLog) << "Received ANAFI custom_mode (" << custom_mode << "). Unlocking camera.";
+            _locked = false;
+            emit lockedChanged();
+        }
+        break;
+    default:
+        qCDebug(CameraControlLog) << "Received unexpected ANAFI custom_mode (" << custom_mode << ").";
+        break;
+    }
+
+}
+
+//-----------------------------------------------------------------------------
+void
 QGCCameraControl::_httpRequest(const QString &url)
 {
     qCDebug(CameraControlLog) << "Request camera definition:" << url;
@@ -2054,6 +2092,16 @@ QGCCameraControl::_checkForVideoStreams()
             _requestStreamInfo(0);
             _streamInfoTimer.start(2000);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void
+QGCCameraControl::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t message)
+{
+    if(message.msgid == MAVLINK_MSG_ID_HEARTBEAT) {
+        _handleHeartbeat(message);
     }
 }
 
