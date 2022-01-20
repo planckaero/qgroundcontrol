@@ -107,6 +107,7 @@ linux {
         QMAKE_CXXFLAGS += -fvisibility=hidden
         QMAKE_CXXFLAGS_WARN_ON += -Werror \
             -Wno-unused-parameter           # gst-plugins-good
+        QMAKE_LFLAGS += -L/Library/Frameworks/GStreamer.framework/Versions/Current/lib
     } else {
         error("Unsupported Mac toolchain, only 64-bit LLVM+clang is supported")
     }
