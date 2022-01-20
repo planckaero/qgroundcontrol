@@ -6,7 +6,6 @@
         <file alias="attitude_pointer.svg">res/Images/attitude_pointer.svg</file>
         <file alias="chronometer.svg">res/Images/chronometer.svg</file>
         <file alias="compass_needle.svg">res/Images/compass_needle.svg</file>
-        <file alias="compass_pointer.svg">res/Images/compass_pointer.svg</file>
         <file alias="distance.svg">res/Images/distance.svg</file>
         <file alias="horizontal_speed.svg">res/Images/horizontal_speed.svg</file>
         <file alias="microSD.svg">res/Images/microSD.svg</file>
