@@ -35,19 +35,19 @@ CONFIG  += QGC_DISABLE_PX4_PLUGIN_FACTORY
 DEFINES += CUSTOMHEADER=\"\\\"CustomPlugin.h\\\"\"
 DEFINES += CUSTOMCLASS=CustomPlugin
 
-TARGET   = CustomQGroundControl
-DEFINES += QGC_APPLICATION_NAME='"\\\"Custom QGroundControl\\\""'
+TARGET   = QGCForACE
+DEFINES += QGC_APPLICATION_NAME='"\\\"QGC for ACE\\\""'
 
-DEFINES += QGC_ORG_NAME=\"\\\"qgroundcontrol.org\\\"\"
-DEFINES += QGC_ORG_DOMAIN=\"\\\"org.qgroundcontrol\\\"\"
+DEFINES += QGC_ORG_NAME=\"\\\"planckaero.com\\\"\"
+DEFINES += QGC_ORG_DOMAIN=\"\\\"com.planckaero\\\"\"
 
-QGC_APP_NAME        = "Custom QGroundControl"
-QGC_BINARY_NAME     = "CustomQGroundControl"
-QGC_ORG_NAME        = "Custom"
-QGC_ORG_DOMAIN      = "org.custom"
-QGC_ANDROID_PACKAGE = "org.custom.qgroundcontrol"
-QGC_APP_DESCRIPTION = "Custom QGroundControl"
-QGC_APP_COPYRIGHT   = "Copyright (C) 2020 QGroundControl Development Team. All rights reserved."
+QGC_APP_NAME        = "QGC for ACE"
+QGC_BINARY_NAME     = "QGCforACE"
+QGC_ORG_NAME        = "Planck Aerosystems"
+QGC_ORG_DOMAIN      = "com.planckaero"
+QGC_ANDROID_PACKAGE = "com.planckaero"
+QGC_APP_DESCRIPTION = "QGC for ACE"
+QGC_APP_COPYRIGHT   = "Copyright (C) 2021 Planck Aerosystems. All rights reserved."
 
 # Our own, custom resources
 RESOURCES += \
