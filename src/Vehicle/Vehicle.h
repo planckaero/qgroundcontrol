@@ -1296,6 +1296,7 @@ private:
     void _handlePing                    (LinkInterface* link, mavlink_message_t& message);
     void _handleHomePosition            (mavlink_message_t& message);
     void _handleHeartbeat               (mavlink_message_t& message);
+    void _handleACEHeartbeat            (mavlink_message_t& message);
     void _handleRadioStatus             (mavlink_message_t& message);
     void _handleRCChannels              (mavlink_message_t& message);
     void _handleRCChannelsRaw           (mavlink_message_t& message);
@@ -1631,4 +1632,6 @@ private:
     static const char* _joystickModeSettingsKey;
     static const char* _joystickEnabledSettingsKey;
 
+    //ACE mode
+    QString _aceMode;
 };

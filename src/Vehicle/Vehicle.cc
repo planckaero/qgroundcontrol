@@ -1728,8 +1728,36 @@ void Vehicle::_handlePing(LinkInterface* link, mavlink_message_t& message)
     sendMessageOnLink(link, msg);
 }
 
+void Vehicle::_handleACEHeartbeat(mavlink_message_t& message)
+{
+   int newACECustomModeIdx = (int)mavlink_msg_heartbeat_get_custom_mode(&message);
+   QString newACEMode;
+   switch(newACECustomModeIdx) {
+       case 0: newACEMode = "ACE:Idle";    break;
+       case 1: newACEMode = "ACE:Takeoff"; break;
+       case 2: newACEMode = "ACE:RTB";     break;
+       case 3: newACEMode = "ACE:Land";    break;
+       default: newACEMode = QString("ACE: ") + QString::number(newACECustomModeIdx); break;
+   }
+
+   if(newACEMode != _aceMode) { //New ACE mode
+       _aceMode = newACEMode;
+       //If currently in OFFBOARD, emit a new flight mode
+       QString flight_mode = _firmwarePlugin->flightMode(_base_mode, _custom_mode);
+       if(flight_mode.compare("offboard", Qt::CaseInsensitive) == 0) {
+           emit flightModeChanged(flightMode());
+       }
+   }
+}
+
 void Vehicle::_handleHeartbeat(mavlink_message_t& message)
 {
+    //Check for an ACE message
+    if(message.compid == PLANCK_CTRL_COMP_ID) {
+        _handleACEHeartbeat(message);
+        return;
+    }
+
     if (message.compid != _defaultComponentId) {
         return;
     }
@@ -2417,7 +2445,11 @@ QStringList Vehicle::extraJoystickFlightModes()
 
 QString Vehicle::flightMode() const
 {
-    return _firmwarePlugin->flightMode(_base_mode, _custom_mode);
+    QString flightMode = _firmwarePlugin->flightMode(_base_mode, _custom_mode);
+    if(flightMode.compare("offboard", Qt::CaseInsensitive) == 0) {
+        return _aceMode;
+    }
+    return flightMode;
 }
 
 void Vehicle::setFlightMode(const QString& flightMode)
