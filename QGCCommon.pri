@@ -96,6 +96,8 @@ linux {
         QMAKE_CXXFLAGS += -fvisibility=hidden
         #-- Disable annoying warnings comming from mavlink.h
         QMAKE_CXXFLAGS += -Wno-address-of-packed-member
+        QMAKE_LFLAGS += -L/Library/Frameworks/GStreamer.framework/Versions/Current/lib
+
     } else {
         error("Unsupported Mac toolchain, only 64-bit LLVM+clang is supported")
     }
