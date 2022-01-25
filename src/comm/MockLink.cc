@@ -353,7 +353,7 @@ void MockLink::_sendHeartBeat(void)
     count = 0;
 
     mavlink_msg_heartbeat_pack_chan(_vehicleSystemId,
-                                    PLANCK_CTRL_COMP_ID,
+                                    41, //Anafi ACE supervisor
                                     _mavlinkChannel,
                                     &msg,
                                     MAV_TYPE_ONBOARD_CONTROLLER,        // MAV_TYPE

@@ -1735,8 +1735,10 @@ void Vehicle::_handleACEHeartbeat(mavlink_message_t& message)
    switch(newACECustomModeIdx) {
        case 0: newACEMode = "ACE:Idle";    break;
        case 1: newACEMode = "ACE:Takeoff"; break;
-       case 2: newACEMode = "ACE:RTB";     break;
-       case 3: newACEMode = "ACE:Land";    break;
+       case 2: newACEMode = "ACE:Track";   break;
+       case 3: newACEMode = "ACE:RTB";     break;
+       case 4: newACEMode = "ACE:Land";    break;
+       case 5: newACEMode = "ACE:Wingman"; break;
        default: newACEMode = QString("ACE: ") + QString::number(newACECustomModeIdx); break;
    }
 
@@ -1753,7 +1755,7 @@ void Vehicle::_handleACEHeartbeat(mavlink_message_t& message)
 void Vehicle::_handleHeartbeat(mavlink_message_t& message)
 {
     //Check for an ACE message
-    if(message.compid == PLANCK_CTRL_COMP_ID) {
+    if(message.compid == 41) { //Anafi ACE supervisor
         _handleACEHeartbeat(message);
         return;
     }
