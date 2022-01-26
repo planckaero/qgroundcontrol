@@ -367,10 +367,10 @@ void MockLink::_sendHeartBeat(void)
     copiloting_custom.len = mavlink_msg_to_send_buffer(copiloting_custom.data, &msg);
     mavlink_message_t copiloting_custom_msg;
     mavlink_msg_copiloting_custom_encode_chan(_vehicleSystemId,
-                                            _vehicleComponentId,
-                                            _mavlinkChannel,
-                                            &copiloting_custom_msg,
-                                            &copiloting_custom);
+                                              _vehicleComponentId,
+                                              _mavlinkChannel,
+                                              &copiloting_custom_msg,
+                                              &copiloting_custom);
     respondWithMavlinkMessage(copiloting_custom_msg);
 }
 
