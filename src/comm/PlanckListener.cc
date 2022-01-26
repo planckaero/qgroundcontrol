@@ -12,7 +12,16 @@ PlanckListener::PlanckListener(QGCApplication* app, QGCToolbox* toolbox)
 , health_timer(this)
 , tag_health(false)
 , boat_health(false)
+, charger_on(false)
+, udp()
+, request_timer(this)
 {
+    connect(&udp, &QUdpSocket::readyRead, this, &PlanckListener::readDatagrams);
+
+    request_timer.setSingleShot(false);
+    request_timer.setInterval(1000);
+    connect(&(this->request_timer), &QTimer::timeout, this, &PlanckListener::chargerRequest);
+    request_timer.start();
 }
 
 void PlanckListener::setToolbox(QGCToolbox *toolbox)
@@ -55,3 +64,43 @@ void PlanckListener::onHealthTimeout()
     health_timer.stop();
 }
 
+void PlanckListener::setCharger(bool on)
+{
+    charger_on = on;
+    sendChargerOnOffCommand(on);
+    emit chargerChanged();
+}
+
+void PlanckListener::sendChargerOnOffCommand(bool on)
+{
+    buf_t buf(on ? Relay::R1_ON : Relay::R1_OFF);
+    udp.writeDatagram((const char*) &buf.bytes, sizeof(buf.bytes), QHostAddress("192.168.168.7"), 2101);
+}
+
+void PlanckListener::readDatagrams()
+{
+    while(udp.hasPendingDatagrams()) {
+        QNetworkDatagram datagram = udp.receiveDatagram();
+
+        //See https://ncd.io/proxr-quick-start-guide/ "Reading the Status of Relays"
+        char bytes[4];
+        memcpy(bytes, datagram.data().data_ptr(), 4);
+
+        //check the checksum
+        uint64_t sum = 0;
+        for(int i=0; i<sizeof(bytes)-1; ++i) {
+          sum += bytes[i];
+        }
+        uint8_t checksum = uint8_t(sum & 0x000000FF);
+        if(checksum == bytes[3]) {
+            charger_on = bytes[2];
+            emit chargerChanged();
+        }
+    }
+}
+
+void PlanckListener::chargerRequest()
+{
+    buf_t buf(Relay::R1_READ);
+    udp.writeDatagram((const char*) &buf.bytes, sizeof(buf.bytes), QHostAddress("192.168.168.7"), 2101);
+}

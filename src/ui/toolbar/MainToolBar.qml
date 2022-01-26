@@ -186,6 +186,17 @@ Item {
                     }
                 }
 
+                QGCButton {
+                    id:                     larsChargerButton
+                    anchors.verticalCenter: parent.verticalCenter
+                    property bool chargerOn: QGroundControl.planckListener.ChargerOn
+                    text:                   chargerOn ? qsTr("Charger ON") : qsTr("Charger OFF")
+                    primary:                true
+                    onClicked: {
+                        QGroundControl.planckListener.ChargerOn = !chargerOn
+                    }
+                }
+
                 Item {
                     Layout.fillHeight:  true
                     width:              ScreenTools.defaultFontPixelWidth / 2
