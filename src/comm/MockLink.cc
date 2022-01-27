@@ -345,6 +345,33 @@ void MockLink::_sendHeartBeat(void)
                                     _mavState);          // MAV_STATE
 
     respondWithMavlinkMessage(msg);
+
+    static uint8_t idx = 0;
+    if(idx > 3) idx = 0;
+    static uint8_t count = 0;
+    if(++count < 9) return;
+    count = 0;
+
+    mavlink_msg_heartbeat_pack_chan(_vehicleSystemId,
+                                    41, //Anafi ACE supervisor
+                                    _mavlinkChannel,
+                                    &msg,
+                                    MAV_TYPE_ONBOARD_CONTROLLER,        // MAV_TYPE
+                                    MAV_AUTOPILOT_INVALID,      // MAV_AUTOPILOT
+                                    0,        // MAV_MODE
+                                    idx++,      // custom mode
+                                    0);          // MAV_STATE
+    qDebug() << "index: " << idx;
+
+    mavlink_copiloting_custom_t copiloting_custom;
+    copiloting_custom.len = mavlink_msg_to_send_buffer(copiloting_custom.data, &msg);
+    mavlink_message_t copiloting_custom_msg;
+    mavlink_msg_copiloting_custom_encode_chan(_vehicleSystemId,
+                                              _vehicleComponentId,
+                                              _mavlinkChannel,
+                                              &copiloting_custom_msg,
+                                              &copiloting_custom);
+    respondWithMavlinkMessage(copiloting_custom_msg);
 }
 
 void MockLink::_sendHighLatency2(void)
