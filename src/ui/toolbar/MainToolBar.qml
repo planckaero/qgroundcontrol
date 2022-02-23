@@ -188,12 +188,10 @@ Item {
 
                 QGCButton {
                     id:                     larsChargerButton
-                    anchors.verticalCenter: parent.verticalCenter
-                    property bool chargerOn: QGroundControl.planckListener.ChargerOn
-                    text:                   chargerOn ? qsTr("Charger ON") : qsTr("Charger OFF")
-                    primary:                true
+                    text:                   QGroundControl.planckListener.chargerState
+                    Layout.fillHeight: true
                     onClicked: {
-                        QGroundControl.planckListener.ChargerOn = !chargerOn
+                        QGroundControl.planckListener.toggleCharger()
                     }
                 }
 
