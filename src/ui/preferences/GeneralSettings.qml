@@ -795,51 +795,84 @@ Rectangle {
                         ColumnLayout {
                             id:                 planckCol
                             anchors.margins:    _margins
-                            anchors.left:       parent.left
                             anchors.top:        parent.top
+                            anchors.horizontalCenter:   parent.horizontalCenter
                             spacing:            _margins
 
+                            FactCheckBox {
+                                id: sendPlanckGPSFactCheckBox
+                                text: qsTr("Send Planck GPS Location from NMEA or Internal GPS")
+
+                                fact:       _sendPlanckGPS
+                                property Fact _sendPlanckGPS: QGroundControl.settingsManager.appSettings.sendPlanckGPS
+                            }
+
+                            FactCheckBox {
+                                text:                   "Enable LARS support"
+                                fact:                   QGroundControl.settingsManager.appSettings.enableLARS
+                                visible:                true
+                                //Layout.columnSpan:      2
+                            }
+
                             GridLayout {
-                                Layout.fillWidth:   false
-                                Layout.alignment:   Qt.AlignHCenter
-                                columns:            2
-                                visible:            true
-
-                                FactCheckBox {
-                                    id: sendPlanckGPSFactCheckBox
-                                    //Layout.alignment:   Qt.AlignHCenter
-                                    text: qsTr("Send Planck GPS Location from NMEA or Internal GPS")
-
-                                    fact:       _sendPlanckGPS
-                                    property Fact _sendPlanckGPS: QGroundControl.settingsManager.appSettings.sendPlanckGPS
+                                //spacing: ScreenTools.defaultFontPixelWidth
+                                columns: 2
+                                QGCLabel {
+                                    text:               "LARS video RTSP address"
+                                    enabled:            QGroundControl.settingsManager.appSettings.larsVideoAddress
                                 }
-
-                                FactCheckBox {
-                                    text:                   "Connect to COT server"
-                                    fact:                   QGroundControl.settingsManager.appSettings.connectToCOTServer
-                                    visible:                true
-                                    Layout.columnSpan:      2
+                                FactTextField {
+                                    fact:                   QGroundControl.settingsManager.appSettings.larsVideoAddress
+                                    enabled:                QGroundControl.settingsManager.appSettings.enableLARS.value
+                                    Layout.preferredWidth:  _comboFieldWidth
                                 }
+                                QGCLabel {
+                                    text:               "LARS relay control address"
+                                    enabled:            QGroundControl.settingsManager.appSettings.larsRelayControlAddress
+                                }
+                                FactTextField {
+                                    fact:                   QGroundControl.settingsManager.appSettings.larsRelayControlAddress
+                                    enabled:                QGroundControl.settingsManager.appSettings.enableLARS.value
+                                    Layout.preferredWidth:  _labelWidth
+                                }
+                                QGCLabel {
+                                    text:               "LARS relay control port"
+                                    enabled:            QGroundControl.settingsManager.appSettings.larsRelayControlPort
+                                }
+                                FactTextField {
+                                    fact:                   QGroundControl.settingsManager.appSettings.larsRelayControlPort
+                                    enabled:                QGroundControl.settingsManager.appSettings.enableLARS.value
+                                    Layout.preferredWidth:  _valueFieldWidth
+                                }
+                            }
 
+                            FactCheckBox {
+                                text:                   "Connect to COT server"
+                                fact:                   QGroundControl.settingsManager.appSettings.connectToCOTServer
+                                visible:                true
+                                //Layout.columnSpan:      2
+                            }
+
+                            GridLayout {
+                                columns: 2
                                 QGCLabel {
                                     text:               "COT server address"
-                                    visible:            QGroundControl.settingsManager.appSettings.connectToCOTServer
+                                    enabled:            QGroundControl.settingsManager.appSettings.connectToCOTServer
                                 }
                                 FactTextField {
                                     fact:                   QGroundControl.settingsManager.appSettings.cotServerAddress
-                                    visible:                QGroundControl.settingsManager.appSettings.connectToCOTServer
-                                    //Layout.preferredWidth:  _valueFieldWidth
+                                    enabled:                QGroundControl.settingsManager.appSettings.connectToCOTServer.value
                                 }
 
                                 QGCLabel {
                                     text:               "COT server port"
-                                    visible:            QGroundControl.settingsManager.appSettings.connectToCOTServer
+                                    enabled:            QGroundControl.settingsManager.appSettings.connectToCOTServer.value
                                 }
                                 FactTextField {
-                                    fact:                   QGroundControl.settingsManager.appSettings.cotServerPort
-                                    visible:                QGroundControl.settingsManager.appSettings.connectToCOTServer
-                                    //Layout.preferredWidth:  _valueFieldWidth
-                                }
+
+                                    enabled:                QGroundControl.settingsManager.appSettings.connectToCOTServer.value
+                                    Layout.preferredWidth:  _valueFieldWidth
+                              }
                             }
                         }
                     }

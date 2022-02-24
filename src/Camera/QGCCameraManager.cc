@@ -98,9 +98,8 @@ QGCCameraManager::_mavlinkMessageReceived(const mavlink_message_t& message)
               mavlink_video_stream_information_t vi;
               mavlink_msg_video_stream_information_decode(&message, &vi);
               std::string uri(vi.uri);
-              if(uri == "rtsp://192.168.168.10/live" || uri == "rtsp://192.168.42.1/live") {
-                  uri = "rtsp://192.168.168.6:8554/detector";
-                  //uri = qgcApp()->toolbox()->settingsManager()->videoSettings()->rtspUrl()->rawValue().toString().toStdString();
+              if((uri == "rtsp://192.168.168.10/live" || uri == "rtsp://192.168.42.1/live") && qgcApp()->toolbox()->settingsManager()->appSettings()->enableLARS()) {
+                  uri = qgcApp()->toolbox()->settingsManager()->appSettings()->larsVideoAddress()->rawValue().toString().toStdString();
                   memset(vi.uri,0,160);
                   strcpy(vi.uri,uri.c_str());
                   mavlink_message_t msg;

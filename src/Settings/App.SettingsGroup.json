@@ -278,6 +278,37 @@
     "defaultValue":     false
 },
 {
+    "name":             "enableLARS",
+    "shortDescription": "Enable LARS support",
+    "longDescription":  "Enable LARS support",
+    "type":             "bool",
+    "defaultValue":     false
+},
+{
+    "name":             "larsVideoAddress",
+    "shortDescription": "LARS video RTSP address",
+    "longDescription":  "LARS video RTSP address",
+    "type":             "string",
+    "defaultValue":     "rtsp://192.168.168.6:8554/detector",
+    "qgcRebootRequired":    false
+},
+{
+    "name":             "larsRelayControlAddress",
+    "shortDescription": "LARS relay controller address",
+    "longDescription":  "LARS relay controller address",
+    "type":             "string",
+    "defaultValue":     "192.168.168.7",
+    "qgcRebootRequired":    false
+},
+{
+    "name":             "larsRelayControlPort",
+    "shortDescription": "LARS relay controller port",
+    "longDescription":  "LARS relay controller port",
+    "type":             "uint32",
+    "defaultValue":      2101,
+    "qgcRebootRequired":    false
+},
+{
     "name":             "sendPlanckGPS",
     "shortDescription": "Send Planck GPS Position from Local GPS",
     "longDescription":  "Send Planck GPS Position from Local GPS",
