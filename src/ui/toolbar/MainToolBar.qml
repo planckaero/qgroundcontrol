@@ -189,6 +189,7 @@ Item {
                 QGCButton {
                     id:                     larsChargerButton
                     text:                   QGroundControl.planckListener.chargerState
+                    visible:           QGroundControl.settingsManager.appSettings.enableLARS.value
                     Layout.fillHeight: true
                     onClicked: {
                         QGroundControl.planckListener.toggleCharger()

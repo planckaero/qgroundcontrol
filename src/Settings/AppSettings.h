@@ -64,6 +64,7 @@ public:
     DEFINE_SETTINGFACT(larsVideoAddress)
     DEFINE_SETTINGFACT( larsRelayControlAddress)
     DEFINE_SETTINGFACT(larsRelayControlPort)
+    DEFINE_SETTINGFACT(larsRelayListenPort)
     DEFINE_SETTINGFACT(connectToCOTServer)
     DEFINE_SETTINGFACT(cotServerAddress)
     DEFINE_SETTINGFACT(cotServerPort)

@@ -6,6 +6,7 @@
 #include "LinkInterface.h"
 #include "MAVLinkProtocol.h"
 #include "QGCApplication.h"
+#include "SettingsManager.h"
 
 PlanckListener::PlanckListener(QGCApplication* app, QGCToolbox* toolbox)
 : QGCTool(app, toolbox)
@@ -14,17 +15,9 @@ PlanckListener::PlanckListener(QGCApplication* app, QGCToolbox* toolbox)
 , boat_health(false)
 , charger_on(CHARGER_REQUESTED)
 , udp()
-, relay_host_address("192.168.168.7")
-, relay_host_port(2101)
 , request_timer(this)
 {
-    udp.bind(QHostAddress::AnyIPv4, 2101, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-    connect(&udp, &QUdpSocket::readyRead, this, &PlanckListener::readDatagrams);
 
-    request_timer.setSingleShot(false);
-    request_timer.setInterval(1000);
-    connect(&(this->request_timer), &QTimer::timeout, this, &PlanckListener::chargerRequest);
-    request_timer.start();
 }
 
 void PlanckListener::setToolbox(QGCToolbox *toolbox)
@@ -32,6 +25,18 @@ void PlanckListener::setToolbox(QGCToolbox *toolbox)
     QGCTool::setToolbox(toolbox);
     connect(toolbox->mavlinkProtocol(), &MAVLinkProtocol::messageReceived, this, &PlanckListener::onMAVLinkMessage);
     connect(&health_timer, SIGNAL(timeout()), this, SLOT(onHealthTimeout()));
+    auto appSettings = toolbox->settingsManager()->appSettings();
+
+    relay_host_address = appSettings->larsRelayControlAddress()->rawValue().toString();
+    relay_host_port = appSettings->larsRelayControlPort()->rawValue().toInt();
+    if(appSettings->enableLARS()->rawValue().toBool()) {
+      udp.bind(QHostAddress::AnyIPv4, appSettings->larsRelayListenPort()->rawValue().toInt(), QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+      connect(&udp, &QUdpSocket::readyRead, this, &PlanckListener::readDatagrams);
+      request_timer.setSingleShot(false);
+      request_timer.setInterval(1000);
+      connect(&(this->request_timer), &QTimer::timeout, this, &PlanckListener::chargerRequest);
+      request_timer.start();
+    }
 }
 
 void PlanckListener::onMAVLinkMessage(LinkInterface* link, mavlink_message_t message)

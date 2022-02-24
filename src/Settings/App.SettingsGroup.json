@@ -282,7 +282,8 @@
     "shortDescription": "Enable LARS support",
     "longDescription":  "Enable LARS support",
     "type":             "bool",
-    "defaultValue":     false
+    "defaultValue":      false,
+    "qgcRebootRequired": true
 },
 {
     "name":             "larsVideoAddress",
@@ -298,7 +299,7 @@
     "longDescription":  "LARS relay controller address",
     "type":             "string",
     "defaultValue":     "192.168.168.7",
-    "qgcRebootRequired":    false
+    "qgcRebootRequired":    true
 },
 {
     "name":             "larsRelayControlPort",
@@ -306,7 +307,15 @@
     "longDescription":  "LARS relay controller port",
     "type":             "uint32",
     "defaultValue":      2101,
-    "qgcRebootRequired":    false
+    "qgcRebootRequired":    true
+},
+{
+    "name":             "larsRelayListenPort",
+    "shortDescription": "LARS relay listen (local) port",
+    "longDescription":  "LARS relay listen (local) port",
+    "type":             "uint32",
+    "defaultValue":      2101,
+    "qgcRebootRequired":   true
 },
 {
     "name":             "sendPlanckGPS",

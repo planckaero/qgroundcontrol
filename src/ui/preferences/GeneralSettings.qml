@@ -844,6 +844,15 @@ Rectangle {
                                     enabled:                QGroundControl.settingsManager.appSettings.enableLARS.value
                                     Layout.preferredWidth:  _valueFieldWidth
                                 }
+                                QGCLabel {
+                                    text:               "LARS relay listening port"
+                                    enabled:            QGroundControl.settingsManager.appSettings.larsRelayListenPort
+                                }
+                                FactTextField {
+                                    fact:                   QGroundControl.settingsManager.appSettings.larsRelayListenPort
+                                    enabled:                QGroundControl.settingsManager.appSettings.enableLARS.value
+                                    Layout.preferredWidth:  _valueFieldWidth
+                                }
                             }
 
                             FactCheckBox {
