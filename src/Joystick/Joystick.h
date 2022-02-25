@@ -107,6 +107,7 @@ public:
     Q_PROPERTY(float    exponential             READ exponential            WRITE setExponential        NOTIFY exponentialChanged)
     Q_PROPERTY(bool     accumulator             READ accumulator            WRITE setAccumulator        NOTIFY accumulatorChanged)
     Q_PROPERTY(bool     circleCorrection        READ circleCorrection       WRITE setCircleCorrection   NOTIFY circleCorrectionChanged)
+    Q_PROPERTY(bool     zeroThrottleNotFlying   READ zeroThrottleNotFlying  WRITE setZeroThrottleNotFlying NOTIFY zeroThrottleNotFlying)
 
     Q_INVOKABLE void    setButtonRepeat     (int button, bool repeat);
     Q_INVOKABLE bool    getButtonRepeat     (int button);
@@ -164,6 +165,9 @@ public:
     bool  circleCorrection  ();
     void  setCircleCorrection(bool circleCorrection);
 
+    bool zeroThrottleNotFlying ();
+    void setZeroThrottleNotFlying (bool zeroThrottleNotFlying);
+
     void  setTXMode         (int mode);
     int   getTXMode         () { return _transmitterMode; }
 
@@ -193,6 +197,7 @@ signals:
     void accumulatorChanged         (bool accumulator);
     void enabledChanged             (bool enabled);
     void circleCorrectionChanged    (bool circleCorrection);
+    void zeroThrottleNotFlyingChanged (bool zeroThrottleNotFlying);
 
     /// Signal containing new joystick information
     ///     @param roll:            Range is -1:1, negative meaning roll left, positive meaning roll right
@@ -284,6 +289,7 @@ protected:
     bool    _accumulator            = false;
     bool    _deadband               = false;
     bool    _circleCorrection       = true;
+    bool    _zeroThrottleNotFlying  = false;
     float   _axisFrequency          = 25.0f;
     float   _buttonFrequency        = 5.0f;
     Vehicle* _activeVehicle         = nullptr;
@@ -321,6 +327,7 @@ private:
     static const char* _accumulatorSettingsKey;
     static const char* _deadbandSettingsKey;
     static const char* _circleCorrectionSettingsKey;
+    static const char* _zeroThrottleNotFlyingSettingsKey;
     static const char* _axisFrequencySettingsKey;
     static const char* _buttonFrequencySettingsKey;
     static const char* _txModeSettingsKey;
