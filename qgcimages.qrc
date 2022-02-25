@@ -65,6 +65,9 @@
         <file alias="CameraComponentIcon.png">src/AutoPilotPlugins/Common/Images/CameraComponentIcon.png</file>
         <file alias="CameraIcon.svg">src/ui/toolbar/Images/CameraIcon.svg</file>
         <file alias="CameraTrigger.svg">src/AutoPilotPlugins/PX4/Images/CameraTrigger.svg</file>
+        <file alias="ChargerOff.svg">src/ui/toolbar/Images/ChargerOff.svg</file>
+        <file alias="ChargerOn.svg">src/ui/toolbar/Images/ChargerOn.svg</file>
+        <file alias="ChargerRequested.svg">src/ui/toolbar/Images/ChargerRequested.svg</file>
         <file alias="check.svg">resources/check.svg</file>
         <file alias="checkbox-check.svg">src/QmlControls/checkbox-check.svg</file>
         <file alias="cOGPointer.svg">src/FlightMap/Images/cOGPointer.svg</file>

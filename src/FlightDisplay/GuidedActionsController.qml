@@ -368,6 +368,8 @@ Item {
             confirmDialog.title = gotoTitle
             confirmDialog.message = gotoMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showGotoLocation })
+            altitudeSlider.reset()
+            altitudeSlider.visible = true
             break;
         case actionSetWaypoint:
             confirmDialog.title = setWaypointTitle
@@ -426,6 +428,8 @@ Item {
             confirmDialog.title = gotoCoTTitle
             confirmDialog.message = gotoMessage
             confirmDialog.hideTrigger = Qt.binding(function() { return !showGotoLocation })
+            altitudeSlider.reset()
+            altitudeSlider.visible = true
             break;
         default:
             console.warn("Unknown actionCode", actionCode)
@@ -478,7 +482,7 @@ Item {
             activeVehicle.guidedModeStartWingman(actionData, actionAltitudeChange)
             break;
         case actionGoto:
-            activeVehicle.guidedModeGotoLocation(actionData)
+            activeVehicle.guidedModeGotoLocation(actionData, actionAltitudeChange)
             break
         case actionSetWaypoint:
             activeVehicle.setCurrentMissionSequence(actionData)
@@ -515,7 +519,7 @@ Item {
             activeVehicle.planckWingman()
             break
         case actionGotoCoT:
-            activeVehicle.guidedModeGotoLocation(actionData)
+            activeVehicle.guidedModeGotoLocation(actionData, actionAltitudeChange)
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)

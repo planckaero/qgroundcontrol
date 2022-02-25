@@ -1,6 +1,6 @@
 #include "COTTranslator.h"
 #include <iostream>
-#ifdef _WIN32
+#if _WIN32
 #include <io.h>
 #else
 #include <unistd.h>

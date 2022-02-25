@@ -23,6 +23,7 @@
 #include "RadioComponentController.h"
 #include "QGCCameraManager.h"
 #include "QGCFileDownload.h"
+#include "SettingsManager.h"
 
 #include <QDebug>
 
@@ -439,17 +440,19 @@ void PX4FirmwarePlugin::guidedModeTakeoff(Vehicle* vehicle, double takeoffAltRel
         true);                                  // Copiloting message
 }
 
-void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoordinate& gotoCoord)
+void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoordinate& gotoCoord, double altitude)
 {
     if (qIsNaN(vehicle->altitudeAMSL()->rawValue().toDouble())) {
         qgcApp()->showMessage(tr("Unable to go to location, vehicle position not known."));
         return;
     }
 
+    bool using_LARS = qgcApp()->toolbox()->settingsManager()->appSettings()->enableLARS()->rawValue().toBool();
+
     if (vehicle->capabilityBits() & MAV_PROTOCOL_CAPABILITY_COMMAND_INT) {
         vehicle->sendMavCommandInt(vehicle->defaultComponentId(),
                                    MAV_CMD_DO_REPOSITION,
-                                   MAV_FRAME_GLOBAL,
+                                   using_LARS ? MAV_FRAME_GLOBAL_TERRAIN_ALT_INT : MAV_FRAME_GLOBAL,
                                    true,   // show error is fails
                                    -1.0f,
                                    MAV_DO_REPOSITION_FLAGS_CHANGE_MODE,
@@ -457,7 +460,8 @@ void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoord
                                    NAN,
                                    gotoCoord.latitude(),
                                    gotoCoord.longitude(),
-                                   vehicle->altitudeAMSL()->rawValue().toFloat());
+                                   using_LARS ? (float)altitude : vehicle->altitudeAMSL()->rawValue().toFloat(),
+                                   using_LARS); //copiloting message
     } else {
         vehicle->sendMavCommand(vehicle->defaultComponentId(),
                                 MAV_CMD_DO_REPOSITION,
@@ -468,7 +472,8 @@ void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoord
                                 NAN,
                                 static_cast<float>(gotoCoord.latitude()),
                                 static_cast<float>(gotoCoord.longitude()),
-                                vehicle->altitudeAMSL()->rawValue().toFloat());
+                                using_LARS ? (float)altitude : vehicle->altitudeAMSL()->rawValue().toFloat(),
+                                using_LARS); //copiloting message
     }
 }
 
