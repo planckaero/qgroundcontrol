@@ -19,12 +19,18 @@ public:
     virtual void setToolbox(QGCToolbox *toolbox);
     Q_PROPERTY(bool TagHealth  READ TagHealth  NOTIFY HealthChanged)
     Q_PROPERTY(bool BoatHealth READ BoatHealth  NOTIFY HealthChanged)
-    Q_PROPERTY(QString chargerState  READ chargerState NOTIFY chargerChanged)
+    Q_PROPERTY(int ChargerState  READ getChargerState NOTIFY chargerChanged)
     Q_INVOKABLE void toggleCharger();
+
+    enum ChargerState {
+        CHARGER_OFF = 0,
+        CHARGER_ON = 1,
+        CHARGER_REQUESTED = 2
+    };
 
     bool TagHealth() { return tag_health; }
     bool BoatHealth() { return boat_health; }
-    QString chargerState();
+    ChargerState getChargerState();
     void setCharger(bool on);
 signals:
     void HealthChanged();
@@ -38,11 +44,7 @@ private:
     QTimer health_timer;
     bool tag_health;
     bool boat_health;
-    enum {
-        CHARGER_OFF = 0,
-        CHARGER_ON = 1,
-        CHARGER_REQUESTED = 2
-    } charger_on;
+    ChargerState charger_on;
 
     // These are the relay commands https://ncd.io/proxr-quick-start-guide/
     // R1: on: 0x6C, off: 0x64

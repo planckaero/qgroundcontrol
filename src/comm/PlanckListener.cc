@@ -88,12 +88,8 @@ void PlanckListener::setCharger(bool on)
     emit chargerChanged();
 }
 
-QString PlanckListener::chargerState() {
-    switch(charger_on) {
-    case CHARGER_ON: return "Charger on";
-    case CHARGER_OFF: return "Charger off";
-    default: return "Charger";
-    }
+PlanckListener::ChargerState PlanckListener::getChargerState() {
+    return charger_on;
 }
 
 void PlanckListener::sendChargerOnOffCommand(bool on)

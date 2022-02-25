@@ -186,13 +186,32 @@ Item {
                     }
                 }
 
-                QGCButton {
-                    id:                     larsChargerButton
-                    text:                   QGroundControl.planckListener.chargerState
-                    visible:           QGroundControl.settingsManager.appSettings.enableLARS.value
+                QGCToolBarButton {
+                    id:                larsChargerButton
                     Layout.fillHeight: true
+                    icon.source:       "/qmlimages/ChargerRequested.svg"
+                    visible:           QGroundControl.settingsManager.appSettings.enableLARS.value
+
+                    property int chargerState: QGroundControl.planckListener.ChargerState
+
                     onClicked: {
                         QGroundControl.planckListener.toggleCharger()
+                    }
+
+                    onChargerStateChanged: {
+                        switch(larsChargerButton.chargerState) {
+                           case 0:
+                               icon.source = "/qmlimages/ChargerOff.svg"
+                               background.color = "red"
+                               break
+                           case 1:
+                               icon.source = "/qmlimages/ChargerOn.svg"
+                               background.color = "green"
+                               break;
+                           case 2:
+                               icon.source = "/qmlimages/ChargerRequested.svg"
+                               break
+                        }
                     }
                 }
 
