@@ -289,7 +289,7 @@ protected:
     bool    _accumulator            = false;
     bool    _deadband               = false;
     bool    _circleCorrection       = true;
-    bool    _zeroThrottleNotFlying  = false;
+    bool    _zeroThrottleNotFlying  = true;
     float   _axisFrequency          = 25.0f;
     float   _buttonFrequency        = 5.0f;
     Vehicle* _activeVehicle         = nullptr;

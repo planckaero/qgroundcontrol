@@ -168,7 +168,7 @@ void Joystick::_setDefaultCalibration(void) {
     _throttleMode   = ThrottleModeDownZero;
     _calibrated     = true;
     _circleCorrection = false;
-    _zeroThrottleNotFlying = false;
+    _zeroThrottleNotFlying = true;
 
     _saveSettings();
 }
@@ -230,7 +230,7 @@ void Joystick::_loadSettings()
     _axisFrequency  = settings.value(_axisFrequencySettingsKey, 25.0f).toFloat();
     _buttonFrequency= settings.value(_buttonFrequencySettingsKey, 5.0f).toFloat();
     _circleCorrection = settings.value(_circleCorrectionSettingsKey, false).toBool();
-    _zeroThrottleNotFlying = settings.value(_zeroThrottleNotFlyingSettingsKey, false).toBool();
+    _zeroThrottleNotFlying = settings.value(_zeroThrottleNotFlyingSettingsKey, true).toBool();
     _gimbalEnabled  = settings.value(_gimbalSettingsKey, false).toBool();
 
     _throttleMode   = static_cast<ThrottleMode_t>(settings.value(_throttleModeSettingsKey, ThrottleModeDownZero).toInt(&convertOk));
