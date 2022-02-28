@@ -100,7 +100,7 @@ Item {
             Component.onCompleted: {
                 checked = _activeJoystick.zeroThrottleNotFlying
             }
-            onClicked: {
+            onCheckedChanged: {
                 _activeJoystick.zeroThrottleNotFlying = checked
             }
         }
