@@ -96,7 +96,6 @@ Item {
         }
         QGCCheckBox {
             id:         zeroThrottleNotFlying
-            checked:    activeVehicle.joystickMode !== 0
             Component.onCompleted: {
                 checked = _activeJoystick.zeroThrottleNotFlying
             }
