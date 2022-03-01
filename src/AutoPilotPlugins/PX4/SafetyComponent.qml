@@ -443,7 +443,7 @@ SetupPage {
                                 Layout.fillWidth:       true
                             }
                             FactTextField {
-                                fact:                   controller.getParameterFact(-1, "RTL_RETURN_ALT")
+                                fact:                   controller.getParameterFact(90, "ANAFI_RTB_ALT")
                                 Layout.minimumWidth:    _editFieldWidth
                                 Layout.fillWidth:       true
                             }
