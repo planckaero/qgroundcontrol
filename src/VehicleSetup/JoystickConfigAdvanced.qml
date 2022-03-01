@@ -88,6 +88,22 @@ Item {
             }
         }
         //-----------------------------------------------------------------
+        //-- Zero throttle while not flying
+        QGCLabel {
+            text:               qsTr("Zero throttle while aircraft not flying")
+            Layout.alignment:   Qt.AlignVCenter
+            Layout.minimumWidth: ScreenTools.defaultFontPixelWidth * 36
+        }
+        QGCCheckBox {
+            id:         zeroThrottleNotFlying
+            Component.onCompleted: {
+                checked = _activeJoystick.zeroThrottleNotFlying
+            }
+            onCheckedChanged: {
+                _activeJoystick.zeroThrottleNotFlying = checked
+            }
+        }
+        //-----------------------------------------------------------------
         //-- Enable Advanced Mode
         QGCLabel {
             text:               qsTr("Enable further advanced settings (careful!)")

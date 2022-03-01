@@ -31,6 +31,7 @@ const char* Joystick::_exponentialSettingsKey =         "Exponential";
 const char* Joystick::_accumulatorSettingsKey =         "Accumulator";
 const char* Joystick::_deadbandSettingsKey =            "Deadband";
 const char* Joystick::_circleCorrectionSettingsKey =    "Circle_Correction";
+const char* Joystick::_zeroThrottleNotFlyingSettingsKey =    "Zero_Throttle_Not_Flying";
 const char* Joystick::_axisFrequencySettingsKey =       "AxisFrequency";
 const char* Joystick::_buttonFrequencySettingsKey =     "ButtonFrequency";
 const char* Joystick::_txModeSettingsKey =              nullptr;
@@ -167,6 +168,7 @@ void Joystick::_setDefaultCalibration(void) {
     _throttleMode   = ThrottleModeDownZero;
     _calibrated     = true;
     _circleCorrection = false;
+    _zeroThrottleNotFlying = true;
 
     _saveSettings();
 }
@@ -228,6 +230,7 @@ void Joystick::_loadSettings()
     _axisFrequency  = settings.value(_axisFrequencySettingsKey, 25.0f).toFloat();
     _buttonFrequency= settings.value(_buttonFrequencySettingsKey, 5.0f).toFloat();
     _circleCorrection = settings.value(_circleCorrectionSettingsKey, false).toBool();
+    _zeroThrottleNotFlying = settings.value(_zeroThrottleNotFlyingSettingsKey, true).toBool();
     _gimbalEnabled  = settings.value(_gimbalSettingsKey, false).toBool();
 
     _throttleMode   = static_cast<ThrottleMode_t>(settings.value(_throttleModeSettingsKey, ThrottleModeDownZero).toInt(&convertOk));
@@ -334,6 +337,7 @@ void Joystick::_saveSettings()
     settings.setValue(_throttleModeSettingsKey,     _throttleMode);
     settings.setValue(_gimbalSettingsKey,           _gimbalEnabled);
     settings.setValue(_circleCorrectionSettingsKey, _circleCorrection);
+    settings.setValue(_zeroThrottleNotFlyingSettingsKey, _zeroThrottleNotFlying);
 
     qCDebug(JoystickLog) << "_saveSettings calibrated:throttlemode:deadband:txmode" << _calibrated << _throttleMode << _deadband << _circleCorrection << _transmitterMode;
 
@@ -631,6 +635,12 @@ void Joystick::_handleAxis()
             } else {
                 throttle = (throttle + 1.0f) / 2.0f;
             }
+            if(_zeroThrottleNotFlying) {
+                //if the aircraft is disarmed or not flying, send zero throttle
+                if(!_activeVehicle->flying() || !_activeVehicle->armed()) {
+                    throttle = 0;
+                }
+            }
             qCDebug(JoystickValuesLog) << "name:roll:pitch:yaw:throttle:gimbalPitch:gimbalYaw" << name() << roll << -pitch << yaw << throttle << gimbalPitch << gimbalYaw;
             // NOTE: The buttonPressedBits going to MANUAL_CONTROL are currently used by ArduSub (and it only handles 16 bits)
             // Set up button bitmap
@@ -924,6 +934,18 @@ void Joystick::setCircleCorrection(bool circleCorrection)
     _circleCorrection = circleCorrection;
     _saveSettings();
     emit circleCorrectionChanged(_circleCorrection);
+}
+
+bool Joystick::zeroThrottleNotFlying()
+{
+    return _zeroThrottleNotFlying;
+}
+
+void Joystick::setZeroThrottleNotFlying(bool zeroThrottleNotFlying)
+{
+    _zeroThrottleNotFlying = zeroThrottleNotFlying;
+    _saveSettings();
+    emit zeroThrottleNotFlyingChanged(_zeroThrottleNotFlying);
 }
 
 void Joystick::setGimbalEnabled(bool set)
