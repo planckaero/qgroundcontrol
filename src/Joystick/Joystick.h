@@ -90,6 +90,7 @@ public:
     Q_PROPERTY(int      totalButtonCount        READ totalButtonCount       CONSTANT)
     Q_PROPERTY(int      axisCount               READ axisCount              CONSTANT)
     Q_PROPERTY(bool     requiresCalibration     READ requiresCalibration    CONSTANT)
+    Q_PROPERTY(double   gimbalSpeedFactor       MEMBER _gimbalSpeedFactor   NOTIFY gimbalSpeedFactorChanged)
 
     //-- Actions assigned to buttons
     Q_PROPERTY(QStringList buttonActions        READ buttonActions          NOTIFY buttonActionsChanged)
@@ -185,6 +186,7 @@ signals:
     void rawAxisValueChanged        (int index, int value);
     void rawButtonPressedChanged    (int index, int pressed);
     void calibratedChanged          (bool calibrated);
+    void gimbalSpeedFactorChanged   (double factor);
     void buttonActionsChanged       ();
     void assignableActionsChanged   ();
     void throttleModeChanged        (int mode);
@@ -245,8 +247,8 @@ protected:
 
     void    _pitchStep              (int direction);
     void    _yawStep                (int direction);
-    double  _localYaw       = 0.0;
     double  _localPitch     = 0.0;
+    double  _localYaw       = 0.0;
 
 private:
     virtual bool _open      ()          = 0;
@@ -288,6 +290,7 @@ protected:
     float   _buttonFrequency        = 5.0f;
     Vehicle* _activeVehicle         = nullptr;
     bool    _gimbalEnabled          = false;
+    double  _gimbalSpeedFactor      = 2.5;
 
     bool    _pollingStartedForCalibration = false;
 
