@@ -128,6 +128,23 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
+            //---------------------------------------------------------------------
+            //-- Gimbal Speed Factor
+            QGCLabel {
+                text:               qsTr("Gimbal Speed Factor:")
+                Layout.alignment:   Qt.AlignVCenter
+            }
+            QGCTextField {
+                text:               _activeJoystick.gimbalSpeedFactor
+                enabled:            _activeJoystick && activeVehicle && activeVehicle.gimbalData
+                validator:          DoubleValidator { bottom: 0.01; top: 100.0; }
+                inputMethodHints:   Qt.ImhFormattedNumbersOnly
+                Layout.alignment:   Qt.AlignVCenter
+                onEditingFinished: {
+                    _activeJoystick.gimbalSpeedFactor = parseFloat(text)
+                }
+                visible:            _activeJoystick && activeVehicle && activeVehicle.gimbalData
+            }
         }
         Row {
             spacing:                ScreenTools.defaultFontPixelWidth

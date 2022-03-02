@@ -1050,19 +1050,34 @@ void Joystick::_executeButtonAction(const QString& action, bool buttonDown)
 
 void Joystick::_pitchStep(int direction)
 {
-    _localPitch += static_cast<double>(direction);
-    //-- Arbitrary range
-    if(_localPitch < -90.0) _localPitch = -90.0;
-    if(_localPitch >  35.0) _localPitch =  35.0;
-    emit gimbalControlValue(_localPitch, _localYaw);
+    qreal pitch = _localPitch;
+    qreal yaw = _localYaw;
+    if(_activeVehicle && _activeVehicle->gimbalData()) {
+        pitch = _activeVehicle->gimbalPitch();
+        yaw = _activeVehicle->gimbalYaw();
+    }
+    pitch += static_cast<double>(direction) * _gimbalSpeedFactor;
+    if(pitch < -90.0) pitch = -90.0;
+    if(pitch >  90.0) pitch =  90.0;
+    _localPitch = pitch;
+    _localYaw = yaw;
+    emit gimbalControlValue(pitch, yaw);
 }
 
 void Joystick::_yawStep(int direction)
 {
-    _localYaw += static_cast<double>(direction);
-    if(_localYaw < -180.0) _localYaw = -180.0;
-    if(_localYaw >  180.0) _localYaw =  180.0;
-    emit gimbalControlValue(_localPitch, _localYaw);
+    qreal pitch = _localPitch;
+    qreal yaw = _localYaw;
+    if(_activeVehicle && _activeVehicle->gimbalData()) {
+        pitch = _activeVehicle->gimbalPitch();
+        yaw = _activeVehicle->gimbalYaw();
+    }
+    yaw += static_cast<double>(direction) * _gimbalSpeedFactor;
+    if(yaw < -180.0) yaw = -180.0;
+    if(yaw >  180.0) yaw =  180.0;
+    _localPitch = pitch;
+    _localYaw = yaw;
+    emit gimbalControlValue(pitch, yaw);
 }
 
 bool Joystick::_validAxis(int axis)
