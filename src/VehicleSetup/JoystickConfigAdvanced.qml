@@ -90,17 +90,17 @@ Item {
         //-----------------------------------------------------------------
         //-- Zero throttle while not flying
         QGCLabel {
-            text:               qsTr("Zero throttle while aircraft not flying")
+            text:               qsTr("No commands while aircraft not flying")
             Layout.alignment:   Qt.AlignVCenter
             Layout.minimumWidth: ScreenTools.defaultFontPixelWidth * 36
         }
         QGCCheckBox {
-            id:         zeroThrottleNotFlying
+            id:         noCommandsNotFlying
             Component.onCompleted: {
-                checked = _activeJoystick.zeroThrottleNotFlying
+                checked = _activeJoystick.noCommandsNotFlying
             }
             onCheckedChanged: {
-                _activeJoystick.zeroThrottleNotFlying = checked
+                _activeJoystick.noCommandsNotFlying = checked
             }
         }
         //-----------------------------------------------------------------
