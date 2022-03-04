@@ -807,6 +807,12 @@ void UAS::setExternalControlSetpoint(float roll, float pitch, float yaw, float t
     if (!_vehicle || !_vehicle->priorityLink()) {
         return;
     }
+    Joystick* js = qgcApp()->toolbox()->joystickManager()->activeJoystick();
+    if(js) {
+        if(!_vehicle->flying() && js->noCommandsNotFlying()) {
+            return;
+        }
+    }
     mavlink_message_t message;
     if (joystickMode == Vehicle::JoystickModeAttitude) {
         // send an external attitude setpoint command (rate control disabled)

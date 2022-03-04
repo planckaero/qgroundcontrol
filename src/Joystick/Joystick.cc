@@ -648,10 +648,7 @@ void Joystick::_handleAxis()
                 }
             }
             uint16_t shortButtons = static_cast<uint16_t>(buttonPressedBits & 0xFFFF);
-            //Do not emit joystick commands if the aircraft is not flying if _noCommandsNotFlying
-            if(!(_noCommandsNotFlying && (!_activeVehicle->flying() || !_activeVehicle->armed()))) {
-              emit manualControl(roll, -pitch, yaw, throttle, shortButtons, _activeVehicle->joystickMode());
-            }
+            emit manualControl(roll, -pitch, yaw, throttle, shortButtons, _activeVehicle->joystickMode());
             if(_activeVehicle && _axisCount > 4 && _gimbalEnabled) {
                 //-- TODO: There is nothing consuming this as there are no messages to handle gimbal
                 //   the way MANUAL_CONTROL handles the other channels.
