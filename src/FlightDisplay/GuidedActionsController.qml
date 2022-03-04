@@ -77,8 +77,8 @@ Item {
     readonly property string vtolTransitionFwdMessage:          qsTr("Transition VTOL to fixed wing flight.")
     readonly property string vtolTransitionMRMessage:           qsTr("Transition VTOL to multi-rotor flight.")
     readonly property string roiMessage:                        qsTr("Make the specified location a Region Of Interest.")
-    readonly property string planckTrackMessage:                qsTr("Start Planck Track.")
-    readonly property string planckWingmanMessage:              qsTr("Start Planck Wingman.")
+    readonly property string planckTrackMessage:                qsTr("Start ACE Track.")
+    readonly property string planckWingmanMessage:              qsTr("Start ACE Wingman.")
 
     readonly property int actionRTL:                        1
     readonly property int actionLand:                       2
