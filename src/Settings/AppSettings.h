@@ -60,6 +60,7 @@ public:
     DEFINE_SETTINGFACT(usePairing)
     DEFINE_SETTINGFACT(saveCsvTelemetry)
     DEFINE_SETTINGFACT(sendPlanckGPS)
+    DEFINE_SETTINGFACT(sendTerrainCmds)
     DEFINE_SETTINGFACT(enableLARS)
     DEFINE_SETTINGFACT(larsVideoAddress)
     DEFINE_SETTINGFACT( larsRelayControlAddress)

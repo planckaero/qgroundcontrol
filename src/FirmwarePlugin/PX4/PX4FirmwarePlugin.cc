@@ -447,12 +447,12 @@ void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoord
         return;
     }
 
-    bool using_LARS = qgcApp()->toolbox()->settingsManager()->appSettings()->enableLARS()->rawValue().toBool();
+    bool send_terrain_relative_copiloting = qgcApp()->toolbox()->settingsManager()->appSettings()->sendTerrainCmds()->rawValue().toBool();
 
     if (vehicle->capabilityBits() & MAV_PROTOCOL_CAPABILITY_COMMAND_INT) {
         vehicle->sendMavCommandInt(vehicle->defaultComponentId(),
                                    MAV_CMD_DO_REPOSITION,
-                                   using_LARS ? MAV_FRAME_GLOBAL_TERRAIN_ALT_INT : MAV_FRAME_GLOBAL,
+                                   send_terrain_relative_copiloting ? MAV_FRAME_GLOBAL_TERRAIN_ALT_INT : MAV_FRAME_GLOBAL,
                                    true,   // show error is fails
                                    -1.0f,
                                    MAV_DO_REPOSITION_FLAGS_CHANGE_MODE,
@@ -460,8 +460,8 @@ void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoord
                                    NAN,
                                    gotoCoord.latitude(),
                                    gotoCoord.longitude(),
-                                   using_LARS ? (float)altitude : vehicle->altitudeAMSL()->rawValue().toFloat(),
-                                   using_LARS); //copiloting message
+                                   send_terrain_relative_copiloting ? (float)altitude : vehicle->altitudeAMSL()->rawValue().toFloat(),
+                                   send_terrain_relative_copiloting); //copiloting message
     } else {
         vehicle->sendMavCommand(vehicle->defaultComponentId(),
                                 MAV_CMD_DO_REPOSITION,
@@ -472,8 +472,8 @@ void PX4FirmwarePlugin::guidedModeGotoLocation(Vehicle* vehicle, const QGeoCoord
                                 NAN,
                                 static_cast<float>(gotoCoord.latitude()),
                                 static_cast<float>(gotoCoord.longitude()),
-                                using_LARS ? (float)altitude : vehicle->altitudeAMSL()->rawValue().toFloat(),
-                                using_LARS); //copiloting message
+                                send_terrain_relative_copiloting ? (float)altitude : vehicle->altitudeAMSL()->rawValue().toFloat(),
+                                send_terrain_relative_copiloting); //copiloting message
     }
 }
 

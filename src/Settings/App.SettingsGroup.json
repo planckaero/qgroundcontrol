@@ -278,6 +278,14 @@
     "defaultValue":     false
 },
 {
+    "name":             "sendTerrainCmds",
+    "shortDescription": "Send terrain-relative go-to commands",
+    "longDescription":  "Send terrain-relative go-to commands",
+    "type":             "bool",
+    "defaultValue":      false,
+    "qgcRebootRequired": false
+},
+{
     "name":             "enableLARS",
     "shortDescription": "Enable LARS support",
     "longDescription":  "Enable LARS support",
