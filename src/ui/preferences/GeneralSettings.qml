@@ -808,10 +808,15 @@ Rectangle {
                             }
 
                             FactCheckBox {
+                                text:                   "Send terrain-relative go-to commands"
+                                fact:                   QGroundControl.settingsManager.appSettings.sendTerrainCmds
+                                visible:                true
+                            }
+
+                            FactCheckBox {
                                 text:                   "Enable LARS support"
                                 fact:                   QGroundControl.settingsManager.appSettings.enableLARS
                                 visible:                true
-                                //Layout.columnSpan:      2
                             }
 
                             GridLayout {
