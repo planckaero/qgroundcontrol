@@ -624,7 +624,7 @@ Rectangle {
                         }
                     }
 
-                    Item { width: 1; height: _margins }
+                    Item { width: 1; height: _margins; visible: flyViewSectionLabel.visible}
 
                     QGCLabel {
                         id:         planViewSectionLabel
@@ -664,7 +664,7 @@ Rectangle {
                         }
                     }
 
-                    Item { width: 1; height: _margins }
+                    Item { width: 1; height: _margins; visible: planViewSectionLabel.visible }
 
                     QGCLabel {
                         id:         autoConnectSectionLabel
@@ -780,7 +780,7 @@ Rectangle {
                         }
                     }
 
-                    Item { width: 1; height: _margins }
+                    Item { width: 1; height: _margins; visible: autoConnectSectionLabel.visible }
 
                     QGCLabel {
                         id:         planckSectionLabel
@@ -893,7 +893,7 @@ Rectangle {
                         }
                     }
 
-                    Item { width: 1; height: _margins }
+                    Item { width: 1; height: _margins; visible: planckSectionLabel.visible }
 
                     QGCLabel {
                         id:         rtkSectionLabel
@@ -1028,7 +1028,7 @@ Rectangle {
                         }
                     }
 
-                    Item { width: 1; height: _margins }
+                    Item { width: 1; height: _margins; visible: rtkSectionLabel.visible }
 
                     QGCLabel {
                         id:         adsbSectionLabel
@@ -1092,7 +1092,7 @@ Rectangle {
                         }
                     }
 
-                    Item { width: 1; height: _margins }
+                    Item { width: 1; height: _margins; visible: adsbSectionLabel.visible }
 
                     QGCLabel {
                         id:         videoSectionLabel
@@ -1185,7 +1185,7 @@ Rectangle {
                         }
                     }
 
-                    Item { width: 1; height: _margins }
+                    Item { width: 1; height: _margins; visible: videoSectionLabel.visible }
 
                     QGCLabel {
                         id:                             videoRecSectionLabel
