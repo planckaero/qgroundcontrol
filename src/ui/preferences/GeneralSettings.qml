@@ -202,13 +202,13 @@ Rectangle {
 
                                 QGCLabel {
                                     text:                   qsTr("Stream GCS Position")
-                                    visible:                _followTarget.visible
+                                    visible:                _followTarget.visible && QGroundControl.corePlugin.showAdvancedUI
                                 }
                                 FactComboBox {
                                     Layout.preferredWidth:  _comboFieldWidth
                                     fact:                   _followTarget
                                     indexModel:             false
-                                    visible:                _followTarget.visible
+                                    visible:                _followTarget.visible && QGroundControl.corePlugin.showAdvancedUI
                                 }
                                 QGCLabel {
                                     text:                           qsTr("UI Scaling")
@@ -301,7 +301,7 @@ Rectangle {
                                     fact:       _autoLoad
                                     visible:    _autoLoad && _autoLoad.visible
 
-                                    property Fact _autoLoad: QGroundControl.settingsManager.appSettings.autoLoadMissions
+                                    property Fact _autoLoad: QGroundControl.settingsManager.appSettings.autoLoadMissions && QGroundControl.corePlugin.showAdvancedUI
                                 }
 
                                 QGCCheckBox {
@@ -427,7 +427,7 @@ Rectangle {
                         Layout.preferredWidth:  loggingCol.width + (_margins * 2)
                         color:                  qgcPal.windowShade
                         Layout.fillWidth:       true
-                        visible:                promptSaveLog._telemetrySave.visible || logIfNotArmed._telemetrySaveNotArmed.visible || promptSaveCsv._saveCsvTelemetry.visible
+                        visible:                promptSaveLog._telemetrySave.visible || logIfNotArmed._telemetrySaveNotArmed.visible || promptSaveCsv._saveCsvTelemetry.visible && QGroundControl.corePlugin.showAdvancedUI
                         ColumnLayout {
                             id:                         loggingCol
                             anchors.margins:            _margins
@@ -520,13 +520,13 @@ Rectangle {
 
                                 FactCheckBox {
                                     text:       qsTr("Virtual Joystick")
-                                    visible:    _virtualJoystick.visible
+                                    visible:    _virtualJoystick.visible && QGroundControl.corePlugin.showAdvancedUI
                                     fact:       _virtualJoystick
                                 }
 
                                 FactCheckBox {
                                     text:       qsTr("Auto-Center Throttle")
-                                    visible:    _virtualJoystickAutoCenterThrottle.visible
+                                    visible:    _virtualJoystickAutoCenterThrottle.visible && QGroundControl.corePlugin.showAdvancedUI
                                     enabled:    _virtualJoystick.rawValue
                                     fact:       _virtualJoystickAutoCenterThrottle
                                 }
@@ -555,10 +555,10 @@ Rectangle {
                             }
                             FactCheckBox {
                                 text:       qsTr("Show Annunciator Panel")
-                                visible:    _showAnnunciatorPanel.visible
+                                visible:    _showAnnunciatorPanel.visible && QGroundControl.corePlugin.showAdvancedUI
                                 fact:       _showAnnunciatorPanel
 
-                                property Fact _showAnnunciatorPanel: QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel
+
                             }
 
                             GridLayout {
@@ -570,22 +570,22 @@ Rectangle {
 
                                 QGCLabel {
                                     text:                   qsTr("Annunciator Vibe Limit")
-                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true && QGroundControl.corePlugin.showAdvancedUI
                                 }
                                 FactTextField {
                                     Layout.preferredWidth:  _valueFieldWidth
-                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true && QGroundControl.corePlugin.showAdvancedUI
                                     fact:                   _vibeMaxThreshold
 
                                     property Fact _vibeMaxThreshold :  QGroundControl.settingsManager.flyViewSettings.vibeMaxThreshold
                                 }
                                 QGCLabel {
                                     text:                   qsTr("Annunciator Tilt Limit")
-                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true && QGroundControl.corePlugin.showAdvancedUI
                                 }
                                 FactTextField {
                                     Layout.preferredWidth:  _valueFieldWidth
-                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true
+                                    visible:                QGroundControl.settingsManager.flyViewSettings.showAnnunciatorPanel.value === true && QGroundControl.corePlugin.showAdvancedUI
                                     fact:                   _tiltMaxThreshold
 
                                     property Fact _tiltMaxThreshold :  QGroundControl.settingsManager.flyViewSettings.tiltMaxThreshold
@@ -593,31 +593,31 @@ Rectangle {
 
                                 QGCLabel {
                                     text:                   qsTr("Guided Minimum Altitude")
-                                    visible:                parent._guidedMinimumAltitude.visible
+                                    visible:                parent._guidedMinimumAltitude.visible && QGroundControl.corePlugin.showAdvancedUI
                                 }
                                 FactTextField {
                                     Layout.preferredWidth:  _valueFieldWidth
-                                    visible:                parent._guidedMinimumAltitude.visible
+                                    visible:                parent._guidedMinimumAltitude.visible && QGroundControl.corePlugin.showAdvancedUI
                                     fact:                   parent._guidedMinimumAltitude
                                 }
 
                                 QGCLabel {
                                     text:                   qsTr("Guided Maximum Altitude")
-                                    visible:                parent._guidedMaximumAltitude.visible
+                                    visible:                parent._guidedMaximumAltitude.visible && QGroundControl.corePlugin.showAdvancedUI
                                 }
                                 FactTextField {
                                     Layout.preferredWidth:  _valueFieldWidth
-                                    visible:                parent._guidedMaximumAltitude.visible
+                                    visible:                parent._guidedMaximumAltitude.visible && QGroundControl.corePlugin.showAdvancedUI
                                     fact:                   parent._guidedMaximumAltitude
                                 }
 
                                 QGCLabel {
                                     text:                   qsTr("Go To Location Max Distance")
-                                    visible:                parent._maxGoToLocationDistance.visible
+                                    visible:                parent._maxGoToLocationDistance.visible && QGroundControl.corePlugin.showAdvancedUI
                                 }
                                 FactTextField {
                                     Layout.preferredWidth:  _valueFieldWidth
-                                    visible:                parent._maxGoToLocationDistance.visible
+                                    visible:                parent._maxGoToLocationDistance.visible && QGroundControl.corePlugin.showAdvancedUI
                                     fact:                   parent._maxGoToLocationDistance
                                 }
                             }
@@ -629,7 +629,7 @@ Rectangle {
                     QGCLabel {
                         id:         planViewSectionLabel
                         text:       qsTr("Plan View")
-                        visible:    _planViewSettings.visible
+                        visible:    _planViewSettings.visible && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredHeight: planViewCol.height + (_margins * 2)
@@ -669,7 +669,7 @@ Rectangle {
                     QGCLabel {
                         id:         autoConnectSectionLabel
                         text:       qsTr("AutoConnect to the following devices")
-                        visible:    QGroundControl.settingsManager.autoConnectSettings.visible
+                        visible:    QGroundControl.settingsManager.autoConnectSettings.visible && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredWidth:  autoConnectCol.width + (_margins * 2)
@@ -785,12 +785,14 @@ Rectangle {
                     QGCLabel {
                         id:         planckSectionLabel
                         text:       qsTr("Planck Configuration")
+                        visible:    QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredWidth:  planckCol.width + (_margins * 2)
                         Layout.preferredHeight: planckCol.height + (_margins * 2)
                         color:                  qgcPal.windowShade
                         Layout.fillWidth:       true
+                        visible:                planckSectionLabel.visible
 
                         ColumnLayout {
                             id:                 planckCol
@@ -896,7 +898,7 @@ Rectangle {
                     QGCLabel {
                         id:         rtkSectionLabel
                         text:       qsTr("RTK GPS")
-                        visible:    QGroundControl.settingsManager.rtkSettings.visible
+                        visible:    QGroundControl.settingsManager.rtkSettings.visible && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredHeight: rtkGrid.height + (_margins * 2)
@@ -1031,7 +1033,7 @@ Rectangle {
                     QGCLabel {
                         id:         adsbSectionLabel
                         text:       qsTr("ADSB Server")
-                        visible:    QGroundControl.settingsManager.adsbVehicleManagerSettings.visible
+                        visible:    QGroundControl.settingsManager.adsbVehicleManagerSettings.visible && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredHeight: adsbGrid.y + adsbGrid.height + _margins
@@ -1095,7 +1097,7 @@ Rectangle {
                     QGCLabel {
                         id:         videoSectionLabel
                         text:       qsTr("Video")
-                        visible:    QGroundControl.settingsManager.videoSettings.visible && !QGroundControl.videoManager.autoStreamConfigured
+                        visible:    QGroundControl.settingsManager.videoSettings.visible && !QGroundControl.videoManager.autoStreamConfigured && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredWidth:  videoGrid.width + (_margins * 2)
@@ -1242,7 +1244,7 @@ Rectangle {
                     QGCLabel {
                         id:         brandImageSectionLabel
                         text:       qsTr("Brand Image")
-                        visible:    QGroundControl.settingsManager.brandImageSettings.visible && !ScreenTools.isMobile
+                        visible:    QGroundControl.settingsManager.brandImageSettings.visible && !ScreenTools.isMobile && QGroundControl.corePlugin.showAdvancedUI
                     }
                     Rectangle {
                         Layout.preferredWidth:  brandImageGrid.width + (_margins * 2)

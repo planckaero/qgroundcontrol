@@ -25,7 +25,15 @@ Row {
     anchors.bottom:     parent.bottom
     spacing:            ScreenTools.defaultFontPixelWidth * 1.5
 
+    Connections {
+        target: QGroundControl.corePlugin
+        onShowAdvancedUIChanged: {
+            indicatorRepeater.model = activeVehicle ? activeVehicle.toolBarIndicators : []
+        }
+    }
+
     Repeater {
+        id:    indicatorRepeater
         model: activeVehicle ? activeVehicle.toolBarIndicators : []
         Loader {
             id:                 indicatorLoader

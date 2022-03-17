@@ -114,6 +114,7 @@ Item {
                     id:                 planButton
                     Layout.fillHeight:  true
                     icon.source:        "/qmlimages/Plan.svg"
+                    visible:            QGroundControl.corePlugin.showAdvancedUI
                     onClicked: {
                         if (mainWindow.preventViewSwitch()) {
                             return

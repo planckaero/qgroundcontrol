@@ -35,7 +35,7 @@ QString PX4RadioComponent::iconResource(void) const
 
 bool PX4RadioComponent::requiresSetup(void) const
 {
-    return _vehicle->parameterManager()->getParameter(-1, "COM_RC_IN_MODE")->rawValue().toInt() == 1 ? false : true;
+    return false;
 }
 
 bool PX4RadioComponent::setupComplete(void) const

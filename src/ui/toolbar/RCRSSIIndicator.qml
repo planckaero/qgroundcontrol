@@ -24,7 +24,7 @@ Item {
     anchors.top:    parent.top
     anchors.bottom: parent.bottom
 
-    property bool showIndicator: _activeVehicle.supportsRadio
+    property bool showIndicator: _activeVehicle.supportsRadio && QGroundControl.corePlugin.showAdvancedUI
 
     property var    _activeVehicle:     QGroundControl.multiVehicleManager.activeVehicle
     property bool   _rcRSSIAvailable:   activeVehicle ? activeVehicle.rcRSSI > 0 && activeVehicle.rcRSSI <= 100 : false

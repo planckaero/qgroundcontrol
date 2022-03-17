@@ -42,7 +42,7 @@ QString FlightModesComponent::iconResource(void) const
 
 bool FlightModesComponent::requiresSetup(void) const
 {
-    return _vehicle->parameterManager()->getParameter(-1, "COM_RC_IN_MODE")->rawValue().toInt() == 1 ? false : true;
+    return false;
 }
 
 bool FlightModesComponent::setupComplete(void) const

@@ -24,7 +24,7 @@ Item {
     anchors.bottom: parent.bottom
     width:          telemIcon.width * 1.1
 
-    property bool showIndicator: _hasTelemetry
+    property bool showIndicator: _hasTelemetry && QGroundControl.corePlugin.showAdvancedUI
 
     property var  _activeVehicle:   QGroundControl.multiVehicleManager.activeVehicle
     property bool _hasTelemetry:    _activeVehicle ? _activeVehicle.telemetryLRSSI !== 0 : false

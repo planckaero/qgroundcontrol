@@ -27,7 +27,7 @@ QGCComboBox {
     currentIndex:           -1
     sizeToContents:         true
 
-    property bool showIndicator: _activeVehicle.vtol && _activeVehicle.px4Firmware
+    property bool showIndicator: _activeVehicle.vtol && _activeVehicle.px4Firmware && QGroundControl.corePlugin.showAdvancedUI
 
     property var    _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
     property bool   _fwdFlight:     _activeVehicle.vtolInFwdFlight

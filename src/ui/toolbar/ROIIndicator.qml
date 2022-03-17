@@ -28,7 +28,7 @@ Item {
     anchors.top:            parent.top
     anchors.bottom:         parent.bottom
 
-    property bool showIndicator: activeVehicle && activeVehicle.roiModeSupported
+    property bool showIndicator: activeVehicle && activeVehicle.roiModeSupported && QGroundControl.corePlugin.showAdvancedUI
 
     Component {
         id: roiInfo
