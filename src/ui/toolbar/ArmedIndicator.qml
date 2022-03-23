@@ -26,6 +26,8 @@ QGCComboBox {
     font.pointSize:         ScreenTools.mediumFontPointSize
     currentIndex:           -1
     sizeToContents:         true
+    normalColorsWhileDisabled: true
+    enabled: QGroundControl.corePlugin.showAdvancedUI
 
     property bool showIndicator: true
 

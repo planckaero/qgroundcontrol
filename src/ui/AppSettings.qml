@@ -65,7 +65,15 @@ Rectangle {
                 visible:                !ScreenTools.isShortScreen
             }
 
+            Connections {
+                target: QGroundControl.corePlugin
+                onShowAdvancedUIChanged: {
+                    settingsPagesRepeater.model = QGroundControl.corePlugin.settingsPages
+                }
+            }
+
             Repeater {
+                id: settingsPagesRepeater
                 model:  QGroundControl.corePlugin.settingsPages
                 QGCButton {
                     height:             _buttonHeight

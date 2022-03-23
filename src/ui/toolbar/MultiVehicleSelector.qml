@@ -26,7 +26,7 @@ QGCComboBox {
     sizeToContents:         true
     model:                  _vehicleModel
 
-    property bool showIndicator: _multipleVehicles
+    property bool showIndicator: _multipleVehicles && QGroundControl.corePlugin.showAdvancedUI
 
     property var    _activeVehicle:     QGroundControl.multiVehicleManager.activeVehicle
     property bool   _multipleVehicles:  _activeVehicle ? QGroundControl.multiVehicleManager.vehicles.count > 1 : false

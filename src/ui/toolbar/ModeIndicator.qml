@@ -26,11 +26,20 @@ QGCComboBox {
     font.pointSize:         ScreenTools.mediumFontPointSize
     currentIndex:           -1
     sizeToContents:         true
+    normalColorsWhileDisabled: true
+    enabled: QGroundControl.corePlugin.showAdvancedUI
 
     property bool showIndicator: true
 
     property var _activeVehicle:    QGroundControl.multiVehicleManager.activeVehicle
     property var _flightModes:      _activeVehicle ? _activeVehicle.flightModes : [ ]
+
+    Connections {
+        target: QGroundControl.corePlugin
+        onShowAdvancedUIChanged: {
+            control._qgcPal.colorGroupEnabled = true
+        }
+    }
 
     onActivated: {
         _activeVehicle.flightMode = _flightModes[index]

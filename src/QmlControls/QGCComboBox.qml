@@ -34,10 +34,11 @@ T.ComboBox {
     property bool   sizeToContents: false
     property string alternateText:  ""
 
-    property var    _qgcPal:            QGCPalette { colorGroupEnabled: enabled }
+    property var    _qgcPal:            QGCPalette { colorGroupEnabled: normalColorsWhileDisabled ? true : enabled }
     property real   _largestTextWidth:  0
     property real   _popupWidth:        sizeToContents ? _largestTextWidth + itemDelegateMetrics.leftPadding + itemDelegateMetrics.rightPadding : control.width
     property bool   _onCompleted:       false
+    property bool   normalColorsWhileDisabled: false
 
     TextMetrics {
         id:                 textMetrics
@@ -104,6 +105,7 @@ T.ComboBox {
         width:                  height
         source:                 "/qmlimages/arrow-down.png"
         color:                  _qgcPal.text
+        visible:                normalColorsWhileDisabled ? enabled : true
     }
 
     // The label of the button

@@ -96,6 +96,7 @@ Rectangle {
             if(!QGroundControl.corePlugin.showAdvancedUI) {
                 showSummaryPanel()
             }
+            componentRepeater.model = _fullParameterVehicleAvailable ? QGroundControl.multiVehicleManager.activeVehicle.autopilot.vehicleComponents : 0
         }
     }
 
@@ -244,7 +245,7 @@ Rectangle {
                 imageResource:      "/qmlimages/FirmwareUpgradeIcon.png"
                 setupIndicator:     false
                 exclusiveGroup:     setupButtonGroup
-                visible:            !ScreenTools.isMobile && _corePlugin.options.showFirmwareUpgrade
+                visible:            !ScreenTools.isMobile && _corePlugin.options.showFirmwareUpgrade && QGroundControl.corePlugin.showAdvancedUI
                 text:               qsTr("Firmware")
                 Layout.fillWidth:   true
 
