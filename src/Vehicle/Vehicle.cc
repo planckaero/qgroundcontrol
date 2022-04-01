@@ -1733,12 +1733,13 @@ void Vehicle::_handleACEHeartbeat(mavlink_message_t& message)
    int newACECustomModeIdx = (int)mavlink_msg_heartbeat_get_custom_mode(&message);
    QString newACEMode;
    switch(newACECustomModeIdx) {
-       case 0: newACEMode = "ACE:Idle";    break;
-       case 1: newACEMode = "ACE:Takeoff"; break;
-       case 2: newACEMode = "ACE:Track";   break;
-       case 3: newACEMode = "ACE:RTB";     break;
-       case 4: newACEMode = "ACE:Land";    break;
-       case 5: newACEMode = "ACE:Wingman"; break;
+       case 0: newACEMode = "ACE:Idle";       break;
+       case 1: newACEMode = "ACE:Takeoff";    break;
+       case 2: newACEMode = "ACE:Track";      break;
+       case 3: newACEMode = "ACE:RTB";        break;
+       case 4: newACEMode = "ACE:Land";       break;
+       case 5: newACEMode = "ACE:Wingman";    break;
+       case 6: newACEMode = "ACE:Reposition"; break;
        default: newACEMode = QString("ACE: ") + QString::number(newACECustomModeIdx); break;
    }
 
