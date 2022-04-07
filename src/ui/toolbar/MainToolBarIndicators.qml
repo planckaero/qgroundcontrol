@@ -32,6 +32,13 @@ Row {
         }
     }
 
+    Connections {
+        target: QGroundControl.multiVehicleManager
+        onActiveVehicleChanged: {
+            indicatorRepeater.model = activeVehicle ? activeVehicle.toolBarIndicators : []
+        }
+    }
+
     Repeater {
         id:    indicatorRepeater
         model: activeVehicle ? activeVehicle.toolBarIndicators : []
