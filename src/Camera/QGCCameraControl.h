@@ -146,6 +146,7 @@ public:
         MODE_PLANCKRTB,
         MODE_PLANCKLAND,
         MODE_PLANCKWINGMAN,
+        MODE_PLANCKREPOSITION
     };
 
     Q_ENUM(CameraMode)
