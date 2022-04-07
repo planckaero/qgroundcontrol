@@ -28,8 +28,14 @@ Row {
     Connections {
         target: QGroundControl.corePlugin
         onShowAdvancedUIChanged: {
-            if (activeVehicle)
-                indicatorRepeater.model = activeVehicle.toolBarIndicators;
+            indicatorRepeater.model = activeVehicle ? activeVehicle.toolBarIndicators : []
+        }
+    }
+
+    Connections {
+        target: QGroundControl.multiVehicleManager
+        onActiveVehicleChanged: {
+            indicatorRepeater.model = activeVehicle ? activeVehicle.toolBarIndicators : []
         }
     }
 
