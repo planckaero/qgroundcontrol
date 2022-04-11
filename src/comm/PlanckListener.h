@@ -20,6 +20,7 @@ public:
     Q_PROPERTY(bool TagHealth  READ TagHealth  NOTIFY HealthChanged)
     Q_PROPERTY(bool BoatHealth READ BoatHealth  NOTIFY HealthChanged)
     Q_PROPERTY(int ChargerState  READ getChargerState NOTIFY chargerChanged)
+    Q_PROPERTY(int takeoffReadyState READ takeoffReadyState NOTIFY takeoffReadyStateChanged)
     Q_INVOKABLE void toggleCharger();
 
     enum ChargerState {
@@ -32,9 +33,11 @@ public:
     bool BoatHealth() { return boat_health; }
     ChargerState getChargerState();
     void setCharger(bool on);
+    int takeoffReadyState();
 signals:
     void HealthChanged();
     void chargerChanged();
+    void takeoffReadyStateChanged();
 
 public slots:
     void onMAVLinkMessage(LinkInterface* link, mavlink_message_t message);
@@ -45,6 +48,7 @@ private:
     bool tag_health;
     bool boat_health;
     ChargerState charger_on;
+    int takeoff_ready_state;
 
     // These are the relay commands https://ncd.io/proxr-quick-start-guide/
     // R1: on: 0x6C, off: 0x64
