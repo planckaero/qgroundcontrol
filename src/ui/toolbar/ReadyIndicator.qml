@@ -18,7 +18,7 @@ import QGroundControl.ScreenTools           1.0
 import QGroundControl.Palette               1.0
 
 //-------------------------------------------------------------------------
-//-- Armed Indicator
+//-- Ready Indicator
 QGCComboBox {
     function getReadyStateText() {
         //Mirror the MAV_STATE enumeration
@@ -40,13 +40,13 @@ QGCComboBox {
 
     anchors.verticalCenter: parent.verticalCenter
     alternateText:          getReadyStateText()
-    model:                  [ qsTr("Bunk") ]
+    model:                  [ qsTr("") ]
     font.pointSize:         ScreenTools.mediumFontPointSize
     currentIndex:           -1
     sizeToContents:         true
     normalColorsWhileDisabled: true
-    enabled: true
-    visible: true //_activeVehicle
+    enabled: false
+    visible: true//_activeVehicle
 
     property bool showIndicator: true
 

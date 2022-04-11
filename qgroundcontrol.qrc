@@ -19,7 +19,7 @@
         <file alias="TelemetryRSSIIndicator.qml">src/ui/toolbar/TelemetryRSSIIndicator.qml</file>
         <file alias="VTOLModeIndicator.qml">src/ui/toolbar/VTOLModeIndicator.qml</file>
         <file alias="PlanckHealthIndicator.qml">src/ui/toolbar/PlanckHealthIndicator.qml</file>
-        <file alias="ReadyIndicator">src/ui/toolbar/ReadyIndicator.qml</file>
+        <file alias="ReadyIndicator.qml">src/ui/toolbar/ReadyIndicator.qml</file>
     </qresource>
     <qresource prefix="/checklists">
         <file alias="DefaultChecklist.qml">src/FlightDisplay/DefaultChecklist.qml</file>

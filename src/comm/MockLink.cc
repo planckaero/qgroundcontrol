@@ -193,7 +193,6 @@ void MockLink::_run1HzTasks(void)
                 _sendStatusText = false;
                 _sendStatusTextMessages();
             }
-            _sendAnafiSupervisorHeartbeat();
         }
     }
 }
@@ -242,27 +241,6 @@ void MockLink::_sendPlanckStatusCopiloting(void)
                                             &copiloting_custom);
     respondWithMavlinkMessage(copiloting_custom_msg);
 }
-
-void MockLink::_sendAnafiSupervisorHeartbeat(void) {
-    mavlink_heartbeat_t hb;
-    mavlink_copiloting_custom_t copiloting_custom;
-    static int status = 0;
-    if(++status > 8) status = 0;
-    hb.system_status = uint8_t(status);
-
-    mavlink_message_t hb_msg;
-    mavlink_msg_heartbeat_encode(1,90,&hb_msg,&hb);
-    copiloting_custom.len = mavlink_msg_to_send_buffer(copiloting_custom.data, &hb_msg);
-
-    mavlink_message_t copiloting_custom_msg;
-    mavlink_msg_copiloting_custom_encode_chan(_vehicleSystemId,
-                                            _vehicleComponentId,
-                                            _mavlinkChannel,
-                                            &copiloting_custom_msg,
-                                            &copiloting_custom);
-    respondWithMavlinkMessage(copiloting_custom_msg);
-}
-
 void MockLink::_run500HzTasks(void)
 {
     if (_highLatency) {
@@ -373,6 +351,9 @@ void MockLink::_sendHeartBeat(void)
     if(++count < 9) return;
     count = 0;
 
+    static uint8_t status = 0;
+    if(++status > 8) status = 0;
+
     mavlink_msg_heartbeat_pack_chan(_vehicleSystemId,
                                     41, //Anafi ACE supervisor
                                     _mavlinkChannel,
@@ -381,7 +362,7 @@ void MockLink::_sendHeartBeat(void)
                                     MAV_AUTOPILOT_INVALID,      // MAV_AUTOPILOT
                                     0,        // MAV_MODE
                                     idx++,      // custom mode
-                                    0);          // MAV_STATE
+                                    status);          // MAV_STATE
     qDebug() << "index: " << idx;
 
     mavlink_copiloting_custom_t copiloting_custom;
