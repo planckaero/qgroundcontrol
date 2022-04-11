@@ -64,7 +64,7 @@ process_framework() {
     rm $GST_TARGET/Commands
     #-- Now relocate the embedded paths
     echo "GST Installer: Relocating"
-    python $RELOC -r "$GST_TARGET" "$OLDDLPATH" "$NEWDLPATH" > /dev/null || die "Error relocating binaries in $GST_TARGET/lib"
+    python3 $RELOC -r "$GST_TARGET" "$OLDDLPATH" "$NEWDLPATH" > /dev/null || die "Error relocating binaries in $GST_TARGET/lib"
 }
 
 #-- Check and see if we've already processed the framework

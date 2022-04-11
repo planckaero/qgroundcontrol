@@ -40,13 +40,13 @@ QGCComboBox {
 
     anchors.verticalCenter: parent.verticalCenter
     alternateText:          getReadyStateText()
-    model:                  [ ]
+    model:                  [ qsTr("Bunk") ]
     font.pointSize:         ScreenTools.mediumFontPointSize
     currentIndex:           -1
     sizeToContents:         true
     normalColorsWhileDisabled: true
-    enabled: false
-    visible: _activeVehicle
+    enabled: true
+    visible: true //_activeVehicle
 
     property bool showIndicator: true
 
@@ -54,11 +54,5 @@ QGCComboBox {
     property var    _readyState:    _activeVehicle ? QGroundControl.planckListener.takeoffReadyState : 0
 
     onActivated: {
-        if (index == 0) {
-            mainWindow.armVehicle()
-        } else {
-            mainWindow.disarmVehicle()
-        }
-        currentIndex = -1
     }
 }
