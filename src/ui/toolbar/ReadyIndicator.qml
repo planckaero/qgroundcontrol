@@ -26,7 +26,7 @@ QGCComboBox {
         case 0:
         case 1:
         case 2:
-            return "Loading...";
+            return "Not Ready";
         case 3:
         case 4:
             return "Ready";
