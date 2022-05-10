@@ -183,6 +183,20 @@ exists ($$PWD/.git) {
         APP_VERSION_STR = "Daily $${GIT_BRANCH}:$${GIT_HASH} $${GIT_TIME}"
     }
 
+    #Look for specific versioning
+    #Example tag:        v4.0.6-ABC-v1.2.3
+    #Should result in QGroundControl v4.0.6 ABC v1.2.3 (gabc123)
+    #Example custom tag: v4.0.6-CUSTOMNAME-v1.2.3
+    #Should result in QGroundControl v4.0.6 CUSTOMNAME v1.2.3 (gabc123)
+    message($${GIT_DESCRIBE})
+    contains(GIT_DESCRIBE, v[0-9]+.[0-9]+.[0-9]+.*) {
+        CUSTOMVERSION = $$replace(GIT_DESCRIBE, "-", " ")
+        GIT_VERSION = "$${CUSTOMVERSION} ($${GIT_HASH})"
+        APP_VERSION_STR = $$GIT_VERSION
+        VERSION = $$section(VERSION, ".", 0, 2)
+        message(Custom Version: $${GIT_VERSION} $${VERSION})
+    }
+
     message(QGroundControl APP_VERSION_STR VERSION $${APP_VERSION_STR} $${VERSION})
 
     MacBuild {
