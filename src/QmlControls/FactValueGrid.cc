@@ -40,6 +40,7 @@ const QStringList FactValueGrid::_fontSizeNames = {
     QT_TRANSLATE_NOOP("FactValueGrid", "Small"),
     QT_TRANSLATE_NOOP("FactValueGrid", "Medium"),
     QT_TRANSLATE_NOOP("FactValueGrid", "Large"),
+    QT_TRANSLATE_NOOP("FactValueGrid", "Extra Large"),
 };
 
 FactValueGrid::FactValueGrid(QQuickItem* parent)

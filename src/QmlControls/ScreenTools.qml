@@ -11,9 +11,9 @@ import QGroundControl.ScreenToolsController 1.0
  The ScreenTools Singleton provides information on QGC's standard font metrics. It also provides information on screen
  size which can be used to adjust user interface for varying available screen real estate.
 
- QGC has four standard font sizes: default, small, medium and large. The QGC controls use the default font for display and you should use this font
- for most text within the system that is drawn using something other than a standard QGC control. The small font is smaller than the default font.
- The medium and large fonts are larger than the default font.
+ QGC has five standard font sizes: default, small, medium, large, extra large. The QGC controls use the default font for display and you should use
+ this font for most text within the system that is drawn using something other than a standard QGC control. The small font is smaller than the
+ default font. The font sizes medium and above are larger than the default font.
 
  Usage:
 
@@ -52,12 +52,14 @@ Item {
     property real smallFontPointSize:       10
     property real mediumFontPointSize:      10
     property real largeFontPointSize:       10
+    property real extraLargeFontPointSize:  10
 
     property real toolbarHeight:            0
 
     readonly property real smallFontPointRatio:      0.75
     readonly property real mediumFontPointRatio:     1.25
     readonly property real largeFontPointRatio:      1.5
+    readonly property real extraLargeFontPointRatio: 1.75
 
     property real realPixelDensity: {
         //-- If a plugin defines it, just use what it tells us
@@ -145,6 +147,7 @@ Item {
         smallFontPointSize      = defaultFontPointSize  * _screenTools.smallFontPointRatio
         mediumFontPointSize     = defaultFontPointSize  * _screenTools.mediumFontPointRatio
         largeFontPointSize      = defaultFontPointSize  * _screenTools.largeFontPointRatio
+        extraLargeFontPointSize = defaultFontPointSize  * _screenTools.extraLargeFontPointRatio
         minTouchPixels          = Math.round(minTouchMillimeters * realPixelDensity)
         if (minTouchPixels / Screen.height > 0.15) {
             // If using physical sizing takes up too much of the vertical real estate fall back to font based sizing
