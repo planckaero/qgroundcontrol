@@ -31,6 +31,7 @@ public:
         SmallFontSize,
         MediumFontSize,
         LargeFontSize,
+        ExtraLargeFontSize,
     };
     Q_ENUMS(FontSize)
 
