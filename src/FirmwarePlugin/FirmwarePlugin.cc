@@ -1051,6 +1051,7 @@ void FirmwarePlugin::_versionFileDownloadFinished(QString& remoteFile, QString& 
 
     qCDebug(FirmwarePluginLog) << "Latest stable version = "  << version;
 
+#if 0
     int currType = vehicle->firmwareVersionType();
 
     // Check if lower version than stable or same version but different type
@@ -1060,6 +1061,7 @@ void FirmwarePlugin::_versionFileDownloadFinished(QString& remoteFile, QString& 
                 .arg(vehicle->firmwarePatchVersion());
         qgcApp()->showAppMessage(tr("Vehicle is not running latest stable firmware! Running %1, latest stable is %2.").arg(currentVersionNumber, version));
     }
+#endif
 }
 
 int FirmwarePlugin::versionCompare(Vehicle* vehicle, int major, int minor, int patch)
