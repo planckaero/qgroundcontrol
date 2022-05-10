@@ -147,130 +147,220 @@ Item {
         z:                          QGroundControl.zOrderTopMost
         color:                      qgcPal.window
         radius:                     ScreenTools.defaultFontPixelWidth / 2
-        width:                      annunciatorRow.width + _toolsMargin * 2
-        height:                     annunciatorRow.height + _toolsMargin * 2
+        width:                      annunciatorGrid.width + _toolsMargin * 2
+        height:                     annunciatorGrid.height + _toolsMargin * 2
 
-        Row {
-            id:     annunciatorRow
-            spacing:    ScreenTools.defaultFontPixelWidth
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
+        GridLayout {
+                id:     annunciatorGrid
+                //spacing:    ScreenTools.defaultFontPixelWidth
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: _toolsMargin
+                flow: GridLayout.LeftToRight
+                rows: 2
+                columns: 7
 
-            Repeater {
-                id: annunciatorRepeater
-                readonly property double    ekfHighThresh:  0.8
-                readonly property double    vibeHighThresh: QGroundControl.settingsManager.flyViewSettings.vibeMaxThreshold.rawValue
-                readonly property double    tiltHighThresh: QGroundControl.settingsManager.flyViewSettings.tiltMaxThreshold.rawValue
+                Repeater {
+                    id: annunciatorRepeater
+                    readonly property double    ekfHighThresh:  0.8
+                    readonly property double    vibeHighThresh: QGroundControl.settingsManager.flyViewSettings.vibeMaxThreshold.rawValue
+                    readonly property double    tiltHighThresh: QGroundControl.settingsManager.flyViewSettings.tiltMaxThreshold.rawValue
 
-                function clamp(value, min, max) {
-                    return Math.min(max, Math.max(min, value))
-                }
+                    property double ekfVelMax: 0
+                    property double ekfHPOSMax: 0
+                    property double ekfVPOSMax: 0
+                    property double ekfMagMax: 0
+                    property double ekfTerrMax: 0
+                    property double vibeMax: 0
+                    property double tiltMax: 0
 
-                //Linearly scale red & green up to the max.
-                //At max/2, both red and green are 1 to make yellow
-                function getColor(value, max) {
-                    var redVal = Math.abs(value)/(max/2)
-                    var greenVal = (-Math.abs(value)/(max/2)) + 2
-                    return Qt.rgba(clamp(redVal,0,1), clamp(greenVal,0,1), 0, 1)
-                }
-
-                function getEKFColor(value) {
-                    return getColor(value, ekfHighThresh)
-                }
-
-                function getAbsLargestOf(v1, v2, v3) {
-                    return Math.max(Math.abs(v1),Math.abs(v2),Math.abs(v3))
-                }
-
-                function getEKFVelColor() {
-                    if(!_activeVehicle.estimatorStatus.goodHorizVelEstimate.value)       return qgcPal.colorGrey
-                    return getEKFColor(_activeVehicle.estimatorStatus.velRatio.value)
-                }
-
-                function getEKFHPOSColor() {
-                    if(!_activeVehicle.estimatorStatus.goodHorizPosAbsEstimate.value)    return qgcPal.colorGrey
-                    return getEKFColor(_activeVehicle.estimatorStatus.horizPosRatio.value)
-                }
-
-                function getEKFVPOSColor() {
-                    if(!_activeVehicle.estimatorStatus.goodVertPosAbsEstimate.value)     return qgcPal.colorGrey
-                    return getEKFColor(_activeVehicle.estimatorStatus.vertPosRatio.value)
-                }
-
-                function getEKFMAGColor() {
-                    return getEKFColor(_activeVehicle.estimatorStatus.magRatio.value)
-                }
-
-                function getEKFTerrColor() {
-                    if(!_activeVehicle.estimatorStatus.goodVertPosAGLEstimate.value)     return qgcPal.colorGrey
-                    return getEKFColor(_activeVehicle.estimatorStatus.haglRatio.value)
-                }
-
-                function getVibeColor() {
-                    return getColor(
-                                getAbsLargestOf(
-                                    _activeVehicle.vibration.xAxis.value,
-                                    _activeVehicle.vibration.yAxis.value,
-                                    _activeVehicle.vibration.zAxis.value),
-                                vibeHighThresh)
-                }
-
-                function getTiltColor() {
-                    return getColor(
-                                getAbsLargestOf(
-                                    _activeVehicle.roll.value,
-                                    _activeVehicle.pitch.value,
-                                    0),
-                                tiltHighThresh)
-                }
-
-                model: [
-                    {
-                        text: qsTr("EKF\nVEL"),
-                        color: _activeVehicle ? getEKFVelColor()     : qgcPal.colorGrey
-                    },
-                    {
-                        text: qsTr("EKF\nHPOS"),
-                        color: _activeVehicle ? getEKFHPOSColor()    : qgcPal.colorGrey
-                    },
-                    {
-                        text: qsTr("EKF\nVPOS"),
-                        color: _activeVehicle ? getEKFVPOSColor()    : qgcPal.colorGrey
-                    },
-                    {
-                        text: qsTr("EKF\nMAG"),
-                        color: _activeVehicle ? getEKFMAGColor()     : qgcPal.colorGrey
-                    },
-                    {
-                        text: qsTr("EKF\nTERR"),
-                        color: _activeVehicle ? getEKFTerrColor()    : qgcPal.colorGrey
-                    },
-                    {
-                        text: qsTr("VIBE"),
-                        color: _activeVehicle ? getVibeColor()       : qgcPal.colorGrey
-                    },
-                    {
-                        text: qsTr("TILT"),
-                        color: _activeVehicle ? getTiltColor()       : qgcPal.colorGrey
+                    function resetMax() {
+                        print("Calling reset")
+                        ekfVelMax = 0
+                        ekfHPOSMax = 0
+                        ekfVPOSMax = 0
+                        ekfMagMax = 0
+                        ekfTerrMax = 0
+                        vibeMax = 0
+                        tiltMax = 0
                     }
-                ]
 
-                Rectangle {
-                    id:         ekfVelAnnunciator
-                    width:      ScreenTools.defaultFontPixelWidth * 5
-                    height:     ScreenTools.defaultFontPixelHeight * 2
-                    color:      modelData.color
-                    visible:    true
-                    QGCLabel {
-                        text:               modelData.text
-                        color:              _activeVehicle ? Qt.rgba(0,0,0,1) : Qt.rgba(1,1,1,1)
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        horizontalAlignment: Text.AlignHCenter
+                    function clamp(value, min, max) {
+                        return Math.min(max, Math.max(min, value))
+                    }
+
+                    //Linearly scale red & green up to the max.
+                    //At max/2, both red and green are 1 to make yellow
+                    function getColor(value, max) {
+                        var redVal = Math.abs(value)/(max/2)
+                        var greenVal = (-Math.abs(value)/(max/2)) + 2
+                        return Qt.rgba(clamp(redVal,0,1), clamp(greenVal,0,1), 0, 1)
+                    }
+
+                    function getEKFColor(value) {
+                        return getColor(value, ekfHighThresh)
+                    }
+
+                    function getAbsLargestOf(v1, v2, v3) {
+                        return Math.max(Math.abs(v1),Math.abs(v2),Math.abs(v3))
+                    }
+
+                    function getEKFVelColor() {
+                        if(!_activeVehicle.estimatorStatus.goodHorizVelEstimate.value)       return qgcPal.colorGrey
+                        return getEKFColor(_activeVehicle.estimatorStatus.velRatio.value)
+                    }
+
+                    function getEKFVelColorMax() {
+                        if(!_activeVehicle.estimatorStatus.goodHorizVelEstimate.value)       return qgcPal.colorGrey
+                        ekfVelMax = getAbsLargestOf(ekfVelMax, _activeVehicle.estimatorStatus.velRatio.value, 0)
+                        return getEKFColor(ekfVelMax)
+                    }
+
+                    function getEKFHPOSColor() {
+                        if(!_activeVehicle.estimatorStatus.goodHorizPosAbsEstimate.value)    return qgcPal.colorGrey
+                        return getEKFColor(_activeVehicle.estimatorStatus.horizPosRatio.value)
+                    }
+
+                    function getEKFHPOSColorMax() {
+                        if(!_activeVehicle.estimatorStatus.goodHorizPosAbsEstimate.value)    return qgcPal.colorGrey
+                        ekfHPOSMax = getAbsLargestOf(ekfHPOSMax, _activeVehicle.estimatorStatus.horizPosRatio.value, 0)
+                        return getEKFColor(ekfHPOSMax)
+                    }
+
+                    function getEKFVPOSColor() {
+                        if(!_activeVehicle.estimatorStatus.goodVertPosAbsEstimate.value)     return qgcPal.colorGrey
+                        return getEKFColor(_activeVehicle.estimatorStatus.vertPosRatio.value)
+                    }
+
+                    function getEKFVPOSColorMax() {
+                        if(!_activeVehicle.estimatorStatus.goodVertPosAbsEstimate.value)    return qgcPal.colorGrey
+                        ekfVPOSMax = getAbsLargestOf(ekfVPOSMax, _activeVehicle.estimatorStatus.vertPosRatio.value, 0)
+                        return getEKFColor(ekfVPOSMax)
+                    }
+
+                    function getEKFMAGColor() {
+                        return getEKFColor(_activeVehicle.estimatorStatus.magRatio.value)
+                    }
+
+                    function getEKFMAGColorMax() {
+                        ekfMagMax = getAbsLargestOf(ekfMagMax, _activeVehicle.estimatorStatus.magRatio.value, 0)
+                        return getEKFColor(ekfMagMax)
+                    }
+
+                    function getEKFTerrColor() {
+                        if(!_activeVehicle.estimatorStatus.goodVertPosAGLEstimate.value)     return qgcPal.colorGrey
+                        return getEKFColor(_activeVehicle.estimatorStatus.haglRatio.value)
+                    }
+
+                    function getEKFTerrColorMax() {
+                        if(!_activeVehicle.estimatorStatus.goodVertPosAGLEstimate.value)     return qgcPal.colorGrey
+                        ekfTerrMax = getAbsLargestOf(ekfTerrMax, _activeVehicle.estimatorStatus.haglRatio.value, 0)
+                        return getEKFColor(ekfTerrMax)
+                    }
+
+                    function getVibeColor() {
+                        var largestVibe = getAbsLargestOf(
+                                     _activeVehicle.vibration.xAxis.value,
+                                     _activeVehicle.vibration.yAxis.value,
+                                     _activeVehicle.vibration.zAxis.value)
+                        return getColor(largestVibe, vibeHighThresh)
+                    }
+
+                    function getVibeColorMax() {
+                        var largestVibe = getAbsLargestOf(
+                                     _activeVehicle.vibration.xAxis.value,
+                                     _activeVehicle.vibration.yAxis.value,
+                                     _activeVehicle.vibration.zAxis.value)
+                        vibeMax = getAbsLargestOf(largestVibe, vibeMax, 0)
+                        return getColor(vibeMax, vibeHighThresh)
+                    }
+
+                    function getTiltColor() {
+                        var largestTilt = getAbsLargestOf(_activeVehicle.roll.value, _activeVehicle.pitch.value, 0)
+                        return getColor(largestTilt, tiltHighThresh)
+                    }
+
+                    function getTiltColorMax() {
+                        var largestTilt = getAbsLargestOf(_activeVehicle.roll.value, _activeVehicle.pitch.value, 0)
+                        tiltMax = getAbsLargestOf(tiltMax, largestTilt, 0)
+                        return getColor(tiltMax, tiltHighThresh)
+                    }
+
+                    model: [
+                        {
+                            text: qsTr("EKF\nVEL"),
+                            color: _activeVehicle ? getEKFVelColor()     : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("EKF\nHPOS"),
+                            color: _activeVehicle ? getEKFHPOSColor()    : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("EKF\nVPOS"),
+                            color: _activeVehicle ? getEKFVPOSColor()    : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("EKF\nMAG"),
+                            color: _activeVehicle ? getEKFMAGColor()     : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("EKF\nTERR"),
+                            color: _activeVehicle ? getEKFTerrColor()    : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("VIBE"),
+                            color: _activeVehicle ? getVibeColor()       : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("TILT"),
+                            color: _activeVehicle ? getTiltColorMax()       : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("EKF\nVEL"),
+                            color: _activeVehicle ? getEKFVelColor()     : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("EKF\nHPOS"),
+                            color: _activeVehicle ? getEKFHPOSColor()    : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("EKF\nVPOS"),
+                            color: _activeVehicle ? getEKFVPOSColor()    : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("EKF\nMAG"),
+                            color: _activeVehicle ? getEKFMAGColor()     : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("EKF\nTERR"),
+                            color: _activeVehicle ? getEKFTerrColor()    : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("VIBE"),
+                            color: _activeVehicle ? getVibeColor()       : qgcPal.colorGrey
+                        },
+                        {
+                            text: qsTr("TILT"),
+                            color: _activeVehicle ? getTiltColor()       : qgcPal.colorGrey
+                        }
+                    ]
+
+                    Rectangle {
+                        id:         ekfVelAnnunciator
+                        width:      ScreenTools.defaultFontPixelWidth * 5
+                        height:     ScreenTools.defaultFontPixelHeight * 2
+                        color:      modelData.color
+                        visible:    true
+                        QGCLabel {
+                            text:               modelData.text
+                            color:              _activeVehicle ? Qt.rgba(0,0,0,1) : Qt.rgba(1,1,1,1)
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            horizontalAlignment: Text.AlignHCenter
+                        }
                     }
                 }
             }
-        }
     }
 
     FlyViewMap {
