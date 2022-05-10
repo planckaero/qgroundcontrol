@@ -49,19 +49,19 @@
 },
 {
     "name":             "vibeMaxThreshold",
-    "shortDescription": "Maximum vibe threshold for the Annunciator Panel.",
+    "shortDesc": "Maximum vibe threshold for the Annunciator Panel.",
     "type":             "double",
     "units":            "",
-    "defaultValue":     50,
+    "default":          50,
     "min":              1,
     "max":              200
 },
 {
     "name":             "tiltMaxThreshold",
-    "shortDescription": "Maximum tilt threshold for the Annunciator Panel.",
+    "shortDesc": "Maximum tilt threshold for the Annunciator Panel.",
     "type":             "double",
     "units":            "deg",
-    "defaultValue":     30,
+    "default":          30,
     "min":              1,
     "max":              90
 },
