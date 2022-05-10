@@ -10,6 +10,7 @@
 import QtQuick          2.3
 import QtQuick.Controls 1.2
 import QtQuick.Layouts  1.2
+import QtQuick.Dialogs  1.3
 
 import QGroundControl                       1.0
 import QGroundControl.AutoPilotPlugin       1.0
@@ -284,7 +285,41 @@ Rectangle {
                 }
             }
 
+            Component {
+                id: parameterPasswordComponent
+                QGCPopupDialog {
+                    id:         parameterPasswordDlg
+                    title:      "Enter parameters password"
+                    buttons:    StandardButton.Ok | StandardButton.Cancel
+
+                    function accept() {
+                        if(passwordTextField.text === "T150") {
+                            parameterPasswordDlg.hideDialog()
+                            showPanel(parametersButton, "SetupParameterEditor.qml")
+                        } else {
+                            textLabel.text = "Incorrect password"
+                        }
+                    }
+
+                    ColumnLayout {
+                        QGCLabel {
+                            id:                     textLabel
+                            text:                   "Enter parameters password"
+                            wrapMode:               Text.WordWrap
+                            Layout.fillWidth:       true
+                            Layout.maximumWidth:    mainWindow.width / 2
+                        }
+                        QGCTextField {
+                            id:       passwordTextField
+                            text:     ""
+                            echoMode: TextInput.Password
+                        }
+                    }
+                }
+            }
+
             SubMenuButton {
+                id:                 parametersButton
                 setupIndicator:     false
                 exclusiveGroup:     setupButtonGroup
                 visible:            QGroundControl.multiVehicleManager.parameterReadyVehicleAvailable &&
@@ -292,7 +327,7 @@ Rectangle {
                                     _corePlugin.showAdvancedUI
                 text:               qsTr("Parameters")
                 Layout.fillWidth:   true
-                onClicked:          showPanel(this, "SetupParameterEditor.qml")
+                onClicked:          mainWindow.showPopupDialogFromComponent(parameterPasswordComponent)
             }
 
         }
