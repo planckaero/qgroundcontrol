@@ -695,6 +695,16 @@ Item {
                         }
                     },
                     ToolStripAction {
+                        text: "Drop"
+                        iconSource: "/res/payload-drop.svg"
+                        enabled: true
+                        visible: toolStrip._isMissionLayer
+                        onTriggered: {
+                            toolStrip.allAddClickBoolsOff()
+                            insertLandItemAfterCurrent()
+                        }
+                    },
+                    ToolStripAction {
                         text:       _planMasterController.controllerVehicle.multiRotor ? qsTr("Return") : qsTr("Land")
                         iconSource: "/res/rtl.svg"
                         enabled:    _missionController.isInsertLandValid
