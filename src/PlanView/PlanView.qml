@@ -341,6 +341,10 @@ Item {
         _missionController.insertLandItem(mapCenter(), nextIndex, true /* makeCurrentItem */)
     }
 
+    function insertPayloadDropAfterCurrent() {
+        var nextIndex = _missionController.currentPlanViewVIIndex + 1
+        _missionController.insertPayloadDropItems(nextIndex, true /* makeCurrentItem */)
+    }
 
     function selectNextNotReady() {
         var foundCurrent = false
@@ -697,11 +701,11 @@ Item {
                     ToolStripAction {
                         text: "Drop"
                         iconSource: "/res/payload-drop.svg"
-                        enabled: true
+                        enabled:            !_missionController.onlyInsertTakeoffValid
                         visible: toolStrip._isMissionLayer
                         onTriggered: {
                             toolStrip.allAddClickBoolsOff()
-                            insertLandItemAfterCurrent()
+                            insertPayloadDropAfterCurrent()
                         }
                     },
                     ToolStripAction {
