@@ -1,5 +1,6 @@
 Module QGroundControl.FlightDisplay
 
+Annunciator                     1.0 Annunciator.qml
 FlightDisplayViewWidgets        1.0 FlightDisplayViewWidgets.qml
 FlyViewAirspaceIndicator        1.0 FlyViewAirspaceIndicator.qml
 FlyView                         1.0 FlyView.qml
