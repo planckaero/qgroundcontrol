@@ -46,22 +46,45 @@ Rectangle {
     readonly property double vibe:    _activeVehicle ?  getAbsLargestOf(_activeVehicle.vibration.xAxis.value, _activeVehicle.vibration.yAxis.value, _activeVehicle.vibration.zAxis.value) : -1
     readonly property double tilt:    _activeVehicle ?  getAbsLargestOf(_activeVehicle.roll.value, _activeVehicle.pitch.value, 0) : -1
 
-    property double ekfVelMax:  Math.max(ekfVel,  ekfVelMax.valueOf())
-    property double ekfHPosMax: Math.max(ekfHPos, ekfHPosMax.valueOf())
-    property double ekfVPosMax: Math.max(ekfVPos, ekfVPosMax.valueOf())
-    property double ekfMagMax:  Math.max(ekfMag,  ekfMagMax.valueOf())
-    property double ekfTerrMax: Math.max(ekfTerr, ekfTerrMax.valueOf())
-    property double vibeMax:    Math.max(vibe,    vibeMax.valueOf())
-    property double tiltMax:    Math.max(tilt,    tiltMax.valueOf())
+    property double ekfVelMax:  0
+    property double ekfHPosMax: 0
+    property double ekfVPosMax: 0
+    property double ekfTerrMax: 0
+    property double ekfMagMax:  0
+    property double vibeMax:    0
+    property double tiltMax:    0
 
     function resetMax() {
-        ekfVelMax = ekfVel
-        ekfHPosMax = ekfHPos
-        ekfVPosMax = ekfVPos
-        ekfMagMax = ekfMag
-        ekfTerrMax = ekfTerr
-        vibeMax = vibe
-        tiltMax = tilt
+        ekfVelMax = ekfVel.valueOf()
+        ekfHPosMax = ekfHPos.valueOf()
+        ekfVPosMax = ekfVPos.valueOf()
+        ekfMagMax = ekfMag.valueOf()
+        ekfTerrMax = ekfTerr.valueOf()
+        vibeMax = vibe.valueOf()
+        tiltMax = tilt.valueOf()
+    }
+
+    // Update max values based on live value changes
+    onEkfVelChanged: {
+        efkVelMax = Math.max(ekfVel.valueOf(), ekfVelMax.valueOf())
+    }
+    onEkfHPosChanged: {
+        ekfHPosMax = Math.max(ekfHPos.valueOf(), ekfHPosMax.valueOf())
+    }
+    onEkfVPosChanged: {
+        ekfVPosMax = Math.max(ekfVPos.valueOf(), ekfVPosMax.valueOf())
+    }
+    onEkfTerrMaxChanged:  {
+        ekfTerrMax = Math.max(ekfTerr.valueOf(), ekfTerrMax.valueOf())
+    }
+    onEkfMagChanged: {
+        ekfMagMax = Math.max(ekfMag.valueOf(), ekfMagMax.valueOf())
+    }
+    onVibeChanged: {
+        vibeMax = Math.max(vibe.valueOf(), vibeMax.valueOf())
+    }
+    onTiltChanged: {
+        tiltMax = Math.max(tilt.valueOf(), tiltMax.valueOf())
     }
 
     function clamp(value, min, max) {
