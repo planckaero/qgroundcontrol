@@ -67,25 +67,39 @@ Rectangle {
 
     // Update max values based on live value changes
     onEkfVelChanged: {
-        ekfVelMax = Math.max(ekfVel.valueOf(), ekfVelMax.valueOf())
+        let val = ekfVel.valueOf()
+        if(isNaN(val)) val = -1;
+        ekfVelMax = Math.max(val, ekfVelMax.valueOf())
     }
     onEkfHPosChanged: {
-        ekfHPosMax = Math.max(ekfHPos.valueOf(), ekfHPosMax.valueOf())
+        let val = ekfHPos.valueOf()
+        if(isNaN(val)) val = -1;
+        ekfHPosMax = Math.max(val, ekfHPosMax.valueOf())
     }
     onEkfVPosChanged: {
-        ekfVPosMax = Math.max(ekfVPos.valueOf(), ekfVPosMax.valueOf())
+        let val = ekfVPos.valueOf()
+        if(isNaN(val)) val = -1;
+        ekfVPosMax = Math.max(val, ekfVPosMax.valueOf())
     }
     onEkfTerrMaxChanged:  {
-        ekfTerrMax = Math.max(ekfTerr.valueOf(), ekfTerrMax.valueOf())
+        let val = ekfTerr.valueOf()
+        if(isNaN(val)) val = -1;
+        ekfTerrMax = Math.max(val, ekfTerrMax.valueOf())
     }
     onEkfMagChanged: {
-        ekfMagMax = Math.max(ekfMag.valueOf(), ekfMagMax.valueOf())
+        let val = ekfMag.valueOf()
+        if(isNaN(val)) val = -1;
+        ekfMagMax = Math.max(val, ekfMagMax.valueOf())
     }
     onVibeChanged: {
-        vibeMax = Math.max(vibe.valueOf(), vibeMax.valueOf())
+        let val = vibe.valueOf()
+        if(isNaN(val)) val = -1;
+        vibeMax = Math.max(val, vibeMax.valueOf())
     }
     onTiltChanged: {
-        tiltMax = Math.max(tilt.valueOf(), tiltMax.valueOf())
+        let val = tilt.valueOf()
+        if(isNaN(val)) val = -1;
+        tiltMax = Math.max(val, tiltMax.valueOf())
     }
 
     function clamp(value, min, max) {
