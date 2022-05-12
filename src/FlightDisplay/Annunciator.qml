@@ -29,6 +29,7 @@ import QGroundControl.Vehicle       1.0
 
 //-- Annunciator panel
 Rectangle {
+    id:                         _root
     color:                      qgcPal.window
     radius:                     ScreenTools.defaultFontPixelWidth / 2
     width:                      annunciatorColumns.width + _toolsMargin * 2
@@ -46,13 +47,13 @@ Rectangle {
     readonly property double vibe:    _activeVehicle ?  getAbsLargestOf(_activeVehicle.vibration.xAxis.value, _activeVehicle.vibration.yAxis.value, _activeVehicle.vibration.zAxis.value) : -1
     readonly property double tilt:    _activeVehicle ?  getAbsLargestOf(_activeVehicle.roll.value, _activeVehicle.pitch.value, 0) : -1
 
-    property double ekfVelMax:  0
-    property double ekfHPosMax: 0
-    property double ekfVPosMax: 0
-    property double ekfTerrMax: 0
-    property double ekfMagMax:  0
-    property double vibeMax:    0
-    property double tiltMax:    0
+    property double ekfVelMax:  -1
+    property double ekfHPosMax: -1
+    property double ekfVPosMax: -1
+    property double ekfTerrMax: -1
+    property double ekfMagMax:  -1
+    property double vibeMax:    -1
+    property double tiltMax:    -1
 
     function resetMax() {
         ekfVelMax = ekfVel.valueOf()
@@ -66,7 +67,7 @@ Rectangle {
 
     // Update max values based on live value changes
     onEkfVelChanged: {
-        efkVelMax = Math.max(ekfVel.valueOf(), ekfVelMax.valueOf())
+        ekfVelMax = Math.max(ekfVel.valueOf(), ekfVelMax.valueOf())
     }
     onEkfHPosChanged: {
         ekfHPosMax = Math.max(ekfHPos.valueOf(), ekfHPosMax.valueOf())
