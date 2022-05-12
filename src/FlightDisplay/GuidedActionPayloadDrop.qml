@@ -1,11 +1,9 @@
-
-
 import QGroundControl.FlightDisplay 1.0
 
 GuidedToolStripAction {
-    text:       _guidedController.
-    iconSource: "/res/takeoff.svg"
-    visible:    _guidedController.showTakeoff || !_guidedController.showLand
-    enabled:    _guidedController.showTakeoff
-    actionID:   _guidedController.actionTakeoff
+    text:       _guidedController.payloadDropTitle
+    iconSource: "/res/payload-drop.svg"
+    visible:    _guidedController.showPayloadDrop
+    enabled:    _guidedController.showPayloadDrop
+    actionID:   _guidedController.actionPayloadDrop
 }
