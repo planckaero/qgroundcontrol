@@ -438,6 +438,14 @@ public:
     Q_INVOKABLE void flashBootloader();
 #endif
 
+    /// Gripper operation
+    Q_INVOKABLE void actuateGripper(bool open);
+
+    /// Open + delay + close gripper operation
+    Q_INVOKABLE void gripperOpenDelayClose(double delay_s = 1.0);
+    Q_PROPERTY(bool gripperActionExecuting READ gripperActionExecuting NOTIFY gripperActionExecutingChanged)
+    bool gripperActionExecuting() { return _gripperExecuting; };
+
     bool    isInitialConnectComplete() const;
     bool    guidedModeSupported     () const;
     bool    pauseVehicleSupported   () const;
@@ -903,6 +911,7 @@ signals:
     void gitHashChanged                 (QString hash);
     void vehicleUIDChanged              ();
     void loadProgressChanged            (float value);
+    void gripperActionExecutingChanged  (bool executing);
 
     /// New RC channel values coming from RC_CHANNELS message
     ///     @param channelCount Number of available channels, cMaxRcChannels max
@@ -1034,6 +1043,10 @@ private:
     EventHandler& _eventHandler         (uint8_t compid);
 
     static void _rebootCommandResultHandler(void* resultHandlerData, int compId, MAV_RESULT commandResult, uint8_t progress, MavCmdResultFailureCode_t failureCode);
+
+    //Gripper stuff
+    void _gripperOpenDelayCloseComplete();
+    bool _gripperExecuting = false;
 
     int     _id;                    ///< Mavlink system id
     int     _defaultComponentId;

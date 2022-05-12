@@ -3861,6 +3861,29 @@ void Vehicle::flashBootloader()
 }
 #endif
 
+void Vehicle::actuateGripper(bool open) {
+    sendMavCommand(defaultComponentId(),
+                   MAV_CMD_DO_GRIPPER,
+                   false,
+                   0,
+                   open ? 0 : 1);
+}
+
+void Vehicle::gripperOpenDelayClose(double delay_s) {
+   //Send an open command, then spawn a timer which triggers a close
+   if(gripperActionExecuting()) return;
+   _gripperExecuting = true;
+   emit gripperActionExecutingChanged(true);
+   actuateGripper(true);
+   QTimer::singleShot(delay_s, this, &Vehicle::_gripperOpenDelayCloseComplete);
+}
+
+void Vehicle::_gripperOpenDelayCloseComplete() {
+   actuateGripper(false);
+   _gripperExecuting = false;
+   emit gripperActionExecutingChanged(false);
+}
+
 void Vehicle::gimbalControlValue(double pitch, double yaw)
 {
     //qDebug() << "Gimbal:" << pitch << yaw;
