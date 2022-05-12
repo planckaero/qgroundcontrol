@@ -39,15 +39,15 @@ Rectangle {
     readonly property double    vibeHighThresh: QGroundControl.settingsManager.flyViewSettings.vibeMaxThreshold.rawValue
     readonly property double    tiltHighThresh: QGroundControl.settingsManager.flyViewSettings.tiltMaxThreshold.rawValue
 
-    readonly property bool isEkfMagNaN: isNaN(_activeVehicle.vibration.xAxis.value) || isNaN(_activeVehicle.vibration.yAxis.value)
-    readonly property bool isTiltNaN:   isNan(_activeVehicle.roll.value) || isNaN(_activeVehicle.pitch.value)
+    readonly property bool isVibeNaN: isNaN(_activeVehicle.vibration.xAxis.value) || isNaN(_activeVehicle.vibration.yAxis.value)
+    readonly property bool isTiltNaN: isNaN(_activeVehicle.roll.value) || isNaN(_activeVehicle.pitch.value)
 
     readonly property double ekfVel:  _activeVehicle && _activeVehicle.estimatorStatus.goodHorizVelEstimate.value    ? _activeVehicle.estimatorStatus.velRatio.value : -1
     readonly property double ekfHPos: _activeVehicle && _activeVehicle.estimatorStatus.goodHorizPosAbsEstimate.value ? _activeVehicle.estimatorStatus.horizPosRatio.value : -1
     readonly property double ekfVPos: _activeVehicle && _activeVehicle.estimatorStatus.goodVertPosAbsEstimate.value  ? _activeVehicle.estimatorStatus.vertPosRatio.value : -1
     readonly property double ekfTerr: _activeVehicle && _activeVehicle.estimatorStatus.goodVertPosAGLEstimate.value  ? _activeVehicle.estimatorStatus.haglRatio.value : -1
-    readonly property double ekfMag:  _activeVehicle && !isNaN(_activeVehicle.estimatorStatus.magRatio) ?  _activeVehicle.estimatorStatus.magRatio.value : -1
-    readonly property double vibe:    _activeVehicle && !isEkfMagNaN ?  getAbsLargestOf(_activeVehicle.vibration.xAxis.value, _activeVehicle.vibration.yAxis.value, _activeVehicle.vibration.zAxis.value) : -1
+    readonly property double ekfMag:  _activeVehicle && !isNaN(_activeVehicle.estimatorStatus.magRatio.value) ?  _activeVehicle.estimatorStatus.magRatio.value : -1
+    readonly property double vibe:    _activeVehicle && !isVibeNaN ?  getAbsLargestOf(_activeVehicle.vibration.xAxis.value, _activeVehicle.vibration.yAxis.value, _activeVehicle.vibration.zAxis.value) : -1
     readonly property double tilt:    _activeVehicle && !isTiltNaN ?  getAbsLargestOf(_activeVehicle.roll.value, _activeVehicle.pitch.value, 0) : -1
 
     property double ekfVelMax:  -1
