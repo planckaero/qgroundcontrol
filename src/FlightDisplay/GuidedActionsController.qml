@@ -126,7 +126,7 @@ Item {
     property bool showLandAbort:        _guidedActionsEnabled && _vehicleFlying && _fixedWingOnApproach
     property bool showGotoLocation:     _guidedActionsEnabled && _vehicleFlying
     property bool showPayloadDrop:      _guidedActionsEnabled
-    property bool showActionList:       _guidedActionsEnabled //&& (showStartMission || showResumeMission || showChangeAlt || showLandAbort)
+    property bool showActionList:       _guidedActionsEnabled && (showStartMission || showResumeMission || showChangeAlt || showLandAbort)
 
     // Note: The '_missionItemCount - 2' is a hack to not trigger resume mission when a mission ends with an RTL item
     property bool showResumeMission:    _activeVehicle && !_vehicleArmed && _vehicleWasFlying && _missionAvailable && _resumeMissionIndex > 0 && (_resumeMissionIndex < _missionItemCount - 2)
@@ -543,6 +543,7 @@ Item {
             break
         case actionPayloadDrop:
             console.info('Payload Drop')
+            _activeVehicle.gripperOpenDelayClose()
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)
