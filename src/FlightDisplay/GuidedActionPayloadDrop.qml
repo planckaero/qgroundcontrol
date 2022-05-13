@@ -9,7 +9,7 @@ ToolStripAction {
 
     text:       _guidedController.payloadDropTitle
     visible:    true
-    enabled:    true // _guidedController.showPayloadDrop
+    enabled:    _guidedController.showPayloadDrop
     iconSource: "/res/payload-drop.svg"
 
     onTriggered: {

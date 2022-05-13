@@ -18,10 +18,10 @@ import QGroundControl.Palette       1.0
 
 Rectangle {
     id:                     _root
-    Layout.minimumWidth:    mainLayout.width + (_margins * 2)
-    Layout.preferredHeight: mainLayout.height + (_margins * 2)
+    width:                  mainLayout.width + (_margins * 2)
+    height:                 mainLayout.height + (_margins * 2)
     radius:                 ScreenTools.defaultFontPixelWidth / 2
-    color:                  qgcPal.windowShadeLight
+    color:                  "#80000000"
     visible:                false
 
     property var    guidedController
@@ -31,12 +31,13 @@ Rectangle {
     property var    actionData
     property bool   hideTrigger:        false
     property var    mapIndicator
-    property alias  optionText:         optionCheckBox.text
-    property alias  optionChecked:      optionCheckBox.checked
 
     property real _margins:         ScreenTools.defaultFontPixelWidth / 2
 
-    Component.onCompleted: guidedController.payloadDropConfirmDialog = this
+    Component.onCompleted: {
+        guidedController.payloadDropConfirmDialog = this
+        message = guidedController.payloadDropMessage
+    }
 
     onHideTriggerChanged: {
         if (hideTrigger) {
@@ -104,7 +105,7 @@ Rectangle {
                 onAccept: {
                     _root.visible = false
                     hideTrigger = false
-                    guidedController.executeAction(_root.action, _root.actionData, altitudeChange, _root.optionChecked)
+                    guidedController.executeAction(_root.action, _root.actionData)
                     if (mapIndicator) {
                         mapIndicator.actionConfirmed()
                         mapIndicator = undefined
