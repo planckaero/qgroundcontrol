@@ -123,6 +123,15 @@ Item {
         guidedController:           _guidedController
     }
 
+    GuidedActionPayloadDropConfirm {
+       id:                         guidedActionPayloadDropConfirm
+       anchors.margins:            _margins
+       anchors.bottom:             parent.bottom
+       anchors.horizontalCenter:   parent.horizontalCenter
+       z:                          QGroundControl.zOrderTopMost
+       guidedController:           _guidedController
+    }
+
     //-- Altitude slider
     GuidedAltitudeSlider {
         id:                 guidedAltSlider

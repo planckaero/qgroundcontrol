@@ -55,7 +55,7 @@ Item {
     readonly property string vtolTransitionTitle:           qsTr("VTOL Transition")
     readonly property string roiTitle:                      qsTr("ROI")
     readonly property string actionListTitle:               qsTr("Action")
-    readonly property string payloadDropTitle:              qsTr("Drop Payload")
+    readonly property string payloadDropTitle:              qsTr("Drop")
 
     readonly property string armMessage:                        qsTr("Arm the vehicle.")
     readonly property string forceArmMessage:                   qsTr("WARNING: This will force arming of the vehicle bypassing any safety checks.")
@@ -77,6 +77,7 @@ Item {
     readonly property string vtolTransitionFwdMessage:          qsTr("Transition VTOL to fixed wing flight.")
     readonly property string vtolTransitionMRMessage:           qsTr("Transition VTOL to multi-rotor flight.")
     readonly property string roiMessage:                        qsTr("Make the specified location a Region Of Interest.")
+    readonly property string payloadDropMessage:                qsTr("Drop payload from vehicle.")
 
     readonly property int actionRTL:                        1
     readonly property int actionLand:                       2
@@ -307,6 +308,10 @@ Item {
 
     function vtolTransitionToMRFlightRequest() {
         confirmAction(actionVtolTransitionToMRFlight)
+    }
+
+    function dropPayloadRequest() {
+        payloadDropConfirmDialog.show(true)
     }
 
     function closeAll() {

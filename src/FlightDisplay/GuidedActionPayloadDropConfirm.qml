@@ -27,7 +27,7 @@ Rectangle {
     property var    guidedController
     property string title:              guidedController.payloadDropTitle
     property alias  message:            messageText.text
-    property int    action:             guidedController.actionDropPayload
+    property int    action:             guidedController.actionPayloadDrop
     property var    actionData
     property bool   hideTrigger:        false
     property var    mapIndicator
@@ -36,7 +36,7 @@ Rectangle {
 
     property real _margins:         ScreenTools.defaultFontPixelWidth / 2
 
-    Component.onCompleted: guidedController.dropPayloadConfirmDialog = this
+    Component.onCompleted: guidedController.payloadDropConfirmDialog = this
 
     onHideTriggerChanged: {
         if (hideTrigger) {

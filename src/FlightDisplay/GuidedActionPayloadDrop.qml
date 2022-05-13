@@ -1,9 +1,18 @@
+import QGroundControl.Controls 1.0
 import QGroundControl.FlightDisplay 1.0
 
-GuidedToolStripAction {
+ToolStripAction {
+    property int    actionID: _guidedController.actionPayloadDrop
+    property string message
+
+    property var _guidedController: globals.guidedControllerFlyView
+
     text:       _guidedController.payloadDropTitle
+    visible:    true
+    enabled:    true // _guidedController.showPayloadDrop
     iconSource: "/res/payload-drop.svg"
-    visible:    _guidedController.showPayloadDrop
-    enabled:    _guidedController.showPayloadDrop
-    actionID:   _guidedController.actionPayloadDrop
+
+    onTriggered: {
+        _guidedController.dropPayloadRequest()
+    }
 }

@@ -285,8 +285,8 @@
         <file alias="VirtualJoystick.qml">src/FlightDisplay/VirtualJoystick.qml</file>
         <file alias="VTOLLandingPatternEditor.qml">src/PlanView/VTOLLandingPatternEditor.qml</file>
         <file alias="QGroundControl/FlightDisplay/Annunciator.qml">src/FlightDisplay/Annunciator.qml</file>
-        <file>src/FlightDisplay/PayloadDropConfirm.qml</file>
-        <file>src/FlightDisplay/GuidedActionPayloadDrop.qml</file>
+        <file alias="QGroundControl/FlightDisplay/GuidedActionPayloadDrop.qml">src/FlightDisplay/GuidedActionPayloadDrop.qml</file>
+        <file alias="QGroundControl/FlightDisplay/GuidedActionPayloadDropConfirm.qml">src/FlightDisplay/GuidedActionPayloadDropConfirm.qml</file>
     </qresource>
     <qresource prefix="/FirstRunPromptDialogs">
         <file alias="UnitsFirstRunPrompt.qml">src/FirstRunPromptDialogs/UnitsFirstRunPrompt.qml</file>
