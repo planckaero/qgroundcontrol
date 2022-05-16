@@ -248,6 +248,15 @@ Item {
         property real leftInset: x + width
     }
 
+    GuidedActionPayloadDropConfirm {
+        id:                         guidedActionPayloadDropConfirm
+        anchors.topMargin:          _toolsMargin
+        anchors.left:               toolStrip.left
+        anchors.top:                toolStrip.bottom
+        z:                          QGroundControl.zOrderWidgets
+        guidedController:           _guidedController
+    }
+
     FlyViewAirspaceIndicator {
         anchors.top:                parent.top
         anchors.topMargin:          ScreenTools.defaultFontPixelHeight * 0.25
