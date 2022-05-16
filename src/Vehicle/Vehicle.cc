@@ -3875,7 +3875,7 @@ void Vehicle::gripperOpenDelayClose(double delay_s) {
    _gripperExecuting = true;
    emit gripperActionExecutingChanged(true);
    actuateGripper(true);
-   QTimer::singleShot(delay_s, this, &Vehicle::_gripperOpenDelayCloseComplete);
+   QTimer::singleShot(delay_s * 1000, this, &Vehicle::_gripperOpenDelayCloseComplete);
 }
 
 void Vehicle::_gripperOpenDelayCloseComplete() {
