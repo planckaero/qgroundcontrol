@@ -891,13 +891,18 @@ bool APMFirmwarePlugin::_guidedModeTakeoff(Vehicle* vehicle, double altitudeRel)
         takeoffAltRel = altitudeRel;
     }
 
-    if (!_setFlightModeAndValidate(vehicle, "Guided")) {
-        qgcApp()->showAppMessage(tr("Unable to takeoff: Vehicle failed to change to Guided mode."));
+    if (!_setFlightModeAndValidate(vehicle, "Stabilize")) {
+        qgcApp()->showAppMessage(tr("Unable to takeoff: Vehicle failed to change to Stabilize mode."));
         return false;
     }
 
     if (!_armVehicleAndValidate(vehicle)) {
         qgcApp()->showAppMessage(tr("Unable to takeoff: Vehicle failed to arm."));
+        return false;
+    }
+
+    if (!_setFlightModeAndValidate(vehicle, "Guided")) {
+        qgcApp()->showAppMessage(tr("Unable to takeoff: Vehicle failed to change to Guided mode."));
         return false;
     }
 
@@ -928,8 +933,8 @@ void APMFirmwarePlugin::startMission(Vehicle* vehicle)
 
     if (!vehicle->armed()) {
         // First switch to flight mode we can arm from
-        if (!_setFlightModeAndValidate(vehicle, "Guided")) {
-            qgcApp()->showAppMessage(tr("Unable to start mission: Vehicle failed to change to Guided mode."));
+        if (!_setFlightModeAndValidate(vehicle, "Stabilize")) {
+            qgcApp()->showAppMessage(tr("Unable to start mission: Vehicle failed to change to Stabilize mode."));
             return;
         }
 
