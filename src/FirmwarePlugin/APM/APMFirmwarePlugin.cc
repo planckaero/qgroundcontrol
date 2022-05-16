@@ -901,6 +901,12 @@ bool APMFirmwarePlugin::_guidedModeTakeoff(Vehicle* vehicle, double altitudeRel)
         return false;
     }
 
+    // Wait 300 msecs before sending a takeoff command
+    for (int i=0; i<3; i++) {
+        QGC::SLEEP::msleep(100);
+        qgcApp()->processEvents(QEventLoop::ExcludeUserInputEvents);
+    }
+
     vehicle->sendMavCommand(vehicle->defaultComponentId(),
                             MAV_CMD_NAV_TAKEOFF,
                             true, // show error
@@ -939,6 +945,11 @@ void APMFirmwarePlugin::startMission(Vehicle* vehicle)
             return;
         }
     } else {
+        // Wait 300 msecs before sending a start mission command
+        for (int i=0; i<3; i++) {
+            QGC::SLEEP::msleep(100);
+            qgcApp()->processEvents(QEventLoop::ExcludeUserInputEvents);
+        }
         vehicle->sendMavCommand(vehicle->defaultComponentId(), MAV_CMD_MISSION_START, true /*show error */);
     }
 }
