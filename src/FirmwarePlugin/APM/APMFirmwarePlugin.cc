@@ -950,8 +950,19 @@ void APMFirmwarePlugin::startMission(Vehicle* vehicle)
             return;
         }
     } else {
-        // Wait 300 msecs before sending a start mission command
-        for (int i=0; i<3; i++) {
+        // Wait 500 msecs after arming before switching to AUTO
+        for (int i=0; i<5; i++) {
+            QGC::SLEEP::msleep(100);
+            qgcApp()->processEvents(QEventLoop::ExcludeUserInputEvents);
+        }
+
+        if (!_setFlightModeAndValidate(vehicle, "Auto")) {
+            qgcApp()->showAppMessage(tr("Unable to start mission: Vehicle failed to change to Auto mode."));
+            return;
+        }
+
+        // Wait 500 msecs before sending a start mission command
+        for (int i=0; i<5; i++) {
             QGC::SLEEP::msleep(100);
             qgcApp()->processEvents(QEventLoop::ExcludeUserInputEvents);
         }
