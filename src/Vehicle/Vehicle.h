@@ -442,7 +442,7 @@ public:
     Q_INVOKABLE void actuateGripper(bool open);
 
     /// Open + delay + close gripper operation
-    Q_INVOKABLE void gripperOpenDelayClose(double delay_s = 1.0);
+    Q_INVOKABLE void gripperOpenDelayClose(double delay_s = 2.0);
     Q_PROPERTY(bool gripperActionExecuting READ gripperActionExecuting NOTIFY gripperActionExecutingChanged)
     bool gripperActionExecuting() { return _gripperExecuting; };
 
