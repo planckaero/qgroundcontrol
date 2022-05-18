@@ -407,7 +407,7 @@ VisualMissionItem* MissionController::insertPayloadDropItems(int visualItemIndex
     SimpleMissionItem* release = qobject_cast<SimpleMissionItem*>(_insertSimpleMissionItemWorker(QGeoCoordinate(), MAV_CMD_DO_GRIPPER, visualItemIndex++, makeCurrentItem));
     release->missionItem().setParam2(0);
     SimpleMissionItem* delay = qobject_cast<SimpleMissionItem*>(_insertSimpleMissionItemWorker(QGeoCoordinate(), MAV_CMD_NAV_DELAY, visualItemIndex++, makeCurrentItem));
-    delay->missionItem().setParam1(1);
+    delay->missionItem().setParam1(2);
     SimpleMissionItem* grab = qobject_cast<SimpleMissionItem*>(_insertSimpleMissionItemWorker(QGeoCoordinate(), MAV_CMD_DO_GRIPPER, visualItemIndex, makeCurrentItem));
     grab->missionItem().setParam2(1);
     return grab;
