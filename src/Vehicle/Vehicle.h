@@ -446,6 +446,9 @@ public:
     Q_PROPERTY(bool gripperActionExecuting READ gripperActionExecuting NOTIFY gripperActionExecutingChanged)
     bool gripperActionExecuting() { return _gripperExecuting; };
 
+    /// Toggle LED
+    Q_INVOKABLE void toggleLED();
+
     bool    isInitialConnectComplete() const;
     bool    guidedModeSupported     () const;
     bool    pauseVehicleSupported   () const;

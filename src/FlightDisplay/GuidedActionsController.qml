@@ -465,6 +465,11 @@ Item {
         case actionActionList:
             actionList.show()
             return
+        case actionLedToggle:
+            confirmDialog.title = ledToggleTitle
+            confirmDialog.message = ledToggleMessage
+            confirmDialog.hideTrigger = Qt.binding(function() { return !showLedToggle })
+            break;
         default:
             console.warn("Unknown actionCode", actionCode)
             return
@@ -548,6 +553,9 @@ Item {
         case actionPayloadDrop:
             console.info('Payload Drop')
             _activeVehicle.gripperOpenDelayClose()
+            break
+        case actionLedToggle:
+            _activeVehicle.toggleLED()
             break
         default:
             console.warn(qsTr("Internal error: unknown actionCode"), actionCode)

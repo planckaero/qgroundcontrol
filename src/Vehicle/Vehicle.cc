@@ -3870,18 +3870,22 @@ void Vehicle::actuateGripper(bool open) {
 }
 
 void Vehicle::gripperOpenDelayClose(double delay_s) {
-   //Send an open command, then spawn a timer which triggers a close
-   if(gripperActionExecuting()) return;
-   _gripperExecuting = true;
-   emit gripperActionExecutingChanged(true);
-   actuateGripper(true);
-   QTimer::singleShot(delay_s * 1000, this, &Vehicle::_gripperOpenDelayCloseComplete);
+    //Send an open command, then spawn a timer which triggers a close
+    if(gripperActionExecuting()) return;
+    _gripperExecuting = true;
+    emit gripperActionExecutingChanged(true);
+    actuateGripper(true);
+    QTimer::singleShot(delay_s * 1000, this, &Vehicle::_gripperOpenDelayCloseComplete);
 }
 
 void Vehicle::_gripperOpenDelayCloseComplete() {
-   actuateGripper(false);
-   _gripperExecuting = false;
-   emit gripperActionExecutingChanged(false);
+    actuateGripper(false);
+    _gripperExecuting = false;
+    emit gripperActionExecutingChanged(false);
+}
+
+void Vehicle::toggleLED() {
+    qCDebug(VehicleLog)<< "Toggle LED commanded";
 }
 
 void Vehicle::gimbalControlValue(double pitch, double yaw)
