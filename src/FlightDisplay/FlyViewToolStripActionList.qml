@@ -29,6 +29,7 @@ ToolStripActionList {
         GuidedActionRTL { },
         GuidedActionPause { },
         GuidedActionPayloadDrop { },
+        GuidedActionLEDToggle { },
         GuidedActionActionList { }
     ]
 }
