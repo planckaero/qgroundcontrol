@@ -2700,6 +2700,11 @@ bool Vehicle::guidedMode() const
     return _firmwarePlugin->isGuidedMode(this);
 }
 
+void Vehicle::setVoltageSag(qreal v)
+{
+    _voltageSag = v;
+}
+
 void Vehicle::setGuidedMode(bool guidedMode)
 {
     return _firmwarePlugin->setGuidedMode(this, guidedMode);

@@ -533,6 +533,30 @@ SetupPage {
                     visible:            _showAdvanced
                 }
 
+                QGCLabel {
+                    text:       qsTr("Voltage Sag:")
+                    visible:    _showAdvanced
+                }
+
+                QGCTextField {
+                    id:               voltageSagField
+                    width:            _fieldWidth
+                    text:             controller.vehicle.voltageSag
+                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+                    function setVoltageSag() {
+                        let userInput = parseFloat(this.text)
+                        if(userInput < 0 || userInput > 1000) {
+                            voltageSagField.text = controller.vehicle.voltageSag
+                        }
+                        else {
+                            controller.vehicle.voltageSag = userInput
+                        }
+                        console.info(controller.vehicle.voltageSag)
+                    }
+                    onEditingFinished: setVoltageSag()
+                }
+
             } // GridLayout
         } // Column
     } // Component - powerSetupComponent

@@ -256,6 +256,7 @@ public:
     Q_PROPERTY(bool                 requiresGpsFix              READ requiresGpsFix                                                 NOTIFY requiresGpsFixChanged)
     Q_PROPERTY(double               loadProgress                READ loadProgress                                                   NOTIFY loadProgressChanged)
     Q_PROPERTY(bool                 initialConnectComplete      READ isInitialConnectComplete                                       NOTIFY initialConnectComplete)
+    Q_PROPERTY(qreal                voltageSag                  READ voltageSag                 WRITE setVoltageSag                 NOTIFY voltageSagChanged)
 
     // The following properties relate to Orbit status
     Q_PROPERTY(bool             orbitActive     READ orbitActive        NOTIFY orbitActiveChanged)
@@ -446,6 +447,7 @@ public:
     Q_PROPERTY(bool gripperActionExecuting READ gripperActionExecuting NOTIFY gripperActionExecutingChanged)
     bool gripperActionExecuting() { return _gripperExecuting; };
 
+    qreal   setVoltageSag           () const;
     bool    isInitialConnectComplete() const;
     bool    guidedModeSupported     () const;
     bool    pauseVehicleSupported   () const;
@@ -516,6 +518,7 @@ public:
     bool supportsMotorInterference      () const;
     bool supportsTerrainFrame           () const;
 
+    void setVoltageSag(qreal v);
     void setGuidedMode(bool guidedMode);
 
     QString prearmError() const { return _prearmError; }
@@ -832,6 +835,7 @@ public:
     qreal       gimbalYaw               () const{ return static_cast<qreal>(_curGimbalYaw); }
     bool        gimbalData              () const{ return _haveGimbalData; }
     bool        isROIEnabled            () const{ return _isROIEnabled; }
+    qreal       voltageSag              () const{ return _voltageSag; }
 
     CheckList   checkListState          () { return _checkListState; }
     void        setCheckListState       (CheckList cl)  { _checkListState = cl; emit checkListStateChanged(); }
@@ -950,6 +954,7 @@ signals:
     void gimbalDataChanged              ();
     void isROIEnabledChanged            ();
     void initialConnectComplete         ();
+    void voltageSagChanged              ();
 
     void sensorsParametersResetAck      (bool success);
 
@@ -1179,6 +1184,7 @@ private:
     bool                _haveGimbalData = false;
     bool                _isROIEnabled   = false;
     Joystick*           _activeJoystick = nullptr;
+    qreal               _voltageSag     = 0.0f;
 
     bool _checkLatestStableFWDone = false;
     int _firmwareMajorVersion = versionNotSetValue;
