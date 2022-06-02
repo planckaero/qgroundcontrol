@@ -85,6 +85,13 @@
     "enumStrings":      "n/a,Ok,Low,Critical,Emergency,Failed,Unhealthy,Charging",
     "enumValues":       "0,1,2,3,4,5,6,7",
     "decimalPlaces":    0
+},
+{
+    "name":             "voltageBeforeTakeoff",
+    "shortDesc":        "Voltage Before Takeoff",
+    "type":             "double",
+    "decimalPlaces":    2,
+    "units":            "v"
 }
 ]
 }

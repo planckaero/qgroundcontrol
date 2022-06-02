@@ -30,8 +30,10 @@ Item {
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
 
     // TODO: parameterize battery range
-    property real _battVoltMax:  (_activeVehicle.armed) ? 58.3 : 58.3-_activeVehicle.voltageSag
-    property real _battVoltMin:  (_activeVehicle.armed) ? 46.9 : 43.2
+    property real _battVoltMax:         58.3
+    property real _battVoltMin:         46.9
+    property real _battVoltMaxUnderLoad: _battVoltMax - _activeVehicle.voltageSag
+    property real _battVoltMinUnderLoad: 43.2
 
     Row {
         id:             batteryIndicatorRow
@@ -88,10 +90,12 @@ Item {
                         return battery.percentRemaining.valueString + battery.percentRemaining.units
                     }
                 } else if (!isNaN(battery.voltage.rawValue)) {
+                    var percentRemaining = (battery.voltageBeforeTakeoff.rawValue-_battVoltMin)/(_battVoltMax-_battVoltMin)
+                    if (_activeVehicle.armed()) {
+                        percentRemaining *= (battery.voltage.rawValue-_battVoltMinUnderLoad)/(_battVoltMaxUnderLoad-_battVoltMinUnderLoad)
+                    }
                     // Estimate percent remaining if voltage is roughly above the battery voltage minimum
-                    // TODO: should this be activated rather than on by default?
-                    let percentRemaining = (battery.voltage.rawValue-_battVoltMin)/(_battVoltMax-_battVoltMin)*100;
-                    return qsTr("%1\%").arg(percentRemaining)
+                    return qsTr("%1\%").arg(percentRemaining*100)
 
                     // return battery.voltage.valueString + battery.voltage.units
                 } else if (battery.chargeState.rawValue !== MAVLink.MAV_BATTERY_CHARGE_STATE_UNDEFINED) {
