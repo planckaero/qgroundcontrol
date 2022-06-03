@@ -90,14 +90,16 @@ Item {
                         return battery.percentRemaining.valueString + battery.percentRemaining.units
                     }
                 } else if (!isNaN(battery.voltage.rawValue)) {
-                    var percentRemaining = (battery.voltageBeforeTakeoff.rawValue-_battVoltMin)/(_battVoltMax-_battVoltMin)
-                    if (_activeVehicle.armed()) {
-                        percentRemaining *= (battery.voltage.rawValue-_battVoltMinUnderLoad)/(_battVoltMaxUnderLoad-_battVoltMinUnderLoad)
+                    // Calculate battery percent remaining estimate
+                    if (_activeVehicle.battEstEnabled) {
+                        var percentRemaining = (battery.voltageBeforeTakeoff.rawValue-_battVoltMin)/(_battVoltMax-_battVoltMin)
+                        if (_activeVehicle.armed) {
+                            percentRemaining *= (battery.voltage.rawValue-_battVoltMinUnderLoad)/(_battVoltMaxUnderLoad-_battVoltMinUnderLoad)
+                        }
+                        return qsTr("%1\%").arg(percentRemaining*100)
                     }
-                    // Estimate percent remaining if voltage is roughly above the battery voltage minimum
-                    return qsTr("%1\%").arg(percentRemaining*100)
 
-                    // return battery.voltage.valueString + battery.voltage.units
+                    return battery.voltage.valueString + battery.voltage.units
                 } else if (battery.chargeState.rawValue !== MAVLink.MAV_BATTERY_CHARGE_STATE_UNDEFINED) {
                     return battery.chargeState.enumStringValue
                 }
