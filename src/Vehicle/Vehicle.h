@@ -256,6 +256,7 @@ public:
     Q_PROPERTY(bool                 requiresGpsFix              READ requiresGpsFix                                                 NOTIFY requiresGpsFixChanged)
     Q_PROPERTY(double               loadProgress                READ loadProgress                                                   NOTIFY loadProgressChanged)
     Q_PROPERTY(bool                 initialConnectComplete      READ isInitialConnectComplete                                       NOTIFY initialConnectComplete)
+    Q_PROPERTY(bool                 battEstEnabled              READ battEstEnabled             WRITE setBattEstState               NOTIFY battEstEnabledChanged)
     Q_PROPERTY(qreal                voltageSag                  READ voltageSag                 WRITE setVoltageSag                 NOTIFY voltageSagChanged)
 
     // The following properties relate to Orbit status
@@ -518,6 +519,7 @@ public:
     bool supportsMotorInterference      () const;
     bool supportsTerrainFrame           () const;
 
+    void setBattEstState(bool state);
     void setVoltageSag(qreal v);
     void setGuidedMode(bool guidedMode);
 
@@ -835,6 +837,7 @@ public:
     qreal       gimbalYaw               () const{ return static_cast<qreal>(_curGimbalYaw); }
     bool        gimbalData              () const{ return _haveGimbalData; }
     bool        isROIEnabled            () const{ return _isROIEnabled; }
+    bool        battEstEnabled          () const{ return _battEstEnabled; }
     qreal       voltageSag              () const{ return _voltageSag; }
 
     CheckList   checkListState          () { return _checkListState; }
@@ -954,6 +957,7 @@ signals:
     void gimbalDataChanged              ();
     void isROIEnabledChanged            ();
     void initialConnectComplete         ();
+    void battEstEnabledChanged          ();
     void voltageSagChanged              ();
 
     void sensorsParametersResetAck      (bool success);
@@ -1184,6 +1188,7 @@ private:
     bool                _haveGimbalData = false;
     bool                _isROIEnabled   = false;
     Joystick*           _activeJoystick = nullptr;
+    bool                _battEstEnabled = false;
     qreal               _voltageSag     = 0.0f;
 
     bool _checkLatestStableFWDone = false;
