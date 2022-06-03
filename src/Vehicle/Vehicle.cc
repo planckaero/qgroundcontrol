@@ -2703,11 +2703,13 @@ bool Vehicle::guidedMode() const
 void Vehicle::setBattEstState(bool state)
 {
     _battEstEnabled = state;
+    emit battEstEnabledChanged();
 }
 
 void Vehicle::setVoltageSag(qreal v)
 {
     _voltageSag = v;
+    emit voltageSagChanged();
 }
 
 void Vehicle::setGuidedMode(bool guidedMode)
