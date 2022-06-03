@@ -143,7 +143,7 @@ Item {
                 onEditingFinished: {
                     _activeJoystick.gimbalSpeedFactor = parseFloat(text)
                 }
-                visible:            _activeJoystick && activeVehicle && activeVehicle.gimbalData
+                visible:            _activeJoystick && activeVehicle
             }
         }
         Row {
