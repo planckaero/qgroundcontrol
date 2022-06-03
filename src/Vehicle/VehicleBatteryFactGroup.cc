@@ -25,6 +25,7 @@ const char* VehicleBatteryFactGroup::_instantPowerFactName          = "instantPo
 const char* VehicleBatteryFactGroup::_timeRemainingFactName         = "timeRemaining";
 const char* VehicleBatteryFactGroup::_timeRemainingStrFactName      = "timeRemainingStr";
 const char* VehicleBatteryFactGroup::_chargeStateFactName           = "chargeState";
+const char* VehicleBatteryFactGroup::_voltageBeforeTakeoffFactName  = "voltageBeforeTakeoff";
 
 const char* VehicleBatteryFactGroup::_settingsGroup =                       "Vehicle.battery";
 
@@ -42,6 +43,7 @@ VehicleBatteryFactGroup::VehicleBatteryFactGroup(uint8_t batteryId, QObject* par
     , _timeRemainingStrFact (0, _timeRemainingStrFactName,          FactMetaData::valueTypeString)
     , _chargeStateFact      (0, _chargeStateFactName,               FactMetaData::valueTypeUint8)
     , _instantPowerFact     (0, _instantPowerFactName,              FactMetaData::valueTypeDouble)
+    , _voltageBeforeTakeoffFact(0, _voltageFactName,                FactMetaData::valueTypeDouble)
 {
     _addFact(&_batteryIdFact,               _batteryIdFactName);
     _addFact(&_batteryFunctionFact,         _batteryFunctionFactName);
@@ -55,6 +57,7 @@ VehicleBatteryFactGroup::VehicleBatteryFactGroup(uint8_t batteryId, QObject* par
     _addFact(&_timeRemainingStrFact,        _timeRemainingStrFactName);
     _addFact(&_chargeStateFact,             _chargeStateFactName);
     _addFact(&_instantPowerFact,            _instantPowerFactName);
+    _addFact(&_voltageBeforeTakeoffFact,    _voltageBeforeTakeoffFactName);
 
     _batteryIdFact.setRawValue          (batteryId);
     _batteryFunctionFact.setRawValue    (MAV_BATTERY_FUNCTION_UNKNOWN);
@@ -67,6 +70,7 @@ VehicleBatteryFactGroup::VehicleBatteryFactGroup(uint8_t batteryId, QObject* par
     _timeRemainingFact.setRawValue      (qQNaN());
     _chargeStateFact.setRawValue        (MAV_BATTERY_CHARGE_STATE_UNDEFINED);
     _instantPowerFact.setRawValue       (qQNaN());
+    _voltageBeforeTakeoffFact.setRawValue(qQNaN());
 
     connect(&_timeRemainingFact, &Fact::rawValueChanged, this, &VehicleBatteryFactGroup::_timeRemainingChanged);
 }
@@ -160,6 +164,9 @@ void VehicleBatteryFactGroup::_handleBatteryStatus(Vehicle* vehicle, mavlink_mes
     group->timeRemaining()->setRawValue     (batteryStatus.time_remaining == 0 ?        qQNaN() : batteryStatus.time_remaining);
     group->chargeState()->setRawValue       (batteryStatus.charge_state);
     group->instantPower()->setRawValue      (totalVoltage * group->current()->rawValue().toDouble());
+    // Store voltage before takeoff value only when vehicle is disarmed
+    if (!vehicle->armed())
+        group->voltageBeforeTakeoff()->setRawValue(totalVoltage);
     group->_setTelemetryAvailable(true);
 }
 

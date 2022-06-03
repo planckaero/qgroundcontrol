@@ -21,18 +21,19 @@ class VehicleBatteryFactGroup : public FactGroup
 public:
     VehicleBatteryFactGroup(uint8_t batteryId, QObject* parent = nullptr);
 
-    Q_PROPERTY(Fact* id                 READ id                 CONSTANT)
-    Q_PROPERTY(Fact* function           READ function           CONSTANT)
-    Q_PROPERTY(Fact* type               READ type               CONSTANT)
-    Q_PROPERTY(Fact* temperature        READ temperature        CONSTANT)
-    Q_PROPERTY(Fact* voltage            READ voltage            CONSTANT)
-    Q_PROPERTY(Fact* current            READ current            CONSTANT)
-    Q_PROPERTY(Fact* mahConsumed        READ mahConsumed        CONSTANT)
-    Q_PROPERTY(Fact* percentRemaining   READ percentRemaining   CONSTANT)
-    Q_PROPERTY(Fact* timeRemaining      READ timeRemaining      CONSTANT)
-    Q_PROPERTY(Fact* timeRemainingStr   READ timeRemainingStr   CONSTANT)
-    Q_PROPERTY(Fact* chargeState        READ chargeState        CONSTANT)
-    Q_PROPERTY(Fact* instantPower       READ instantPower       CONSTANT)
+    Q_PROPERTY(Fact* id                   READ id                   CONSTANT)
+    Q_PROPERTY(Fact* function             READ function             CONSTANT)
+    Q_PROPERTY(Fact* type                 READ type                 CONSTANT)
+    Q_PROPERTY(Fact* temperature          READ temperature          CONSTANT)
+    Q_PROPERTY(Fact* voltage              READ voltage              CONSTANT)
+    Q_PROPERTY(Fact* current              READ current              CONSTANT)
+    Q_PROPERTY(Fact* mahConsumed          READ mahConsumed          CONSTANT)
+    Q_PROPERTY(Fact* percentRemaining     READ percentRemaining     CONSTANT)
+    Q_PROPERTY(Fact* timeRemaining        READ timeRemaining        CONSTANT)
+    Q_PROPERTY(Fact* timeRemainingStr     READ timeRemainingStr     CONSTANT)
+    Q_PROPERTY(Fact* chargeState          READ chargeState          CONSTANT)
+    Q_PROPERTY(Fact* instantPower         READ instantPower         CONSTANT)
+    Q_PROPERTY(Fact* voltageBeforeTakeoff READ voltageBeforeTakeoff CONSTANT)
 
     Fact* id                        () { return &_batteryIdFact; }
     Fact* function                  () { return &_batteryFunctionFact; }
@@ -46,6 +47,7 @@ public:
     Fact* timeRemaining             () { return &_timeRemainingFact; }
     Fact* timeRemainingStr          () { return &_timeRemainingStrFact; }
     Fact* chargeState               () { return &_chargeStateFact; }
+    Fact* voltageBeforeTakeoff      () { return &_voltageBeforeTakeoffFact; }
 
     static const char* _batteryIdFactName;
     static const char* _batteryFunctionFactName;
@@ -59,6 +61,7 @@ public:
     static const char* _timeRemainingStrFactName;
     static const char* _chargeStateFactName;
     static const char* _instantPowerFactName;
+    static const char* _voltageBeforeTakeoffFactName;
 
     static const char* _settingsGroup;
 
@@ -89,6 +92,7 @@ private:
     Fact            _timeRemainingStrFact;
     Fact            _chargeStateFact;
     Fact            _instantPowerFact;
+    Fact            _voltageBeforeTakeoffFact;
 
     static const char* _batteryFactGroupNamePrefix;
 };

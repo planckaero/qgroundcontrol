@@ -29,6 +29,12 @@ Item {
 
     property var _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
 
+    // TODO: parameterize battery range
+    property real _battVoltMax:         58.3
+    property real _battVoltMin:         46.9
+    property real _battVoltMaxUnderLoad: _battVoltMax - _activeVehicle.voltageSag
+    property real _battVoltMinUnderLoad: 43.2
+
     Row {
         id:             batteryIndicatorRow
         anchors.top:    parent.top
@@ -84,6 +90,15 @@ Item {
                         return battery.percentRemaining.valueString + battery.percentRemaining.units
                     }
                 } else if (!isNaN(battery.voltage.rawValue)) {
+                    // Calculate battery percent remaining estimate
+                    if (_activeVehicle.battEstEnabled) {
+                        var percentRemaining = (battery.voltageBeforeTakeoff.rawValue-_battVoltMin)/(_battVoltMax-_battVoltMin)
+                        if (_activeVehicle.armed) {
+                            percentRemaining *= (battery.voltage.rawValue-_battVoltMinUnderLoad)/(_battVoltMaxUnderLoad-_battVoltMinUnderLoad)
+                        }
+                        return qsTr("%1\%").arg(percentRemaining*100)
+                    }
+
                     return battery.voltage.valueString + battery.voltage.units
                 } else if (battery.chargeState.rawValue !== MAVLink.MAV_BATTERY_CHARGE_STATE_UNDEFINED) {
                     return battery.chargeState.enumStringValue

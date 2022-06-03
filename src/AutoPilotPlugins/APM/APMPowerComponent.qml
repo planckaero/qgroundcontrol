@@ -526,11 +526,53 @@ SetupPage {
 
                 QGCLabel {
                     Layout.columnSpan:  3
-                    Layout.fillWidth:   true
                     font.pointSize:     ScreenTools.smallFontPointSize
                     wrapMode:           Text.WordWrap
                     text:               qsTr("If the vehicle reports a high current read when there is little or no current going through it, adjust the Amps Offset. It should be equal to the voltage reported by the sensor when the current is zero.")
                     visible:            _showAdvanced
+                }
+
+                QGCLabel {
+                    text:             qsTr("Battery Percent Estimate:")
+                    visible:          _showAdvanced
+                }
+
+                QGCCheckBox {
+                    Layout.columnSpan:  2
+                    id:               _battEstCheckBox
+                    checked:          controller.vehicle.battEstEnabled
+                    text:             (checked) ? "Enabled" : "Disabled"
+
+                    onClicked: {
+                        controller.vehicle.battEstEnabled = checked
+                    }
+                }
+
+                QGCLabel {
+                    text:             qsTr("Voltage Sag:")
+                    visible:          _showAdvanced && _battEstCheckBox.checked
+                }
+
+                QGCTextField {
+                    id:               voltageSagField
+                    width:            _fieldWidth
+                    text:             controller.vehicle.voltageSag
+                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+                    unitsLabel:       "V"
+                    showUnits:        true
+                    visible:          _showAdvanced && _battEstCheckBox.checked
+
+                    function setVoltageSag() {
+                        let userInput = parseFloat(this.text)
+                        if(userInput < 0 || userInput > 1000) {
+                            voltageSagField.text = controller.vehicle.voltageSag
+                        }
+                        else {
+                            controller.vehicle.voltageSag = userInput
+                        }
+                        console.info(controller.vehicle.voltageSag)
+                    }
+                    onEditingFinished: setVoltageSag()
                 }
 
             } // GridLayout
