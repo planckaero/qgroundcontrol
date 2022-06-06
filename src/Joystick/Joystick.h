@@ -90,7 +90,6 @@ public:
     Q_PROPERTY(int      totalButtonCount        READ totalButtonCount       CONSTANT)
     Q_PROPERTY(int      axisCount               READ axisCount              CONSTANT)
     Q_PROPERTY(bool     requiresCalibration     READ requiresCalibration    CONSTANT)
-    Q_PROPERTY(double   gimbalSpeedFactor       MEMBER _gimbalSpeedFactor   NOTIFY gimbalSpeedFactorChanged)
 
     //-- Actions assigned to buttons
     Q_PROPERTY(QStringList buttonActions        READ buttonActions          NOTIFY buttonActionsChanged)
@@ -109,6 +108,7 @@ public:
     Q_PROPERTY(bool     accumulator             READ accumulator            WRITE setAccumulator        NOTIFY accumulatorChanged)
     Q_PROPERTY(bool     circleCorrection        READ circleCorrection       WRITE setCircleCorrection   NOTIFY circleCorrectionChanged)
     Q_PROPERTY(bool     noCommandsNotFlying   READ noCommandsNotFlying  WRITE setnoCommandsNotFlying NOTIFY noCommandsNotFlying)
+    Q_PROPERTY(double   gimbalSpeedFactor       READ gimbalSpeedFactor      WRITE setGimbalSpeedFactor  NOTIFY gimbalSpeedFactorChanged)
 
     Q_INVOKABLE void    setButtonRepeat     (int button, bool repeat);
     Q_INVOKABLE bool    getButtonRepeat     (int button);
@@ -121,6 +121,7 @@ public:
     int         totalButtonCount    () { return _totalButtonCount; }
     int         axisCount           () { return _axisCount; }
     bool        gimbalEnabled       () { return _gimbalEnabled; }
+    double      gimbalSpeedFactor   () { return _gimbalSpeedFactor; }
     QStringList buttonActions       ();
 
     QmlObjectListModel* assignableActions   () { return &_assignableButtonActions; }
@@ -168,6 +169,8 @@ public:
 
     bool noCommandsNotFlying ();
     void setnoCommandsNotFlying (bool noCommandsNotFlying);
+
+    void setGimbalSpeedFactor(double speed);
 
     void  setTXMode         (int mode);
     int   getTXMode         () { return _transmitterMode; }
@@ -340,6 +343,7 @@ private:
     static const char* _vtolTXModeSettingsKey;
     static const char* _submarineTXModeSettingsKey;
     static const char* _gimbalSettingsKey;
+    static const char* _gimbalSpeedFactorKey;
 
     static const char* _buttonActionNone;
     static const char* _buttonActionArm;
