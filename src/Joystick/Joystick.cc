@@ -233,7 +233,7 @@ void Joystick::_loadSettings()
     _circleCorrection = settings.value(_circleCorrectionSettingsKey, false).toBool();
     _noCommandsNotFlying = settings.value(_noCommandsNotFlyingSettingsKey, true).toBool();
     _gimbalEnabled  = settings.value(_gimbalSettingsKey, false).toBool();
-    _gimbalSpeedFactor  = settings.value(_gimbalSpeedFactorKey, 2.5f).toFloat();
+    _gimbalSpeedFactor  = static_cast<double>(settings.value(_gimbalSpeedFactorKey, 2.5f).toFloat());
 
     _throttleMode   = static_cast<ThrottleMode_t>(settings.value(_throttleModeSettingsKey, ThrottleModeDownZero).toInt(&convertOk));
     badSettings |= !convertOk;
@@ -951,6 +951,13 @@ void Joystick::setGimbalEnabled(bool set)
     _gimbalEnabled = set;
     _saveSettings();
     emit gimbalEnabledChanged();
+}
+
+void Joystick::setGimbalSpeedFactor(double speed)
+{
+    _gimbalSpeedFactor = speed;
+    _saveSettings();
+    emit gimbalSpeedFactorChanged(speed);
 }
 
 void Joystick::setAxisFrequency(float val)
