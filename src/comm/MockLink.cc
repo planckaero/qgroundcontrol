@@ -241,7 +241,6 @@ void MockLink::_sendPlanckStatusCopiloting(void)
                                             &copiloting_custom);
     respondWithMavlinkMessage(copiloting_custom_msg);
 }
-
 void MockLink::_run500HzTasks(void)
 {
     if (_highLatency) {
@@ -352,6 +351,9 @@ void MockLink::_sendHeartBeat(void)
     if(++count < 9) return;
     count = 0;
 
+    static uint8_t status = 0;
+    if(++status > 8) status = 0;
+
     mavlink_msg_heartbeat_pack_chan(_vehicleSystemId,
                                     41, //Anafi ACE supervisor
                                     _mavlinkChannel,
@@ -360,7 +362,7 @@ void MockLink::_sendHeartBeat(void)
                                     MAV_AUTOPILOT_INVALID,      // MAV_AUTOPILOT
                                     0,        // MAV_MODE
                                     idx++,      // custom mode
-                                    0);          // MAV_STATE
+                                    status);          // MAV_STATE
     qDebug() << "index: " << idx;
 
     mavlink_copiloting_custom_t copiloting_custom;

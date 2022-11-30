@@ -7,6 +7,7 @@
 #include "MAVLinkProtocol.h"
 #include "QGCApplication.h"
 #include "SettingsManager.h"
+#include <mavlink.h>
 
 PlanckListener::PlanckListener(QGCApplication* app, QGCToolbox* toolbox)
 : QGCTool(app, toolbox)
@@ -62,6 +63,13 @@ void PlanckListener::onMAVLinkMessage(LinkInterface* link, mavlink_message_t mes
         emit HealthChanged();
         health_timer.start(3000);
     }
+    else if(message.msgid == MAVLINK_MSG_ID_HEARTBEAT && message.compid == 41) { //41 == PLANCK_ANAFI_SUP_COMP_ID
+        //Look for the status field to indicate ready state
+        mavlink_heartbeat_t hb;
+        mavlink_msg_heartbeat_decode(&message, &hb);
+        takeoff_ready_state = (int)hb.system_status;
+        emit takeoffReadyStateChanged();
+    }
 }
 
 void PlanckListener::onHealthTimeout()
@@ -70,6 +78,10 @@ void PlanckListener::onHealthTimeout()
     boat_health = false;
     emit HealthChanged();
     health_timer.stop();
+}
+
+int PlanckListener::takeoffReadyState() {
+    return takeoff_ready_state;
 }
 
 void PlanckListener::toggleCharger() {
